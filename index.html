@@ -1,0 +1,2630 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>أرابكوا — المتصفح العربي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+window.ensureIcons = function(){
+  if (typeof lucide !== 'undefined') return;
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js';
+  s.onload = function(){ try { lucide.createIcons(); } catch(e){} };
+  document.head.appendChild(s);
+};
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#B23A2E; --brand-deep:#8E2C22; --brand-soft:#F6E7E3;
+  --ink:#241C16; --ink2:#6B5F55; --ink3:#9C8F82;
+  --bg:#F1ECE5; --chrome:#E7E1D8; --panel:#FFFFFF; --panel2:#FBF9F6; --line:#E4DCD1;
+  --ok:#2E6E5E; --dot:rgba(40,30,20,.05);
+  --shadow:0 1px 2px rgba(40,30,20,.06),0 10px 30px rgba(40,30,20,.08);
+}
+[data-theme="dark"]{
+  --brand:#D86A50; --brand-deep:#B23A2E; --brand-soft:#3A2622;
+  --ink:#F0E8DC; --ink2:#B9AB9B; --ink3:#8B7D6F;
+  --bg:#161210; --chrome:#211B16; --panel:#1D1712; --panel2:#241D17; --line:#383026;
+  --ok:#5FB8A2; --dot:rgba(255,255,255,.045);
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.4);
+}
+html,body{height:100%}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;display:flex;flex-direction:column}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,textarea{font-family:inherit;color:var(--ink)}
+a{color:inherit}
+img{background:var(--panel2)}
+mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0 2px}
+
+#tabstrip{background:var(--chrome);display:flex;align-items:flex-end;padding:8px 12px 0;gap:4px;height:46px;flex-shrink:0}
+#tabs{display:flex;align-items:flex-end;gap:4px;flex:1;overflow-x:auto;overflow-y:hidden;min-width:0;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:8px;height:36px;padding:0 10px;border-radius:11px 11px 0 0;min-width:110px;width:200px;flex:0 1 auto;color:var(--ink2);position:relative;transition:background .15s}
+.tab:hover{background:rgba(128,110,90,.12)}
+.tab.active{background:var(--panel);color:var(--ink);z-index:2}
+.tab.active::before,.tab.active::after{content:'';position:absolute;bottom:0;width:11px;height:11px}
+.tab.active::before{left:-11px;border-bottom-right-radius:11px;box-shadow:5px 0 0 0 var(--panel)}
+.tab.active::after{right:-11px;border-bottom-left-radius:11px;box-shadow:-5px 0 0 0 var(--panel)}
+.tab .tfav{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tab .tfav svg,.tab .tfav .bean{width:15px;height:15px}
+.tab .ttl{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:500}
+.tab .tclose{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.6}
+.tab .tclose:hover{background:rgba(128,110,90,.2);opacity:1}
+.tab .tclose svg{width:13px;height:13px}
+#newTabBtn{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink2);margin-bottom:4px;flex-shrink:0}
+#newTabBtn:hover{background:rgba(128,110,90,.15)}
+#newTabBtn svg{width:17px;height:17px}
+
+#toolbar{background:var(--chrome);display:flex;align-items:center;gap:6px;padding:7px 12px;flex-shrink:0;position:relative}
+.navbtns{display:flex;gap:2px}
+.navbtns button{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.navbtns button:hover:not(:disabled){background:rgba(128,110,90,.15);color:var(--ink)}
+.navbtns button:disabled{opacity:.32;cursor:default}
+.navbtns svg{width:17px;height:17px}
+#reloadBtn.spin svg{animation:spin .5s ease}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+#omniboxWrap{flex:1;max-width:760px;margin:0 auto;background:var(--panel);border:1.5px solid var(--line);border-radius:999px;height:38px;display:flex;align-items:center;padding:0 6px 0 14px;gap:9px;position:relative;transition:border-color .15s,box-shadow .15s}
+#omniboxWrap:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+#obIcon{display:flex;align-items:center;width:20px;justify-content:center;flex-shrink:0}
+#obIcon svg,#obIcon .bean{width:15px;height:15px}
+#omnibox{flex:1;border:0;outline:0;background:none;font-size:13.5px;direction:ltr;text-align:left;min-width:0}
+.obbtn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2);flex-shrink:0}
+.obbtn:hover{background:rgba(128,110,90,.14);color:var(--ink)}
+.obbtn svg{width:16px;height:16px}
+#starBtn.filled svg{fill:var(--brand);color:var(--brand)}
+.micbtn.listening,.listening{background:var(--brand)!important;color:#fff!important;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(178,58,46,.4)}50%{box-shadow:0 0 0 7px rgba(178,58,46,0)}}
+.tb-right{display:flex;align-items:center;gap:4px}
+#profileBtn{width:34px;height:34px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#profileBtn:hover{background:rgba(128,110,90,.15)}
+#profileBtn svg{width:19px;height:19px;color:var(--ink2)}
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0}
+.fico{position:relative;display:flex;width:15px;height:15px;align-items:center;justify-content:center}
+.fico svg{width:15px;height:15px}
+.tb-dot{position:absolute;top:-3px;inset-inline-end:-4px;width:7px;height:7px;border-radius:50%;background:var(--brand);border:1.5px solid var(--panel)}
+
+#bookmarksbar{background:var(--chrome);display:flex;align-items:center;gap:2px;padding:0 14px 8px;min-height:28px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+#bookmarksbar::-webkit-scrollbar{display:none}
+.bm{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:7px;font-size:12px;color:var(--ink2);white-space:nowrap;max-width:190px}
+.bm:hover{background:rgba(128,110,90,.15);color:var(--ink)}
+.bm .bfav{width:15px;height:15px;display:flex;align-items:center;justify-content:center}
+.bm .bfav svg,.bm .bfav .bean{width:12px;height:12px}
+.bm span.t{overflow:hidden;text-overflow:ellipsis}
+.bm-empty{font-size:11.5px;color:var(--ink3)}
+
+#viewport{flex:1;background:var(--panel);position:relative;overflow:hidden;min-height:0}
+.page{height:100%;overflow-y:auto}
+.siteframe{width:100%;height:100%;border:0;background:#fff;display:block}
+.bean{display:inline-block;flex-shrink:0;width:16px;height:16px}
+.bean-xs{width:34px;height:34px}
+
+.ntp{height:100%;overflow-y:auto;background:var(--panel);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.6px);background-size:24px 24px}
+.ntp-inner{max-width:660px;margin:0 auto;padding:8vh 24px 60px;text-align:center}
+.ntp-logo{display:flex;align-items:center;justify-content:center;gap:12px}
+.ntp-logo .bean{width:44px;height:44px}
+.ntp-logo h1{font-family:'Lalezar',cursive;font-size:54px;line-height:1;color:var(--ink)}
+.ntp-sub{color:var(--ink2);font-size:14px;margin-top:10px}
+.bigsearch{margin:32px auto 0;max-width:580px;background:var(--panel2);border:1.5px solid var(--line);border-radius:999px;height:54px;display:flex;align-items:center;padding:0 8px 0 20px;gap:12px;box-shadow:var(--shadow);position:relative;transition:border-color .15s}
+.bigsearch:focus-within{border-color:var(--brand)}
+.bigsearch>svg{width:19px;height:19px;color:var(--ink3);flex-shrink:0}
+.bigsearch input{flex:1;border:0;outline:0;background:none;font-size:15.5px;min-width:0}
+.bigsearch .micbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2);flex-shrink:0}
+.bigsearch .micbtn:hover{background:var(--brand-soft);color:var(--brand)}
+.bigsearch .micbtn svg{width:18px;height:18px}
+.shortcuts{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:32px}
+.schip{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--ink2);background:var(--panel2);transition:all .15s;position:relative}
+.schip:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-2px)}
+.schip svg{width:16px;height:16px}
+.schip.hl{border-color:var(--brand);color:var(--brand);font-weight:700}
+.schip .bdg{background:var(--brand);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.favsec{margin-top:28px;text-align:start}
+.favsec h3,.fresh-head h3{font-size:12.5px;font-weight:700;color:var(--ink3);letter-spacing:.4px;display:flex;align-items:center;gap:7px}
+.favsec h3 svg,.fresh-head h3 svg{width:14px;height:14px}
+.favrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.favbtn{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 13px;font-size:12.5px;max-width:230px}
+.favbtn:hover{border-color:var(--brand);color:var(--brand)}
+.favbtn svg{width:15px;height:15px;color:var(--ink3);flex-shrink:0}
+.favbtn .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fresh{margin-top:32px;text-align:start}
+.fresh-head{display:flex;align-items:center;justify-content:space-between}
+.fresh-head h3{display:flex}
+.fresh-head button{font-size:12px;color:var(--brand);font-weight:700}
+.fresh-head button:hover{text-decoration:underline}
+.fresh-row{display:flex;gap:12px;margin-top:12px;overflow-x:auto;padding-bottom:8px}
+.fcard{min-width:200px;max-width:200px;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:start;background:var(--panel2);cursor:pointer;transition:all .15s}
+.fcard:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:var(--shadow)}
+.fcard .fname{font-weight:700;font-size:14px;margin-bottom:2px}
+.fcard .furl{font-size:11px;color:var(--ok);direction:ltr;text-align:right}
+.fcard .fdesc{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fcard .fviews{font-size:11px;color:var(--ink3);margin-top:10px;display:flex;align-items:center;gap:5px}
+.fcard .fviews svg{width:12px;height:12px}
+.netcta{margin-top:32px;border:1.5px dashed var(--brand);border-radius:16px;padding:22px;background:var(--brand-soft);color:var(--brand);display:flex;flex-direction:column;align-items:center;gap:10px}
+.netcta p{font-size:13.5px;font-weight:700}
+.netcta svg{width:22px;height:22px}
+
+.serp{height:100%;overflow-y:auto}
+.serp-head{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:14px 0;z-index:5}
+.serp-head-in{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:0 24px}
+.serp-head .bean{width:30px;height:30px}
+.serp-box{flex:1;background:var(--panel2);border:1.5px solid var(--line);border-radius:999px;height:44px;display:flex;align-items:center;padding:0 8px 0 18px;gap:10px}
+.serp-box:focus-within{border-color:var(--brand)}
+.serp-box>svg{width:16px;height:16px;color:var(--ink3)}
+.serp-box input{flex:1;border:0;outline:0;background:none;font-size:14px;min-width:0}
+.serp-box .micbtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.serp-box .micbtn:hover{background:var(--brand-soft);color:var(--brand)}
+.serp-box .micbtn svg{width:15px;height:15px}
+.chips{display:flex;gap:8px;margin:16px 0 4px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);border-radius:999px;padding:7px 16px;font-size:12.5px;font-weight:600;color:var(--ink2);background:var(--panel2)}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip.on:hover{color:#fff}
+.chip .n{opacity:.7;font-weight:500}
+.serp-body{max-width:700px;margin:0 auto;padding:20px 24px 70px}
+.serp-meta{font-size:12px;color:var(--ink3);margin-bottom:18px}
+.serp-sec{font-size:12.5px;font-weight:700;color:var(--ink3);margin:22px 0 10px;display:flex;align-items:center;gap:7px}
+.serp-sec:first-of-type{margin-top:6px}
+.serp-sec svg{width:14px;height:14px}
+.rrow{padding:13px 14px;border-radius:14px;cursor:pointer;margin:0 -14px;transition:background .12s}
+.rrow:hover{background:var(--panel2)}
+.rsite{display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-wrap:wrap}
+.rname{font-size:12.5px;color:var(--ink2)}
+.rurl{font-size:11.5px;color:var(--ink3);direction:ltr}
+.rtitle{font-size:17.5px;font-weight:600;color:var(--brand);line-height:1.5}
+.rdesc{font-size:13px;color:var(--ink2);line-height:1.8;margin-top:4px}
+.rtag{font-size:10.5px;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:2px 9px;font-weight:700}
+.rtag.g{background:transparent;border:1px solid var(--brand);margin-inline-start:6px}
+.approw{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:14px;cursor:pointer;margin-bottom:10px;background:var(--panel2);transition:all .15s}
+.approw:hover{border-color:var(--brand);transform:translateY(-1px)}
+.appic{width:46px;height:46px;border-radius:13px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.appic svg{width:22px;height:22px}
+.appinfo{flex:1;min-width:0}
+.appinfo .t{font-weight:700;font-size:14.5px}
+.appinfo .d{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.empty-results{text-align:center;padding:50px 20px}
+.empty-results svg{width:42px;height:42px;color:var(--ink3)}
+.empty-results h3{margin:14px 0 6px;font-size:17px}
+.empty-results p{color:var(--ink2);font-size:13.5px;line-height:1.8}
+.empty-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.filter-empty{font-size:13px;color:var(--ink3);padding:20px 0;text-align:center}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:999px;font-size:13.5px;font-weight:700;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);transition:all .15s}
+.btn:hover{border-color:var(--ink3)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
+.btn svg{width:16px;height:16px}
+
+.authwrap{height:100%;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:var(--panel2);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.6px);background-size:24px 24px}
+.authcard{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:36px 32px;width:100%;max-width:420px;box-shadow:var(--shadow);text-align:center}
+.authcard h2{font-size:20px;margin-top:12px}
+.authcard .sub{color:var(--ink2);font-size:13px;line-height:1.8;margin:8px 0 4px}
+.authtabs{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:4px;margin:20px 0}
+.authtabs button{flex:1;padding:9px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink2)}
+.authtabs button.on{background:var(--brand);color:#fff}
+.field{text-align:start;margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:7px;color:var(--ink2)}
+.field input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;font-size:14px;background:var(--panel2);outline:0;transition:border-color .15s}
+.field input:focus{border-color:var(--brand)}
+.pw{position:relative}
+.pw input{padding-inline-end:42px}
+.pw .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.pw .eye:hover{color:var(--brand)}
+.pw .eye svg{width:16px;height:16px}
+.email-live{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;margin:-2px 0 14px;direction:ltr;flex-wrap:wrap}
+.email-live .at{font-size:17px;font-weight:800}
+.email-live svg{width:14px;height:14px}
+.hint{font-size:11.5px;color:var(--ink3);text-align:start;margin:-6px 0 14px;line-height:1.7}
+.autherr{background:var(--brand-soft);color:var(--brand);border-radius:11px;padding:10px 14px;font-size:12.5px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;text-align:start}
+.autherr svg{width:15px;height:15px;flex-shrink:0}
+.fin{width:100%;border:1.5px dashed var(--line);border-radius:11px;padding:11px 14px;font-size:12.5px;background:var(--panel2);color:var(--ink2)}
+.fin:focus{outline:0;border-color:var(--brand)}
+
+.settings{height:100%;overflow-y:auto}
+.set-wrap{max-width:640px;margin:0 auto;padding:36px 24px 80px}
+.set-head{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.set-head svg{width:21px;height:21px;color:var(--brand)}
+.set-head h1{font-family:'Lalezar',cursive;font-size:30px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px}
+.card h3{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h3 svg{width:16px;height:16px;color:var(--brand)}
+.pcard{display:flex;align-items:center;gap:18px}
+.pcard .avatar{width:64px;height:64px;font-size:26px}
+.pcard .pname{font-weight:700;font-size:18px}
+.pcard .pmail{color:var(--brand);font-size:13px;direction:ltr;text-align:right;font-weight:600}
+.pcard .pjoin{color:var(--ink3);font-size:12px;margin-top:3px}
+.pubcta{background:var(--brand);color:#fff;border:0}
+.pubcta h3{color:#fff}
+.pubcta h3 svg{color:#fff}
+.pubcta p{font-size:13px;opacity:.9;line-height:1.8;margin:8px 0 16px}
+.pubcta .btn{background:#fff;color:var(--brand);border:0}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.setrow:last-child{border-bottom:0}
+.setrow .info .t{font-weight:600;font-size:14px}
+.setrow .info .d{font-size:12px;color:var(--ink2);margin-top:2px}
+.switch{width:44px;height:25px;border-radius:999px;background:var(--line);position:relative;transition:background .2s;flex-shrink:0}
+.switch::after{content:'';position:absolute;top:3px;inset-inline-start:3px;width:19px;height:19px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch.on{background:var(--ok)}
+.switch.on::after{transform:translateX(-19px)}
+.mysite{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.mysite:last-child{border-bottom:0}
+.mysite .m-n{font-weight:700;font-size:14px}
+.mysite .m-u{font-size:11.5px;color:var(--ok);direction:ltr;text-align:right}
+.mysite .m-v{font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:4px;margin-top:2px}
+.mysite .m-v svg{width:11px;height:11px}
+.mysite .acts{display:flex;gap:4px;margin-inline-start:auto}
+.iconbtn{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.iconbtn:hover{background:var(--brand-soft);color:var(--brand)}
+.iconbtn svg{width:15px;height:15px}
+.iconbtn.danger:hover{background:var(--brand);color:#fff}
+.hrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.hrow:last-child{border-bottom:0}
+.hrow:hover .t{color:var(--brand)}
+.hrow .bfav{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .bfav svg,.hrow .bfav .bean{width:13px;height:13px}
+.hrow .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hrow .tm{margin-inline-start:auto;font-size:11px;color:var(--ink3);flex-shrink:0}
+
+.publish{height:100%;overflow-y:auto}
+.pub-wrap{max-width:1060px;margin:0 auto;padding:34px 24px 80px}
+.pub-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.pub-head .appic{width:52px;height:52px}
+.pub-head h1{font-family:'Lalezar',cursive;font-size:32px}
+.pub-sub{color:var(--ink2);font-size:13.5px;margin-bottom:22px;line-height:1.8}
+.editnote{background:var(--brand-soft);color:var(--brand);border-radius:11px;padding:10px 14px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.editnote svg{width:15px;height:15px}
+.editnote button{margin-inline-start:auto;font-size:11.5px;text-decoration:underline;font-weight:700;color:var(--brand)}
+.pub-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.pub-form label{display:block;font-size:12.5px;font-weight:700;margin:15px 0 7px;color:var(--ink2)}
+.pub-form input,.pub-form textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13.5px;background:var(--panel2);outline:0;transition:border-color .15s}
+.pub-form input:focus,.pub-form textarea:focus{border-color:var(--brand)}
+.slugbox{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:11px;background:var(--panel2);overflow:hidden;direction:ltr}
+.slugbox:focus-within{border-color:var(--brand)}
+.slugbox input{border:0;direction:ltr;text-align:left;flex:1;border-radius:0;background:none;min-width:0}
+.slugbox .ext{padding:0 14px;font-size:12.5px;color:var(--ink3);white-space:nowrap}
+.tplrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tplbtn{border:1.5px solid var(--line);border-radius:999px;padding:7px 15px;font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.tplbtn:hover{border-color:var(--brand);color:var(--brand)}
+.tplbtn svg{width:13px;height:13px}
+#pHtml{direction:ltr;text-align:left;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.7;min-height:260px;resize:vertical}
+.pub-actions{margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pub-actions .note{font-size:11.5px;color:var(--ink3);direction:ltr}
+.pv-box{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel2);position:sticky;top:20px}
+.pv-head{display:flex;align-items:center;gap:8px;padding:11px 16px;font-size:12.5px;font-weight:700;color:var(--ink2);border-bottom:1px solid var(--line)}
+.pv-head svg{width:15px;height:15px;color:var(--brand)}
+#pvFrame{width:100%;height:520px;border:0;background:#fff;display:block}
+
+.network{height:100%;overflow-y:auto}
+.net-wrap{max-width:720px;margin:0 auto;padding:36px 24px 80px}
+.net-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.net-head h1{font-family:'Lalezar',cursive;font-size:32px;display:flex;align-items:center;gap:11px}
+.net-head h1 svg{width:26px;height:26px;color:var(--brand)}
+.net-head .cnt{font-size:13px;color:var(--ink2);margin-top:6px}
+.nettools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.netsearch{flex:1;min-width:200px;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;background:var(--panel2);outline:0;font-size:13px}
+.netsearch:focus{border-color:var(--brand)}
+.netrow{display:flex;align-items:center;gap:15px;padding:17px 4px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:12px;transition:background .12s}
+.netrow:hover{background:var(--panel2)}
+.netrow .avatar{width:46px;height:46px;font-size:19px}
+.netrow .n-name{font-weight:700;font-size:15px}
+.netrow .n-url{font-size:12px;color:var(--ok);direction:ltr;text-align:right}
+.netrow .n-desc{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.7}
+.netrow .n-meta{font-size:11px;color:var(--ink3);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.netrow .n-meta span{display:flex;align-items:center;gap:4px}
+.netrow .n-meta svg{width:11px;height:11px}
+.netrow .n-meta .gtag{color:var(--brand);cursor:pointer;font-weight:700}
+.netrow .go{margin-inline-start:auto;flex-shrink:0}
+.net-empty{text-align:center;padding:44px 16px;color:var(--ink3);font-size:13.5px}
+
+/* ============ البريد ============ */
+.mail{height:100%;display:grid;grid-template-columns:215px 320px 1fr}
+.mail-side{border-inline-end:1px solid var(--line);padding:18px 12px;overflow-y:auto}
+.composebtn{width:100%;background:var(--brand);color:#fff;border-radius:999px;padding:12px;font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;transition:background .15s}
+.composebtn:hover{background:var(--brand-deep)}
+.composebtn svg{width:16px;height:16px}
+.mf{width:100%;display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:999px;font-size:13.5px;color:var(--ink2);font-weight:500;margin-bottom:2px;text-align:start}
+.mf:hover{background:var(--panel2)}
+.mf.on{background:var(--brand-soft);color:var(--brand);font-weight:700}
+.mf svg{width:17px;height:17px}
+.mf .bdg{margin-inline-start:auto;background:var(--brand);color:#fff;font-size:10.5px;font-weight:700;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.mail-list{border-inline-end:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+.mail-list .ml-head{padding:16px 18px 10px;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mail-list .ml-head button{font-size:11px;color:var(--brand);font-weight:700;text-decoration:underline;flex-shrink:0}
+.mrow{display:flex;gap:11px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .12s}
+.mrow:hover{background:var(--panel2)}
+.mrow.open{background:var(--panel2)}
+.mrow .m-avatar{margin-top:2px}
+.mrow .m-t{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.mrow.unread .m-t{color:var(--brand)}
+.mrow .m-s{font-size:12.5px;font-weight:600;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow.readed .m-t,.mrow.readed .m-s{font-weight:500;color:var(--ink2)}
+.mrow .m-sn{font-size:11.5px;color:var(--ink3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow .m-date{font-size:10.5px;color:var(--ink3);margin-inline-start:auto;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.mrow .m-rowacts{display:flex;gap:2px}
+.mrow .m-rowacts .iconbtn{width:24px;height:24px}
+.mrow .m-rowacts .iconbtn svg{width:12px;height:12px}
+.mrow .m-star svg{width:14px;height:14px}
+.mrow .m-star.on svg{fill:var(--brand);color:var(--brand)}
+.mdot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex-shrink:0}
+.mail-read{overflow-y:auto;padding:26px 30px}
+.mr-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink3);gap:12px;font-size:13.5px}
+.mr-empty svg{width:38px;height:38px}
+.mr-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+.mr-head h2{font-size:19px;line-height:1.5}
+.mr-meta{font-size:12.5px;color:var(--ink2);margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mr-meta .from{font-weight:700;color:var(--brand);direction:ltr}
+.mr-acts{margin-inline-start:auto;display:flex;gap:4px;flex-shrink:0}
+.mr-body{font-size:14.5px;line-height:2.1;white-space:pre-wrap}
+.mail-empty-list{padding:40px 18px;text-align:center;color:var(--ink3);font-size:12.5px}
+
+/* ============ انستا ============ */
+.insta{height:100%;overflow-y:auto;background:var(--panel)}
+.insta-col{max-width:480px;margin:0 auto;padding:20px 16px 70px}
+.i-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--line);gap:8px;flex-wrap:wrap}
+.i-logo{font-family:'Lalezar',cursive;font-size:26px;display:flex;align-items:center;gap:8px}
+.i-logo svg{width:22px;height:22px;color:var(--brand)}
+.i-logo span{font-family:'IBM Plex Sans Arabic';font-size:11px;color:var(--ink3);font-weight:500;margin-inline-start:7px}
+.demo-badge{font-size:10.5px;background:var(--brand-soft);color:var(--brand);padding:3px 10px;border-radius:999px;font-weight:700}
+.ichips{display:flex;gap:8px;margin-top:14px}
+.post{border:1px solid var(--line);border-radius:16px;margin-top:20px;overflow:hidden;background:var(--panel2)}
+.post-h{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.post-h .uh{display:flex;align-items:center;gap:10px;cursor:pointer}
+.post-h .u{font-weight:700;font-size:13px}
+.post-h .tm{font-size:11px;color:var(--ink3)}
+.post-h .del{margin-inline-start:auto;color:var(--ink3)}
+.post-h .del:hover{color:var(--brand)}
+.post-h .del svg{width:16px;height:16px}
+.post-img{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;background:#000}
+.post-img.reel{aspect-ratio:9/16}
+.post-img img,.post-img video{width:100%;height:100%;object-fit:cover;display:block}
+.bigheart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.bigheart svg{width:90px;height:90px;color:#fff;fill:#fff;filter:drop-shadow(0 4px 18px rgba(0,0,0,.4));opacity:0;transform:scale(.4)}
+.bigheart.pop svg{animation:heartpop .8s ease forwards}
+@keyframes heartpop{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.9)}}
+.post-a{display:flex;align-items:center;gap:4px;padding:10px 12px 4px}
+.post-a button{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.post-a button:hover{background:var(--brand-soft);color:var(--brand)}
+.post-a button svg{width:20px;height:20px}
+.post-a button.liked svg{fill:var(--brand);color:var(--brand)}
+.post-a .sp{flex:1}
+.plikes{padding:2px 16px;font-weight:700;font-size:13px}
+.pcap{padding:4px 16px 10px;font-size:13px;line-height:1.8}
+.pcap b{font-weight:700}
+.pcomments{padding:0 16px 12px;font-size:12.5px}
+.pcomments .c{margin-bottom:5px;line-height:1.7}
+.pcomments .c b{font-weight:700}
+.cform{display:flex;gap:8px;padding:0 12px 12px}
+.cform input{flex:1;border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 16px;font-size:12.5px;outline:0}
+.cform input:focus{border-color:var(--brand)}
+.cform button{color:var(--brand);font-weight:700;font-size:12.5px;padding:0 12px}
+.feedempty{border:1.5px dashed var(--line);border-radius:18px;padding:44px 20px;text-align:center;color:var(--ink2);margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.feedempty svg{width:34px;height:34px;color:var(--ink3)}
+.feedempty p{font-size:13.5px;line-height:1.8}
+
+/* ============ تيك توك ============ */
+.tiktok{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;background:#0e0b09;position:relative}
+.tk-item{height:100%;scroll-snap-align:start;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tk-item video{width:100%;height:100%;object-fit:cover;background:#000}
+.tk-item::after{content:'';position:absolute;inset:auto 0 0 0;height:42%;background:linear-gradient(to top,rgba(10,8,6,.85),transparent);pointer-events:none}
+.tk-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.tk-state .pi{width:74px;height:74px;border-radius:50%;background:rgba(20,15,10,.55);display:flex;align-items:center;justify-content:center;color:#fff;transition:all .25s}
+.tk-state .pi svg{width:30px;height:30px}
+.tk-side{position:absolute;inset-inline-start:14px;bottom:90px;display:flex;flex-direction:column;align-items:center;gap:17px;z-index:3}
+.tk-side .t-av{width:46px;height:46px}
+.tk-act{display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;cursor:pointer}
+.tk-act svg{width:27px;height:27px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.tk-act.liked svg{fill:#ff4d5e;color:#ff4d5e}
+.tk-act span{font-size:11px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.tk-info{position:absolute;inset-inline-end:18px;bottom:26px;max-width:70%;color:#fff;z-index:3}
+.tk-user{font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.6);cursor:pointer}
+.tk-cap{font-size:13px;line-height:1.8;margin-top:5px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.tk-brand{position:absolute;top:18px;inset-inline-end:18px;z-index:3;background:rgba(20,15,10,.5);color:#fff;font-size:11px;padding:5px 13px;border-radius:999px;backdrop-filter:blur(6px)}
+.tk-upload{position:absolute;top:18px;inset-inline-start:18px;z-index:3;background:var(--brand);color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:999px;display:flex;align-items:center;gap:7px}
+.tk-upload svg{width:15px;height:15px}
+.tkempty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:24px}
+.tkempty svg{width:40px;height:40px;opacity:.8}
+.tkempty p{font-size:14px;line-height:1.9;opacity:.9}
+
+/* ============ يوتيوب ============ */
+.yt{height:100%;overflow-y:auto;background:var(--panel)}
+.yt-wrap{max-width:900px;margin:0 auto;padding:24px 20px 70px}
+.yt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.yt-head h1{font-family:'Lalezar',cursive;font-size:30px;display:flex;align-items:center;gap:10px}
+.yt-head h1 svg{width:24px;height:24px;color:var(--brand)}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.ycard{cursor:pointer;background:var(--panel2);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:all .15s}
+.ycard:hover{border-color:var(--brand);transform:translateY(-2px)}
+.ythumb{position:relative;aspect-ratio:16/9;background:#000}
+.ythumb video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.ythumb .yplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(0,0,0,.15)}
+.ythumb .yplay svg{width:38px;height:38px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+.ybody{padding:11px 13px}
+.ybody .t{font-weight:700;font-size:13.5px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ybody .m{font-size:11px;color:var(--ink3);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.ybody .m span{display:flex;align-items:center;gap:4px}
+.ybody .m svg{width:11px;height:11px}
+.ybody .m .up{cursor:pointer;color:var(--ink2);font-weight:600}
+.ybody .m .up:hover{color:var(--brand)}
+.yplayer{background:var(--panel2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.yplayer video{width:100%;aspect-ratio:16/9;background:#000;display:block}
+.yinfo{padding:16px 18px}
+.yinfo h2{font-size:18px;line-height:1.6}
+.yinfo .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.yinfo .meta span{display:flex;align-items:center;gap:4px}
+.yinfo .meta svg{width:12px;height:12px}
+.yinfo .meta .up{cursor:pointer;font-weight:700;color:var(--ink2)}
+.yinfo .meta .up:hover{color:var(--brand)}
+.yinfo .desc{font-size:13.5px;color:var(--ink2);line-height:1.9;margin-top:12px;white-space:pre-wrap}
+.yback{margin-bottom:14px}
+
+/* ============ الدردشة ============ */
+.chat{height:100%;display:grid;grid-template-columns:320px 1fr}
+.chat-side{border-inline-end:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+.chat-search{padding:14px 12px;border-bottom:1px solid var(--line)}
+.chat-search input{width:100%;border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;background:var(--panel2);outline:0;font-size:13px;direction:ltr;text-align:left}
+.chat-search input:focus{border-color:var(--brand)}
+.chat-search .fbtn{margin-top:8px;width:100%;justify-content:center;padding:8px;font-size:12px}
+.found{margin:10px 12px;border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel2);display:flex;align-items:center;gap:10px}
+.found .fi{flex:1;min-width:0}
+.found .fn{font-weight:700;font-size:13.5px}
+.found .fe{font-size:11px;color:var(--brand);direction:ltr;text-align:right}
+.found .fa{display:flex;gap:4px}
+.chat-sec{padding:14px 14px 4px;font-size:11.5px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:6px}
+.reqrow,.crow{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+.reqrow:hover,.crow:hover{background:var(--panel2)}
+.reqrow .fi,.crow .fi{flex:1;min-width:0}
+.crow .n,.reqrow .fn{font-weight:700;font-size:13px}
+.crow .p{font-size:11px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reqrow .fe{font-size:11px;color:var(--brand);direction:ltr;text-align:right}
+.crow .bdg{background:var(--brand);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0}
+.reqacts{display:flex;gap:4px}
+.chat-main{display:flex;flex-direction:column;min-width:0}
+.chat-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.chat-head .uh{cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0}
+.chat-head .n{font-weight:700;font-size:14.5px}
+.chat-head .e{font-size:11px;color:var(--brand);direction:ltr;text-align:left}
+.chat-head .acts{margin-inline-start:auto;display:flex;gap:4px}
+.chat-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;min-height:0}
+.msg{max-width:72%;padding:9px 14px;border-radius:16px;font-size:13.5px;line-height:1.8;margin:3px 0;white-space:pre-wrap;word-break:break-word}
+.msg.me{background:var(--brand);color:#fff;align-self:flex-start;border-start-start-radius:4px}
+.msg.them{background:var(--panel2);border:1px solid var(--line);align-self:flex-end;border-start-end-radius:4px}
+.chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.chat-input input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:11px 16px;background:var(--panel2);outline:0}
+.chat-input input:focus{border-color:var(--brand)}
+.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink3);font-size:13.5px;text-align:center;padding:20px}
+.chat-empty svg{width:38px;height:38px}
+
+/* ============ المكالمات ============ */
+.callbox{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.callbox video{width:100%;max-height:420px;border-radius:14px;background:#000}
+.callring{border-radius:50%;padding:6px;border:3px solid var(--brand);animation:pulse 1.6s infinite}
+#callMeter{width:220px;height:10px}
+.callname{font-weight:800;font-size:17px}
+.callsub{font-size:11.5px;color:var(--ink3);line-height:1.7}
+.calltime{font-size:13px;font-weight:700;color:var(--ok)}
+.callacts{display:flex;gap:12px;margin-top:6px}
+.callbtn{width:52px;height:52px;border-radius:50%;background:var(--panel2);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.callbtn.end{background:var(--brand);border-color:var(--brand);color:#fff}
+.callbtn svg{width:22px;height:22px}
+
+/* ============ البروفايل ============ */
+.prof{height:100%;overflow-y:auto}
+.prof-wrap{max-width:720px;margin:0 auto;padding:30px 20px 70px}
+.prof-card{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:24px}
+.prof-card .avatar{width:88px;height:88px;font-size:34px}
+.prof-info{flex:1;min-width:180px}
+.prof-info .n{font-weight:800;font-size:22px}
+.prof-info .e{color:var(--brand);font-size:13px;direction:ltr;text-align:right;font-weight:600}
+.prof-info .j{color:var(--ink3);font-size:12px;margin-top:3px}
+.prof-stats{display:flex;gap:18px;margin-top:8px;font-size:12.5px;color:var(--ink2);flex-wrap:wrap}
+.prof-stats b{color:var(--ink)}
+.prof-acts{display:flex;gap:8px;flex-wrap:wrap}
+.ptabs{display:flex;gap:8px;margin:20px 0 14px;flex-wrap:wrap}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ptile{aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;cursor:pointer;border:1px solid var(--line)}
+.ptile img,.ptile video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.ptile.vid{aspect-ratio:9/16}
+.srowmini{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer}
+.srowmini:hover{border-color:var(--brand)}
+.srowmini .n{font-weight:700;font-size:13.5px}
+.srowmini .u{font-size:11px;color:var(--ok);direction:ltr;text-align:right}
+.prof-empty{border:1.5px dashed var(--line);border-radius:14px;padding:30px;text-align:center;color:var(--ink3);font-size:13px}
+
+/* ============ عارض خارجي ============ */
+.extwrap{height:100%;display:flex;flex-direction:column}
+.ext-top{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:600;flex-shrink:0}
+.ext-top svg{width:15px;height:15px;flex-shrink:0}
+.ext-top .msg{flex:1;line-height:1.6;min-width:0}
+.ext-top button{background:var(--brand);color:#fff;border-radius:999px;padding:6px 14px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ext-top button.ghost{background:transparent;color:var(--brand)}
+.ext-top button svg{width:13px;height:13px}
+.ext-framebox{flex:1;position:relative;min-height:0;background:#fff}
+.ext-framebox .siteframe{position:absolute;inset:0}
+.ext-load{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--ink2);font-size:13.5px;z-index:2;background:var(--panel)}
+.spinner{width:34px;height:34px;border:3.5px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+.site404{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink2)}
+.site404 .bean{width:52px;height:52px;opacity:.6}
+
+/* ============ توست ومودال وقوائم ============ */
+#toasts{position:fixed;bottom:22px;inset-inline-start:22px;z-index:999;display:flex;flex-direction:column;gap:9px;max-width:340px}
+.toast{background:var(--ink);color:var(--panel);border-radius:13px;padding:12px 18px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);transition:all .3s}
+.toast.in{opacity:1;transform:translateY(0)}
+.toast.err{background:var(--brand-deep);color:#fff}
+.toast.err svg{color:#fff}
+.toast svg{width:16px;height:16px;color:var(--brand);flex-shrink:0}
+#modal-root{position:fixed;inset:0;z-index:900;display:none}
+#modal-root.open{display:block}
+.overlay{position:absolute;inset:0;background:rgba(20,14,10,.45)}
+.modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);border-radius:20px;padding:26px;width:min(480px,calc(100vw - 40px));max-height:88vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal h3{font-size:17px;margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.modal h3 svg{width:18px;height:18px;color:var(--brand)}
+.modal .macts{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.menu{position:absolute;top:52px;inset-inline-end:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);width:260px;padding:8px;z-index:600;display:none}
+.menu.open{display:block}
+.menu-h{display:flex;align-items:center;gap:11px;padding:11px 12px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.menu-h .avatar{width:38px;height:38px;font-size:16px}
+.menu-h .n{font-weight:700;font-size:14px}
+.menu-h .e{font-size:11.5px;color:var(--brand);direction:ltr;text-align:right}
+.mi{width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:13.5px;font-weight:500;text-align:start;color:var(--ink2)}
+.mi:hover{background:var(--panel2);color:var(--ink)}
+.mi svg{width:16px;height:16px}
+.mi.hl{color:var(--brand);font-weight:700}
+.mi .bdg{margin-inline-start:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.msep{height:1px;background:var(--line);margin:6px 4px}
+.sugg{position:absolute;top:calc(100% + 7px);inset-inline:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:7px;display:none;z-index:700;text-align:start}
+.sugg.open{display:block}
+.sg{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:11px;cursor:pointer}
+.sg:hover{background:var(--panel2)}
+.sg svg{width:15px;height:15px;color:var(--ink3);flex-shrink:0}
+.sg .s-t{font-size:13px;font-weight:600}
+.sg .s-u{font-size:11px;color:var(--ink3);direction:ltr;margin-inline-start:auto;text-align:left}
+.fd{width:15px;height:15px;border-radius:50%;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ============ ريسبونسف: تابلت وموبايل ============ */
+@media (max-width:860px){
+  .pub-grid{grid-template-columns:1fr}
+  .mail{grid-template-columns:180px 1fr}
+  .mail-read{display:none}
+  .ntp-logo h1{font-size:42px}
+  .ntp-logo .bean{width:34px;height:34px}
+  .pv-box{position:static}
+  .ext-top .msg{display:none}
+  .chat{grid-template-columns:1fr}
+  .ygrid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+}
+@media (max-width:560px){
+  #tabstrip{height:40px;padding:6px 8px 0}
+  .tab{min-width:90px;width:150px;height:32px;padding:0 8px;gap:6px}
+  .tab .ttl{font-size:11.5px}
+  #toolbar{padding:6px 8px;gap:4px}
+  .navbtns{gap:0}
+  .navbtns button{width:28px;height:28px}
+  #fwdBtn{display:none}
+  #omniboxWrap{height:34px;gap:6px;padding:0 4px 0 10px}
+  #omnibox{font-size:12.5px}
+  #micBtn{display:none}
+  #bookmarksbar{padding:0 8px 6px}
+  .ntp-inner{padding:4vh 14px 40px}
+  .bigsearch{height:48px;margin-top:22px}
+  .ntp-logo h1{font-size:36px}.ntp-logo .bean{width:30px;height:30px}
+  .shortcuts{gap:7px;margin-top:24px}
+  .schip{padding:8px 12px;font-size:12px}
+  .mail{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .mail-side{display:flex;overflow-x:auto;border:0;padding:8px;border-bottom:1px solid var(--line);gap:4px;align-items:center}
+  .composebtn{width:auto;margin-bottom:0;padding:8px 14px;white-space:nowrap;font-size:12px}
+  .mf{width:auto;white-space:nowrap;margin:0;padding:8px 12px;font-size:12.5px}
+  .mail-list{border:0}
+  .insta-col{padding:12px 10px 60px}
+  .set-wrap,.net-wrap,.yt-wrap,.prof-wrap{padding:20px 12px 60px}
+  .modal{width:calc(100vw - 16px);padding:18px;max-height:92vh}
+  .yt-head h1{font-size:24px}
+  .chat{grid-template-columns:1fr}
+  .prof-card{padding:16px}
+  .prof-card .avatar{width:64px;height:64px;font-size:24px}
+  .prof-info .n{font-size:18px}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .msg{max-width:85%}
+  #toasts{inset-inline:10px;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header id="tabstrip">
+  <div id="tabs"></div>
+  <button id="newTabBtn" title="تاب جديد"><i data-lucide="plus"></i></button>
+</header>
+
+<div id="toolbar">
+  <div class="navbtns">
+    <button id="backBtn" title="رجوع"><i data-lucide="arrow-right"></i></button>
+    <button id="fwdBtn" title="تقدّم"><i data-lucide="arrow-left"></i></button>
+    <button id="reloadBtn" title="تحديث"><i data-lucide="rotate-cw"></i></button>
+    <button id="homeBtn" title="الرئيسية"><i data-lucide="home"></i></button>
+  </div>
+  <div id="omniboxWrap">
+    <span id="obIcon"></span>
+    <input id="omnibox" spellcheck="false" autocomplete="off">
+    <button class="obbtn micbtn" id="micBtn" title="بحث صوتي"><i data-lucide="mic"></i></button>
+    <button class="obbtn" id="starBtn" title="إضافة للعلامات المرجعية"><i data-lucide="bookmark"></i></button>
+    <div class="sugg" id="obSugg"></div>
+  </div>
+  <div class="tb-right">
+    <button class="obbtn" id="themeBtn" title="الوضع الليلي"><i data-lucide="moon"></i></button>
+    <button id="profileBtn" title="الحساب"></button>
+    <div class="menu" id="profileMenu"></div>
+  </div>
+</div>
+
+<div id="bookmarksbar"></div>
+<main id="viewport"></main>
+
+<div id="toasts"></div>
+<div id="modal-root"></div>
+
+<script>
+/* ============================================================
+   أرابكوا — متصفح عربي كامل: حسابات، بروفايلات، أصدقاء،
+   دردشة ومكالمات، منصات بمحتوى المستخدم، ريسبونسف تلقائي
+   ============================================================ */
+
+// ---------- مرصد الأخطاء ----------
+window.addEventListener('error', e => {
+  const t = e.target;
+  if (t && t.tagName === 'IMG') {
+    if (!t.dataset.failed) { t.dataset.failed = '1';
+      t.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#E7E1D8"/><circle cx="40" cy="30" r="13" fill="#B23A2E" opacity=".45"/><rect x="18" y="50" width="44" height="8" rx="4" fill="#B23A2E" opacity=".3"/></svg>'); }
+    return;
+  }
+  if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) return;
+  try { toast('خطأ تقني: ' + (e.message || 'غير معروف'), 'bug', true); } catch(_){}
+}, true);
+window.addEventListener('unhandledrejection', e => {
+  try { toast('خطأ تقني: ' + ((e.reason && e.reason.message) || e.reason || 'غير معروف'), 'bug', true); } catch(_){}
+});
+
+// ---------- أدوات ----------
+const $  = s => document.querySelector(s);
+const viewport = document.getElementById('viewport');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const escRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const uid = () => Math.random().toString(36).slice(2, 10);
+const nowISO = () => new Date().toISOString();
+const arNum = n => Number(n).toLocaleString('ar-EG');
+const fmtDate = iso => new Date(iso).toLocaleDateString('ar-EG', {day:'numeric', month:'long', year:'numeric'});
+const fmtTime = iso => { const d = new Date(iso); const diff = (Date.now() - d) / 1000;
+  if (diff < 60) return 'الآن'; if (diff < 3600) return `قبل ${arNum(Math.floor(diff/60))} دقيقة`;
+  if (diff < 86400) return `قبل ${arNum(Math.floor(diff/3600))} ساعة`;
+  if (diff < 172800) return 'أمس'; return fmtDate(iso); };
+const icons = () => { try { lucide.createIcons(); } catch(e){} };
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const isNarrow = () => window.matchMedia('(max-width:860px)').matches;
+const isMobile = () => window.matchMedia('(max-width:560px)').matches;
+const openExternal = url => { window.open(url, '_blank', 'noopener,noreferrer'); };
+const igIco = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
+const appIcon = name => name === 'IG' ? igIco() : `<i data-lucide="${name}"></i>`;
+
+function copyText(t){
+  const done = () => toast('تم النسخ: ' + t, 'copy');
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = t;
+    ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e){ toast('انسخه يدويًا: ' + t, 'copy'); } ta.remove(); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(fallback);
+  else fallback();
+}
+function hl(text, q){
+  const t = esc(text), qq = esc(q || '').trim();
+  if (!qq) return t;
+  try { return t.replace(new RegExp(escRe(qq), 'i'), m => `<mark>${m}</mark>`); } catch(e){ return t; }
+}
+const PALETTE = ['#B23A2E','#2E6E5E','#8A6D2F','#5B4B8A','#2F6C8A','#A8532F','#3F7D20','#8C3E6E'];
+const colorFor = s => { let h = 0; for (const ch of (s || 'x')) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; };
+const letterDot = (text, cls='fd') => { const ch = (text || '؟').trim()[0] || '؟'; return `<span class="${cls}" style="background:${colorFor(text)}">${esc(ch)}</span>`; };
+const avatarHTML = (name, size, extra='') => `<span class="avatar ${extra}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*0.42)}px;background:${colorFor(name)}">${esc((name||'؟').trim()[0]||'؟')}</span>`;
+const bean = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="var(--brand)"/><path d="M13.8 3.6C9.2 8.2 15 15.8 10.2 20.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.2 6.4C6.6 8.2 6.6 10.2 7.7 11.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M16.4 13.6c1.4 1.6 1.3 3.3.2 4.7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>`;
+
+// ---------- التخزين ----------
+const memStore = {};
+const DB = {
+  get(k, d){ try { const v = localStorage.getItem(k);
+    if (v === null) return memStore[k] !== undefined ? memStore[k] : d;
+    return JSON.parse(v); } catch(e){ return memStore[k] !== undefined ? memStore[k] : d; } },
+  set(k, v){ memStore[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+
+// ---------- وسائط (IndexedDB — أي حجم) ----------
+let idbDB = null;
+function idbOpen(){ return new Promise(res => { try {
+  const r = indexedDB.open('arabikwa-media', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('media');
+  r.onsuccess = () => { idbDB = r.result; res(true); };
+  r.onerror = () => res(false);
+} catch(e){ res(false); } }); }
+function idbPut(key, blob){ return new Promise(res => { if(!idbDB) return res(false); try {
+  const tx = idbDB.transaction('media','readwrite');
+  tx.objectStore('media').put(blob, key);
+  tx.oncomplete = () => res(true); tx.onerror = () => res(false);
+} catch(e){ res(false); } }); }
+function idbGet(key){ return new Promise(res => { if(!idbDB) return res(null); try {
+  const rq = idbDB.transaction('media','readonly').objectStore('media').get(key);
+  rq.onsuccess = () => res(rq.result || null); rq.onerror = () => res(null);
+} catch(e){ res(null); } }); }
+function idbDel(key){ return new Promise(res => { if(!idbDB) return res(); try {
+  const tx = idbDB.transaction('media','readwrite');
+  tx.objectStore('media').delete(key);
+  tx.oncomplete = () => res(); tx.onerror = () => res();
+} catch(e){ res(); } }); }
+const mediaURLCache = {};
+async function mediaURL(id){ if (mediaURLCache[id]) return mediaURLCache[id];
+  const b = await idbGet(id); if (b) { mediaURLCache[id] = URL.createObjectURL(b); return mediaURLCache[id]; } return ''; }
+async function hydrateMedia(root){
+  for (const el of root.querySelectorAll('[data-media]')){
+    const url = await mediaURL(el.dataset.media); if (url) el.src = url;
+  }
+}
+async function saveMedia(id, file){
+  mediaURLCache[id] = URL.createObjectURL(file);
+  const ok = await idbPut(id, file);
+  if (!ok) toast('الملف اشتغل للجلسة بس — التخزين الدائم مرفوض من المتصفح', 'shield', true);
+}
+async function deleteMedia(id){
+  if (mediaURLCache[id]) { try { URL.revokeObjectURL(mediaURLCache[id]); } catch(e){} delete mediaURLCache[id]; }
+  await idbDel(id);
+}
+
+// ---------- قوالب ----------
+const TPL_CARD = `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><style>
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#faf7f2;color:#241c16;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.card{background:#fff;border-radius:22px;box-shadow:0 20px 50px rgba(40,30,20,.12);padding:46px;max-width:420px;text-align:center;border:1px solid #eee4d8;margin:20px}
+h1{margin:16px 0 4px;font-size:26px}.role{color:#b23a2e;font-weight:700;margin-bottom:14px}
+.bio{color:#6b5f55;line-height:1.9;font-size:14px}
+.links{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.links a{background:#241c16;color:#fff;text-decoration:none;padding:10px 22px;border-radius:999px;font-size:13px}
+</style></head><body><div class="card"><h1>اسمك هنا</h1><div class="role">وصف مهنتك</div>
+<p class="bio">اكتب نبذة قصيرة عنك هنا... عدّل هذا القالب كما تريد ثم انشره على شبكة أرابكوا.</p>
+<div class="links"><a href="#">أعمالي</a><a href="#">تواصل معي</a></div></div></body></html>`;
+const TPL_STORE = `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0}body{font-family:Tahoma,Arial,sans-serif;background:#faf6f0;color:#2b211b}
+header{background:#3a2a20;color:#fff;padding:16px 26px}.logo{font-weight:800;font-size:20px;color:#e8b98a}
+.hero{padding:60px 26px;text-align:center;background:#4a3527;color:#fff}
+.hero h1{font-size:32px}.hero p{color:#d8c3ae;line-height:1.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;padding:30px;max-width:860px;margin:auto}
+.card{background:#fff;border:1px solid #eadfd2;border-radius:14px;padding:20px;text-align:center}
+.card h3{font-size:15px}.price{color:#c96f2f;font-weight:800;margin:6px 0}
+footer{text-align:center;padding:22px;color:#8a7663;font-size:12px}
+</style></head><body><header><div class="logo">متجري</div></header>
+<div class="hero"><h1>أفضل المنتجات بأفضل سعر</h1><p>عدّل هذا القالب وضع منتجاتك الحقيقية.</p></div>
+<div class="grid"><div class="card"><h3>المنتج الأول</h3><div class="price">100 ج.م</div></div>
+<div class="card"><h3>المنتج الثاني</h3><div class="price">150 ج.م</div></div>
+<div class="card"><h3>المنتج الثالث</h3><div class="price">200 ج.م</div></div></div>
+<footer>متجري — كل الحقوق محفوظة</footer></body></html>`;
+const TPL_BLOG = `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#fff;color:#222;line-height:1.9}
+header{padding:34px 26px;border-bottom:3px solid #b23a2e;text-align:center}header h1{margin:0;font-size:28px}
+main{max-width:640px;margin:auto;padding:28px 20px}
+h2{font-size:20px;margin:0 0 8px;color:#b23a2e}.meta{font-size:12px;color:#999;margin-bottom:16px}
+</style></head><body><header><h1>مدوّنتي</h1></header><main>
+<article><h2>أول مقال لي</h2><div class="meta">منذ اليوم</div><p>اكتب أول مقالاتك هنا... عدّل القالب زي ما تحب وانشره.</p></article>
+</main></body></html>`;
+
+// ---------- الحالة ----------
+let prefs      = DB.get('arp_prefs', {showBar:true});
+let users      = DB.get('arp_users', []);
+let sites      = (DB.get('arp_sites', []) || []).filter(s => !['s1','s2','s3'].includes(s.id)); DB.set('arp_sites', sites);
+let mail       = DB.get('arp_mail', []);
+let bookmarks  = DB.get('arp_bookmarks', []);
+let social     = DB.get('arp_social', {instaLikes:{}, tkLikes:{}, tkFollow:{}});
+let instaPosts = DB.get('arp_insta_posts', []);
+let tkPosts    = DB.get('arp_tk_posts', []);
+let ytPosts    = DB.get('arp_yt_posts', []);
+let friendReqs = DB.get('arp_friend_reqs', []);
+let friends    = DB.get('arp_friends', {});
+let chatMsgs   = DB.get('arp_chat_msgs', []);
+let recentQ    = DB.get('arp_recent_q', []);
+let browseHist = DB.get('arp_history', []);
+let theme      = DB.get('arp_theme', 'light');
+let session    = DB.get('arp_session', null);
+
+users = users.map(u => u.name ? u : {...u, name:u.username || 'مستخدم', email:u.email || ((u.username||'user')+'@arpico.com')});
+if (users.length) DB.set('arp_users', users);
+if (session && !users.some(u => u.email === session)) {
+  const legacy = users.find(u => u.name === session || u.email === session);
+  session = legacy ? legacy.email : null; DB.set('arp_session', session);
+}
+
+const me = () => users.find(u => u.email === session) || null;
+const unread = () => { const u = me(); return u ? mail.filter(m => m.to === u.email && !m.read && !m.trashed && !m.draft).length : 0; };
+const unreadChats = () => { const u = me(); return u ? chatMsgs.filter(m => m.to === u.email && !m.read).length : 0; };
+const incomingReqs = () => { const u = me(); return u ? friendReqs.filter(r => r.status === 'pending' && r.to === u.email) : []; };
+const displayNameFor = email => (users.find(x => x.email === email) || {}).name || email;
+
+// ---------- صداقات ----------
+const areFriends = (a,b) => (friends[a]||[]).includes(b);
+function setFriends(a,b,val){
+  friends[a] = friends[a] || []; friends[b] = friends[b] || [];
+  if (val){ if(!friends[a].includes(b)) friends[a].push(b); if(!friends[b].includes(a)) friends[b].push(a); }
+  else { friends[a] = friends[a].filter(x=>x!==b); friends[b] = friends[b].filter(x=>x!==a); }
+  DB.set('arp_friends', friends);
+}
+const reqBetween = (a,b) => friendReqs.find(r => r.status==='pending' && ((r.from===a&&r.to===b)||(r.from===b&&r.to===a)));
+function sendFriendReq(to){
+  const u = me(); if (!u) return;
+  if (to === u.email) return toast('مينفعش تضيف نفسك', 'shield', true);
+  if (!users.some(x => x.email === to)) return toast('الحساب ده مش موجود', 'shield', true);
+  if (areFriends(u.email, to)) return toast('إنتوا أصحاب بالفعل', 'user-check');
+  if (reqBetween(u.email, to)) return toast('في طلب صداقة معلق بينكم بالفعل', 'clock');
+  friendReqs.push({id:uid(), from:u.email, to, date:nowISO(), status:'pending'});
+  DB.set('arp_friend_reqs', friendReqs);
+  toast('تم إرسال طلب الصداقة', 'user-plus');
+}
+function acceptReq(id){
+  const r = friendReqs.find(x => x.id === id); if (!r) return;
+  r.status = 'accepted'; setFriends(r.from, r.to, true);
+  DB.set('arp_friend_reqs', friendReqs);
+  toast(`أنت وصاحبك ${displayNameFor(r.from)} دلوقتي أصدقاء`, 'user-check');
+}
+function rejectReq(id){
+  const r = friendReqs.find(x => x.id === id); if (!r) return;
+  r.status = 'rejected'; DB.set('arp_friend_reqs', friendReqs);
+  toast('تم رفض الطلب', 'user-x');
+}
+
+function nameToSlug(name){
+  return String(name).trim().toLowerCase().replace(/\s+/g, '.')
+    .replace(/[^\p{L}\p{N}._-]/gu, '').slice(0, 20)
+    .replace(/\.{2,}/g, '.').replace(/^[._-]+|[._-]+$/g, '');
+}
+function uniqueEmailSlug(slug){
+  let base = slug || 'user', i = 1, cand = base;
+  while (users.some(u => u.email === cand + '@arpico.com')) { i++; cand = base + '-' + i; }
+  return cand;
+}
+const siteSlugify = v => String(v).trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{N}-]/gu, '').replace(/^-+|-+$/g, '');
+
+function rememberQ(q){
+  q = (q || '').trim(); if (!q) return;
+  recentQ = [q, ...recentQ.filter(x => x !== q)].slice(0, 8);
+  DB.set('arp_recent_q', recentQ);
+}
+function pushHistory(page, data, title){
+  if (page === 'ntp' || page === 'login') return;
+  const key = page + JSON.stringify(data || {});
+  if (browseHist[0] && browseHist[0].key === key) browseHist[0].time = nowISO();
+  else browseHist.unshift({key, page, data:{...(data || {})}, title, time:nowISO()});
+  browseHist = browseHist.slice(0, 40); DB.set('arp_history', browseHist);
+}
+
+// ---------- البحث ----------
+const APPS = [
+  { ref:'mail',    name:'أرابكوا ميل',   icon:'mail',     desc:'بريد كامل بصيغة @arpico.com — وارد، مُرسَل، مسودات، ومهملات.' },
+  { ref:'chat',    name:'الدردشة',       icon:'message-circle', desc:'ابحث بإيميل صاحبك، ابعتله، وكلمه صوت وفيديو.' },
+  { ref:'insta',   name:'انستا',         icon:'IG',       desc:'ارفع صور وريلز وتابع أصحابك وبروفايلاتهم.' },
+  { ref:'tiktok',  name:'تيك توك',       icon:'music-2',  desc:'ارفع فيديوهاتك بأي حجم وشاهدها بتمرير عمودي.' },
+  { ref:'yt',      name:'يوتيوب أرابكوا',icon:'video',    desc:'ارفع فيديوهاتك وشاهدها في مشغّل داخل المتصفح.' },
+  { ref:'network', name:'شبكة أرابكوا',  icon:'globe',    desc:'دليل كل المواقع المنشورة داخل شبكة أرابكوا.' },
+  { ref:'publish', name:'انشر موقعك',    icon:'upload',   desc:'اعمل موقعك بـ HTML وانشره ليظهر في البحث فورًا.' },
+  { ref:'settings',name:'إعدادات الحساب',icon:'settings', desc:'بياناتك، مواقعك المنشورة، سجل التصفح، وتفضيلات المتصفح.' },
+];
+const WEB = [
+  { url:'https://www.wikipedia.org', name:'ويكيبيديا', alias:'ويكيبيديا موسوعة', desc:'الموسوعة الحرة التي يكتبها الجميع بأكثر من 300 لغة.' },
+  { url:'https://www.reddit.com',    name:'ريديت', alias:'ريديت منتديات', desc:'مجتمعات عن كل شيء — ناقش، صوّت، واكتشف.' },
+  { url:'https://github.com',        name:'جيت هب', alias:'github برمجة كود', desc:'أكبر منصة لاستضافة الأكواد والمشاريع مفتوحة المصدر.' },
+];
+const norm = s => String(s || '').toLowerCase().trim();
+const matchSite = (s, q) => norm(s.name).includes(q) || norm(s.desc).includes(q) || norm(s.keywords).includes(q) || norm(s.slug).includes(q) || norm(s.author).includes(q);
+function searchIndex(q){
+  q = norm(q);
+  if (!q) return {apps:[], net:[], web:[]};
+  const rank = a => { const n = norm(a.site?.name || a.name || a.web?.name); return n.startsWith(q) ? 0 : 1; };
+  const apps = APPS.filter(a => norm(a.name).includes(q) || norm(a.desc).includes(q)).map(a => ({kind:'app', ...a}));
+  const net  = sites.filter(s => matchSite(s, q)).map(s => ({kind:'site', site:s}));
+  const web  = WEB.filter(w => norm(w.name).includes(q) || norm(w.alias).includes(q) || norm(w.desc).includes(q) || norm(w.url).includes(q)).map(w => ({kind:'web', web:w}));
+  [apps, net, web].forEach(arr => arr.sort((a,b) => rank(a) - rank(b)));
+  return {apps, net, web};
+}
+function buildSugg(q){
+  q = norm(q); if (!q) return [];
+  const out = [];
+  for (const a of APPS) if (norm(a.name).includes(q)) out.push({icon:a.icon, t:a.name, u:'تطبيق أرابكوا', act:() => navigate(a.ref)});
+  for (const s of sites) if (matchSite(s, q)) out.push({t:s.name, u:s.slug + '.arpico', dot:true, act:() => navigate('site', {siteId:s.id})});
+  for (const w of WEB) if (norm(w.name).includes(q) || norm(w.alias).includes(q)) out.push({icon:'globe', t:w.name, u:w.url.replace('https://',''), act:() => navigate('site', {url:w.url, title:w.name})});
+  return out.slice(0, 6);
+}
+
+// ---------- التابات ----------
+let tabs = [], activeTab = null, tabSeq = 0;
+let searchUI = {filter:'all'}, netUI = {q:'', sort:'new'}, mailUI = {folder:'inbox', open:null};
+let chatUI = {peer:null, q:'', found:null};
+let ytUI = {open:null}, profUI = {tab:'posts'};
+let publishEditIntent = null, authMode = 'login', pendingNav = null;
+
+function pageMeta(page, data = {}){
+  switch (page) {
+    case 'ntp':      return {title:'تاب جديد', url:'arpico://home'};
+    case 'search':   return {title:`بحث: ${data.q || ''}`, url:`arpico://search?q=${encodeURIComponent(data.q || '')}`};
+    case 'login':    return {title:'تسجيل الدخول', url:'arpico://id'};
+    case 'mail':     return {title:'أرابكوا ميل', url:'arpico://mail'};
+    case 'chat':     return {title:'الدردشة', url:'arpico://chat'};
+    case 'insta':    return {title:'انستا على أرابكوا', url:'arpico://insta'};
+    case 'tiktok':   return {title:'تيك توك على أرابكوا', url:'arpico://tiktok'};
+    case 'yt':       return {title:'يوتيوب أرابكوا', url:'arpico://yt'};
+    case 'settings': return {title:'إعدادات الحساب', url:'arpico://settings'};
+    case 'publish':  return {title:'انشر موقعك', url:'arpico://publish'};
+    case 'network':  return {title:'شبكة أرابكوا', url:'arpico://network'};
+    case 'profile':  { const u = users.find(x => x.email === (data.email||'').toLowerCase());
+      return {title:u ? `بروفايل ${u.name}` : 'بروفايل', url:'arpico://profile'}; }
+    case 'site':
+      if (data.siteId) { const s = sites.find(x => x.id === data.siteId);
+        return {title:s ? s.name : 'موقع', url:s ? `${s.slug}.arpico` : 'arpico://site'}; }
+      return {title:data.title || 'موقع خارجي', url:data.url || 'about:blank'};
+  }
+  return {title:'صفحة', url:'arpico://page'};
+}
+
+const cur = () => tabs.find(t => t.id === activeTab);
+const curPage = () => { const t = cur(); return t ? t.hist[t.hi] : null; };
+
+function newTab(page = 'ntp', data = {}){
+  if (page !== 'login') pendingNav = null;
+  const meta = pageMeta(page, data);
+  const t = {id:++tabSeq, hist:[{page, data, title:meta.title, url:meta.url}], hi:0};
+  tabs.push(t); activeTab = t.id;
+  pushHistory(page, data, meta.title);
+  renderAll();
+}
+function closeTab(id){
+  const i = tabs.findIndex(t => t.id === id); if (i < 0) return;
+  tabs.splice(i, 1);
+  if (!tabs.length) { newTab('ntp'); return; }
+  if (activeTab === id) activeTab = tabs[Math.max(0, i - 1)].id;
+  renderAll();
+}
+function activateTab(id){ activeTab = id; renderAll(); }
+function navigate(page, data = {}){
+  if (page !== 'login') pendingNav = null;
+  if (page === 'search') searchUI.filter = 'all';
+  const t = tabs.find(x => x.id === activeTab); if (!t) return;
+  const meta = pageMeta(page, data);
+  t.hist = t.hist.slice(0, t.hi + 1);
+  t.hist.push({page, data, title:meta.title, url:meta.url});
+  t.hi = t.hist.length - 1;
+  pushHistory(page, data, meta.title);
+  renderAll();
+}
+function goPublishNew(){ publishEditIntent = null; navigate('publish'); }
+const goProfile = email => navigate('profile', {email});
+
+function tabFavicon(p){
+  const page = p.page, d = p.data || {};
+  if (page === 'ntp')      return bean();
+  if (page === 'mail')     return `<span class="fico"><i data-lucide="mail"></i>${unread() ? '<span class="tb-dot"></span>' : ''}</span>`;
+  if (page === 'chat')     return `<span class="fico"><i data-lucide="message-circle"></i>${unreadChats() ? '<span class="tb-dot"></span>' : ''}</span>`;
+  if (page === 'insta')    return `<span class="fico">${igIco()}</span>`;
+  if (page === 'tiktok')   return `<span class="fico"><i data-lucide="music-2"></i></span>`;
+  if (page === 'yt')       return `<span class="fico"><i data-lucide="video"></i></span>`;
+  if (page === 'profile')  return `<span class="fico"><i data-lucide="user"></i></span>`;
+  if (page === 'settings') return `<span class="fico"><i data-lucide="settings"></i></span>`;
+  if (page === 'publish')  return `<span class="fico"><i data-lucide="upload"></i></span>`;
+  if (page === 'network')  return `<span class="fico"><i data-lucide="globe"></i></span>`;
+  if (page === 'search')   return `<span class="fico"><i data-lucide="search"></i></span>`;
+  if (page === 'login')    return `<span class="fico"><i data-lucide="user"></i></span>`;
+  if (page === 'site') return d.siteId ? letterDot(sites.find(s => s.id === d.siteId)?.slug || '؟')
+                                       : `<span class="fico"><i data-lucide="globe"></i></span>`;
+  return letterDot('؟');
+}
+
+function renderTabs(){
+  const t = cur();
+  if (!t) { $('#tabs').innerHTML = ''; $('#backBtn').disabled = true; $('#fwdBtn').disabled = true; return; }
+  $('#tabs').innerHTML = tabs.map(tb => {
+    const p = tb.hist[tb.hi];
+    return `<div class="tab ${tb.id === activeTab ? 'active' : ''}" data-id="${tb.id}" title="${esc(p.title)}">
+      <span class="tfav">${tabFavicon(p)}</span>
+      <span class="ttl">${esc(p.title)}</span>
+      <button class="tclose" data-close="${tb.id}" title="إغلاق التاب"><i data-lucide="x"></i></button>
+    </div>`;
+  }).join('');
+  $('#backBtn').disabled = t.hi <= 0;
+  $('#fwdBtn').disabled  = t.hi >= t.hist.length - 1;
+  const at = $('#tabs .tab.active');
+  if (at && at.scrollIntoView) try { at.scrollIntoView({block:'nearest', inline:'nearest'}); } catch(e){}
+}
+function renderBookmarksBar(){
+  const bar = $('#bookmarksbar');
+  bar.style.display = prefs.showBar ? '' : 'none';
+  if (!prefs.showBar) return;
+  if (!bookmarks.length) { bar.innerHTML = `<span class="bm-empty">لا توجد علامات مرجعية — اضغط أيقونة الحفظ في شريط العنوان (وكليك يمين لحذف أي علامة)</span>`; return; }
+  bar.innerHTML = bookmarks.map((b, i) => `<button class="bm" data-i="${i}" title="${esc(b.title)}"><span class="bfav">${tabFavicon({page:b.page, data:b.data || {}})}</span><span class="t">${esc(b.title)}</span></button>`).join('');
+}
+function renderProfileBtn(){
+  const u = me();
+  $('#profileBtn').innerHTML = u ? avatarHTML(u.name, 30) : `<i data-lucide="user"></i>`;
+}
+function syncOmnibox(){
+  const p = curPage(); if (!p) return;
+  $('#omnibox').value = p.url;
+  $('#obIcon').innerHTML = (p.page === 'site' && !(p.data || {}).siteId) ? `<i data-lucide="globe"></i>` : bean();
+  $('#starBtn').classList.toggle('filled', bookmarks.some(b => b.url === p.url));
+}
+function renderAll(){
+  renderTabs(); renderBookmarksBar(); renderProfileBtn(); syncOmnibox();
+  closeMenus(); renderContent(); icons();
+}
+
+function toast(msg, icon='check', isErr=false){
+  const t = document.createElement('div'); t.className = 'toast' + (isErr ? ' err' : '');
+  t.innerHTML = `<i data-lucide="${icon}"></i><span>${esc(msg)}</span>`;
+  $('#toasts').appendChild(t); icons();
+  requestAnimationFrame(() => t.classList.add('in'));
+  setTimeout(() => { t.classList.remove('in'); setTimeout(() => t.remove(), 350); }, 6000);
+}
+function openModal(html){
+  const r = $('#modal-root');
+  r.innerHTML = `<div class="overlay" data-close></div><div class="modal">${html}</div>`;
+  r.classList.add('open'); icons();
+  r.querySelector('.overlay').onclick = closeModal;
+}
+function closeModal(){
+  if (window._activeCall) cleanupCall();
+  const r = $('#modal-root'); r.classList.remove('open'); r.innerHTML = '';
+}
+function confirmBox(msg, onYes){
+  openModal(`<h3><i data-lucide="trash-2"></i> تأكيد</h3><p style="font-size:13.5px;color:var(--ink2);line-height:1.9">${msg}</p>
+  <div class="macts"><button class="btn" id="cNo">إلغاء</button><button class="btn primary" id="cYes">تأكيد</button></div>`);
+  $('#cNo').onclick = closeModal;
+  $('#cYes').onclick = () => { closeModal(); onYes(); };
+}
+
+function attachSugg(input, box){
+  const render = () => {
+    const list = buildSugg(input.value);
+    if (!list.length) { box.classList.remove('open'); return; }
+    box.innerHTML = list.map((s, i) => `<div class="sg" data-i="${i}">${s.dot ? letterDot(s.u.replace('.arpico','')) : appIcon(s.icon)}<span class="s-t">${esc(s.t)}</span><span class="s-u">${esc(s.u)}</span></div>`).join('');
+    box.classList.add('open'); icons();
+    box.querySelectorAll('.sg').forEach(el => el.addEventListener('mousedown', e => { e.preventDefault(); list[+el.dataset.i].act(); box.classList.remove('open'); }));
+  };
+  input.addEventListener('input', render);
+  input.addEventListener('focus', render);
+  input.addEventListener('blur', () => setTimeout(() => box.classList.remove('open'), 150));
+}
+
+function omniboxSubmit(v){
+  v = (v || '').trim(); if (!v) return;
+  if (/^arpico:\/\//i.test(v)) {
+    const rest = v.replace(/^arpico:\/\//i, '').replace(/\/+$/, '');
+    const [pg, qs] = rest.split('?');
+    const map = {home:'ntp', newtab:'ntp', mail:'mail', chat:'chat', insta:'insta', tiktok:'tiktok', yt:'yt', settings:'settings', publish:'publish', network:'network', id:'login', account:'settings'};
+    if (map[pg]) return map[pg] === 'publish' ? goPublishNew() : navigate(map[pg]);
+    if (pg === 'search') { const q = new URLSearchParams(qs || '').get('q') || ''; rememberQ(q); return navigate('search', {q}); }
+    return navigate('ntp');
+  }
+  // بحث بإيميل في شريط العنوان يفتح البروفايل مباشرة
+  if (/^[\p{L}\p{N}._-]+@arpico\.com$/iu.test(v.toLowerCase())) {
+    if (users.some(u => u.email === v.toLowerCase())) return goProfile(v.toLowerCase());
+  }
+  const cleaned = v.toLowerCase().replace(/\.arpico\/?$/, '').replace(/\/+$/, '');
+  let hit = sites.find(s => s.slug.toLowerCase() === cleaned);
+  if (!hit) { const sl = siteSlugify(v); if (sl) hit = sites.find(s => s.slug === sl); }
+  if (hit) return navigate('site', {siteId:hit.id});
+  if (/^(https?:\/\/|www\.)/i.test(v) || /^[\p{L}\p{N}-]+(\.[\p{L}\p{N}-]+)+(\/\S*)?$/iu.test(v))
+    return navigate('site', {url:v.startsWith('http') ? v : 'https://' + v, title:v});
+  rememberQ(v); navigate('search', {q:v});
+}
+
+function startVoice(btn, cb){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('البحث الصوتي غير مدعوم في هذا المتصفح', 'mic'); return; }
+  if (btn.dataset.live === '1') return;
+  let r; try { r = new SR(); } catch(e) { toast('تعذر تشغيل الميكروفون', 'mic'); return; }
+  r.lang = 'ar-EG'; r.interimResults = false; r.maxAlternatives = 1;
+  btn.dataset.live = '1'; btn.classList.add('listening');
+  r.onresult = e => cb(e.results[0][0].transcript);
+  r.onend = () => { btn.dataset.live = '0'; btn.classList.remove('listening'); };
+  r.onerror = () => { btn.dataset.live = '0'; btn.classList.remove('listening'); toast('ما سمعتك كويس، جرّب تاني', 'mic'); };
+  try { r.start(); } catch(e) { toast('الميكروفون مشغول حاليًا', 'mic'); }
+}
+
+// ---------- بوابة تسجيل الدخول (بتحفظ وجهتك) ----------
+function requireLogin(name){
+  const u = me();
+  if (u) return u;
+  const p = curPage();
+  pendingNav = p ? {page:p.page, data:p.data} : null;
+  viewport.innerHTML = guestPanel(name);
+  bindGuestPanel(); icons();
+  return null;
+}
+function guestPanel(){
+  return `<div class="authwrap page"><div class="authcard">
+    <i data-lucide="lock" style="width:32px;height:32px;color:var(--brand)"></i>
+    <h2>المحتوى ده محتاج حساب أرابكوا</h2>
+    <p class="sub">سجّل الدخول أو أنشئ حسابك — بأي اسم تحبه — وه نرجعك هنا تاني بعد التسجيل على طول.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
+      <button class="btn" id="gpLogin"><i data-lucide="user"></i> تسجيل الدخول</button>
+      <button class="btn primary" id="gpSignup"><i data-lucide="sparkles"></i> حساب جديد</button>
+    </div></div></div>`;
+}
+function bindGuestPanel(){
+  $('#gpLogin').onclick = () => { authMode = 'login'; navigate('login'); };
+  $('#gpSignup').onclick = () => { authMode = 'signup'; navigate('login'); };
+}
+
+function renderContent(){
+  const p = curPage(); if (!p) return;
+  switch (p.page) {
+    case 'ntp':      return renderNTP();
+    case 'search':   return renderSearch(p.data);
+    case 'login':    return renderAuth();
+    case 'mail':     return renderMail();
+    case 'chat':     return renderChat();
+    case 'insta':    return renderInsta();
+    case 'tiktok':   return renderTikTok();
+    case 'yt':       return renderYT();
+    case 'settings': return renderSettings();
+    case 'publish':  return renderPublish();
+    case 'network':  return renderNetwork();
+    case 'profile':  return renderProfile(p.data || {});
+    case 'site':     return renderSite(p.data || {});
+  }
+}
+
+/* ============ الرئيسية ============ */
+function renderNTP(){
+  const u = me(); const ub = unread(); const uc = unreadChats();
+  const h = new Date().getHours();
+  const greet = h < 5 ? 'ليلة سعيدة' : h < 12 ? 'صباح الخير' : h < 17 ? 'نهار سعيد' : 'مساء الخير';
+  const quick = [
+    {page:'mail', name:'البريد', icon:'mail', badge:ub},
+    {page:'chat', name:'الدردشة', icon:'message-circle', badge:uc},
+    {page:'insta', name:'انستا', icon:'IG'},
+    {page:'tiktok', name:'تيك توك', icon:'music-2'},
+    {page:'yt', name:'يوتيوب', icon:'video'},
+    {page:'network', name:'الشبكة', icon:'globe'},
+    {page:'publish', name:'انشر موقعك', icon:'upload', hl:true},
+  ];
+  const fresh = [...sites].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+  viewport.innerHTML = `<div class="ntp page"><div class="ntp-inner">
+    <div class="ntp-logo">${bean()}<h1>أرابكوا</h1></div>
+    <p class="ntp-sub">${u ? `${greet}، يا <b>${esc(u.name)}</b>` : 'شبكتك العربيّة — كل المحتوى هنا من مستخدمين مثلك'}</p>
+    <div class="bigsearch">
+      <i data-lucide="search"></i>
+      <input id="ntpQ" placeholder="ابحث، أو اكتب إيميل صاحبك، أو عنوان موقع" autocomplete="off">
+      <button class="micbtn" id="ntpMic" title="بحث صوتي"><i data-lucide="mic"></i></button>
+      <div class="sugg" id="ntpSugg"></div>
+    </div>
+    ${recentQ.length ? `<div class="favsec"><div class="fresh-head"><h3><i data-lucide="history"></i> أبحاثك الأخيرة</h3><button id="clearRecent">مسح</button></div>
+      <div class="favrow">${recentQ.map(qq => `<button class="favbtn" data-q="${esc(qq)}"><i data-lucide="search"></i><span class="t">${esc(qq)}</span></button>`).join('')}</div></div>` : ''}
+    <div class="shortcuts">
+      ${quick.map(qq => `<button class="schip ${qq.hl ? 'hl' : ''}" data-page="${qq.page}">${appIcon(qq.icon)}${qq.name}${qq.badge ? `<span class="bdg">${arNum(qq.badge)}</span>` : ''}</button>`).join('')}
+    </div>
+    ${bookmarks.length ? `<div class="favsec"><h3><i data-lucide="bookmark"></i> مواقعك المفضّلة</h3><div class="favrow">
+      ${bookmarks.slice(0, 10).map((b, i) => `<button class="favbtn" data-b="${i}">${tabFavicon({page:b.page, data:b.data || {}})}<span class="t">${esc(b.title)}</span></button>`).join('')}
+    </div></div>` : ''}
+    ${sites.length ? `<div class="fresh"><div class="fresh-head"><h3><i data-lucide="sparkles"></i> جديد على شبكة أرابكوا</h3><button data-page="network">عرض الكل</button></div>
+      <div class="fresh-row">${fresh.map(s => `<div class="fcard" data-site="${s.id}">
+        <div class="fname">${esc(s.name)}</div><div class="furl">${esc(s.slug)}.arpico</div>
+        <div class="fdesc">${esc(s.desc)}</div>
+        <div class="fviews"><i data-lucide="eye"></i> ${arNum(s.views)} زيارة</div>
+      </div>`).join('')}</div></div>`
+    : `<div class="netcta"><i data-lucide="globe"></i><p>شبكة أرابكوا لسه فاضية — كن أول من ينشر موقع ويظهر في البحث للكل</p>
+       <button class="btn primary" data-page="publish"><i data-lucide="upload"></i> انشر أول موقع</button></div>`}
+  </div></div>`;
+
+  const q = $('#ntpQ');
+  attachSugg(q, $('#ntpSugg'));
+  q.addEventListener('keydown', e => { if (e.key === 'Enter') omniboxSubmit(q.value); });
+  $('#ntpMic').onclick = () => startVoice($('#ntpMic'), t => { q.value = t; rememberQ(t); navigate('search', {q:t}); });
+  viewport.querySelectorAll('[data-page]').forEach(el => el.onclick = () => {
+    if (el.dataset.page === 'publish') return goPublishNew();
+    navigate(el.dataset.page);
+  });
+  viewport.querySelectorAll('[data-b]').forEach(el => el.onclick = () => { const b = bookmarks[+el.dataset.b]; navigate(b.page, b.data || {}); });
+  viewport.querySelectorAll('[data-q]').forEach(el => el.onclick = () => navigate('search', {q:el.dataset.q}));
+  const cr = $('#clearRecent');
+  if (cr) cr.onclick = () => { recentQ = []; DB.set('arp_recent_q', recentQ); toast('تم مسح الأبحاث الأخيرة', 'history'); renderAll(); };
+  viewport.querySelectorAll('.fcard').forEach(el => el.onclick = () => navigate('site', {siteId:el.dataset.site}));
+}
+
+/* ============ نتائج البحث ============ */
+function renderSearch(d){
+  const q = (d.q || '').trim();
+  // لو البحث إيميل → افتح البروفايل
+  if (/^[\p{L}\p{N}._-]+@arpico\.com$/iu.test(q.toLowerCase()) && users.some(u => u.email === q.toLowerCase()))
+    return goProfile(q.toLowerCase());
+  const {apps, net, web} = searchIndex(q);
+  const counts = {apps:apps.length, net:net.length, web:web.length};
+  const total = counts.apps + counts.net + counts.web;
+  const filt = searchUI.filter;
+  const show = k => filt === 'all' || filt === k;
+
+  viewport.innerHTML = `<div class="serp page">
+    <div class="serp-head"><div class="serp-head-in">${bean()}
+      <div class="serp-box"><i data-lucide="search"></i>
+        <input id="serpQ" value="${esc(q)}" autocomplete="off">
+        <button class="micbtn" id="serpMic"><i data-lucide="mic"></i></button>
+      </div></div></div>
+    <div class="serp-body">
+      ${!q ? `<div class="empty-results"><i data-lucide="search"></i><h3>اكتب كلمة للبحث</h3>
+        <p>جرّب اسم تطبيق زي "ميل"، أو إيميل صاحبك (هيفتح بروفايله)، أو موقع منشور.</p></div>` : `
+      <div class="chips">
+        <button class="chip ${filt==='all'?'on':''}" data-f="all">الكل <span class="n">(${arNum(total)})</span></button>
+        <button class="chip ${filt==='apps'?'on':''}" data-f="apps">تطبيقات <span class="n">(${arNum(counts.apps)})</span></button>
+        <button class="chip ${filt==='net'?'on':''}" data-f="net">شبكة أرابكوا <span class="n">(${arNum(counts.net)})</span></button>
+        <button class="chip ${filt==='web'?'on':''}" data-f="web">الويب <span class="n">(${arNum(counts.web)})</span></button>
+      </div>
+      ${total ? `<div class="serp-meta">حوالي ${arNum(total)} نتيجة</div>` : ''}
+      ${show('apps') ? (counts.apps ? `<div class="serp-sec"><i data-lucide="zap"></i> تطبيقات أرابكوا</div>
+        ${apps.map(a => `<div class="approw" data-kind="app" data-ref="${a.ref}"><div class="appic">${appIcon(a.icon)}</div>
+          <div class="appinfo"><div class="t">${hl(a.name, q)}</div><div class="d">${hl(a.desc, q)}</div></div>
+          <span class="rtag">تطبيق داخلي</span></div>`).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش تطبيقات مطابقة</div>` : '')) : ''}
+      ${show('net') ? (counts.net ? `<div class="serp-sec"><i data-lucide="globe"></i> شبكة أرابكوا</div>
+        ${net.map(r => { const s = r.site; return `<div class="rrow" data-kind="site" data-ref="${s.id}">
+          <div class="rsite">${letterDot(s.slug)}<div><div class="rname">${hl(s.name, q)}</div><div class="rurl">${esc(s.slug)}.arpico</div></div>
+          <span class="rtag" style="margin-inline-start:auto">منشور على أرابكوا</span>${s.googleUrl ? `<span class="rtag g">على جوجل</span>` : ''}</div>
+          <div class="rtitle">${hl(s.name, q)}</div><div class="rdesc">${hl(s.desc, q)}</div></div>`; }).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش مواقع مطابقة</div>` : '')) : ''}
+      ${show('web') ? (counts.web ? `<div class="serp-sec"><i data-lucide="external-link"></i> نتائج الويب</div>
+        ${web.map(r => { const w = r.web; return `<div class="rrow" data-kind="web" data-ref="${esc(w.url)}" data-name="${esc(w.name)}">
+          <div class="rsite">${letterDot(w.name)}<div><div class="rname">${hl(w.name, q)}</div><div class="rurl">${esc(w.url.replace('https://',''))}</div></div></div>
+          <div class="rtitle">${hl(w.name, q)}</div><div class="rdesc">${hl(w.desc, q)}</div></div>`; }).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش نتايج ويب مطابقة</div>` : '')) : ''}
+      ${!total ? `<div class="empty-results"><i data-lucide="search"></i>
+        <h3>ما لقيناش نتايج لـ "${esc(q)}"</h3>
+        <p>مفيش حد نشر حاجة عن "${esc(q)}" لسه — ممكن تكون أنت الأول.</p>
+        <div class="empty-actions">
+          <button class="btn primary" id="erPublish"><i data-lucide="upload"></i> انشر موقعك عن "${esc(q)}"</button>
+        </div></div>` : ''}` }
+    </div></div>`;
+
+  const sq = $('#serpQ');
+  sq.addEventListener('keydown', e => { if (e.key === 'Enter' && sq.value.trim()) { rememberQ(sq.value.trim()); navigate('search', {q:sq.value.trim()}); } });
+  $('#serpMic').onclick = () => startVoice($('#serpMic'), t => { rememberQ(t); navigate('search', {q:t}); });
+  viewport.querySelectorAll('.chip').forEach(c => c.onclick = () => { searchUI.filter = c.dataset.f; renderSearch(curPage().data); icons(); });
+  viewport.querySelectorAll('[data-kind]').forEach(el => el.onclick = () => {
+    if (el.dataset.kind === 'app') navigate(el.dataset.ref);
+    else if (el.dataset.kind === 'site') navigate('site', {siteId:el.dataset.ref});
+    else navigate('site', {url:el.dataset.ref, title:el.dataset.name});
+  });
+  const ep = $('#erPublish');
+  if (ep) ep.onclick = () => { if (!me()) { authMode = 'signup'; navigate('publish'); } else goPublishNew(); };
+}
+
+/* ============ تسجيل الدخول ============ */
+function renderAuth(){
+  const isSignup = authMode === 'signup';
+  viewport.innerHTML = `<div class="authwrap page"><div class="authcard">
+    ${bean('bean-xs')}
+    <h2>${isSignup ? 'أنشئ حسابك على أرابكوا' : 'أهلاً بعودتك'}</h2>
+    <p class="sub">${isSignup ? 'اكتب اسمك بأي شكل تحبه — وإيميلك هيتبني منه تلقائيًا' : 'سجّل الدخول باسمك أو بإيميلك'}</p>
+    <div class="authtabs">
+      <button data-m="login" class="${!isSignup ? 'on' : ''}">دخول</button>
+      <button data-m="signup" class="${isSignup ? 'on' : ''}">حساب جديد</button>
+    </div>
+    <div id="authErr"></div>
+    <form id="authForm">
+      ${isSignup ? `
+        <div class="field"><label>الاسم (أي حاجة — عربي، إنجليزي، مسافات...)</label>
+          <input id="aName" dir="auto" placeholder="مثال: أحمد محمد 99" autocomplete="off"></div>
+        <div class="email-live"><i data-lucide="at-sign"></i><b id="emailLive">user</b><span class="at">@</span><span>arpico.com</span></div>
+        <p class="hint">ده إيميلك النهائي — لاحظ علامة الـ @ قبل arpico.com — ولو الاسم محجوز هنضيف رقم تلقائيًا.</p>
+        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" placeholder="4 أحرف على الأقل">
+          <button type="button" class="eye" data-eye="aPass"><i data-lucide="eye"></i></button></div></div>
+        <div class="field"><label>تأكيد كلمة السر</label><div class="pw"><input id="aPass2" type="password" placeholder="اكتبها مرة تانية">
+          <button type="button" class="eye" data-eye="aPass2"><i data-lucide="eye"></i></button></div></div>
+      ` : `
+        <div class="field"><label>الاسم أو البريد الإلكتروني</label>
+          <input id="aId" dir="auto" placeholder="ahmed99 أو ahmed99@arpico.com" autocomplete="off"></div>
+        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" placeholder="كلمة السر">
+          <button type="button" class="eye" data-eye="aPass"><i data-lucide="eye"></i></button></div></div>
+      `}
+      <button class="btn primary" style="width:100%;justify-content:center;padding:13px" type="submit">
+        <i data-lucide="${isSignup ? 'sparkles' : 'user'}"></i> ${isSignup ? 'إنشاء الحساب' : 'دخول'}
+      </button>
+    </form></div></div>`;
+
+  viewport.querySelectorAll('.authtabs button').forEach(b => b.onclick = () => { authMode = b.dataset.m; renderAuth(); icons(); });
+  viewport.querySelectorAll('.eye').forEach(b => b.onclick = () => {
+    const inp = document.getElementById(b.dataset.eye);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    b.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`; icons();
+  });
+  const err = m => { $('#authErr').innerHTML = `<div class="autherr"><i data-lucide="shield"></i>${m}</div>`; icons(); };
+  const nameIn = $('#aName');
+  if (nameIn) nameIn.addEventListener('input', () => { $('#emailLive').textContent = uniqueEmailSlug(nameToSlug(nameIn.value)) || 'user'; });
+
+  const afterAuth = () => {
+    renderAll();
+    const nav = pendingNav; pendingNav = null;
+    if (nav) { if (nav.page === 'publish') return goPublishNew(); return navigate(nav.page, nav.data || {}); }
+    navigate('ntp');
+  };
+
+  $('#authForm').onsubmit = e => {
+    e.preventDefault();
+    if (isSignup) {
+      const rawName = ($('#aName').value || '').trim().replace(/\s+/g, ' ');
+      const p1 = $('#aPass').value, p2 = $('#aPass2').value;
+      if (rawName.length < 2 || rawName.length > 24) return err('الاسم لازم يكون بين حرفين و24 حرف.');
+      if (!/[\p{L}\p{N}]/u.test(rawName)) return err('الاسم لازم يحتوي على حرف أو رقم على الأقل.');
+      if (/[@/\\]/.test(rawName)) return err('الاسم ميستخدمش الرموز @ أو /.');
+      if (p1.length < 4) return err('كلمة السر لازم تكون 4 أحرف على الأقل.');
+      if (p1 !== p2) return err('كلمتا السر مش متطابقتين.');
+      const email = uniqueEmailSlug(nameToSlug(rawName)) + '@arpico.com';
+      users.push({name:rawName, email, pass:p1, joined:nowISO()}); DB.set('arp_users', users);
+      session = email; DB.set('arp_session', session);
+      mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', found:null};
+      mail.push({id:uid(), from:'team@arpico.com', fromName:'فريق أرابكوا', to:email, subject:'أهلاً بك في أرابكوا!',
+        body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nجرّب دلوقتي:\n- افتح الدردشة ودوّر بإيميل صاحبك (لازم يكون مسجل على أرابكوا) وابعتله وكلمه صوت وفيديو.\n- ارفع صور وريلز على انستا وفيديوهات على تيك توك ويوتيوب — كلها بتتخزن على جهازك.\n- دوس على اسم أي حد في أي منصة هيفتحلك بروفايله وتقدر تضيفه صديق.\n- انشر موقعك من زرار "انشر موقعك".\n\nنصيحة: اعمل حساب تاني وسجل دخول بيه من قائمة الحساب عشان تجرب الدردشة والمكالمات مع نفسك.\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
+      DB.set('arp_mail', mail);
+      toast(`أهلاً ${rawName}! إيميلك جاهز: ${email}`, 'sparkles');
+      afterAuth();
+    } else {
+      const id = ($('#aId').value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      const pw = $('#aPass').value;
+      const u = users.find(x => x.email === id || x.name.toLowerCase() === id || x.email === id.replace(/\s+/g, '') + '@arpico.com');
+      if (!u || u.pass !== pw) return err('البيانات غير صحيحة — راجع الاسم/الإيميل وكلمة السر.');
+      session = u.email; DB.set('arp_session', session);
+      mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', found:null};
+      toast(`نوّرت أرابكوا يا ${u.name}`, 'user');
+      afterAuth();
+    }
+  };
+}
+
+/* ============ الإعدادات ============ */
+function renderSettings(){
+  const u = me();
+  if (!u) { pendingNav = {page:'settings'}; viewport.innerHTML = guestPanel(); bindGuestPanel(); return; }
+  const mine = sites.filter(s => s.authorEmail === u.email);
+  viewport.innerHTML = `<div class="settings page"><div class="set-wrap">
+    <div class="set-head"><i data-lucide="settings"></i><h1>إعدادات الحساب</h1></div>
+    <div class="card pcard">
+      ${avatarHTML(u.name, 64)}
+      <div><div class="pname">${esc(u.name)}</div><div class="pmail">${esc(u.email)}</div><div class="pjoin">عضو منذ ${fmtDate(u.joined)} — ${arNum((friends[u.email]||[]).length)} صديق</div></div>
+    </div>
+    <div class="card pubcta">
+      <h3><i data-lucide="upload"></i> انشر موقعك</h3>
+      <p>اعمل موقعك بـ HTML — بمعاينة حية وقوالب — وانشره ليظهر في بحث أرابكوا فورًا. ولو موقعك موجود على جوجل، ضيف رابطه وهو هيظهر كزرار جانب موقعك.</p>
+      <button class="btn" id="goPublish"><i data-lucide="upload"></i> انشر موقعك الآن</button>
+    </div>
+    <div class="card">
+      <h3><i data-lucide="globe"></i> مواقعي المنشورة (${arNum(mine.length)})</h3>
+      ${mine.length ? mine.map(s => `<div class="mysite">
+        <div><div class="m-n">${esc(s.name)}</div><div class="m-u">${esc(s.slug)}.arpico</div>
+        <div class="m-v"><i data-lucide="eye"></i> ${arNum(s.views)} زيارة — نُشر ${fmtDate(s.date)}</div></div>
+        <div class="acts">
+          <button class="iconbtn" data-open="${s.id}" title="فتح"><i data-lucide="external-link"></i></button>
+          <button class="iconbtn" data-edit="${s.id}" title="تعديل"><i data-lucide="pen-line"></i></button>
+          <button class="iconbtn" data-copy="${esc(s.slug)}.arpico" title="نسخ الرابط"><i data-lucide="copy"></i></button>
+          ${s.googleUrl ? `<button class="iconbtn" data-g="${esc(s.googleUrl)}" title="النسخة على جوجل"><i data-lucide="search"></i></button>` : ''}
+          <button class="iconbtn danger" data-del="${s.id}" title="حذف"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>`).join('') : `<p style="font-size:13px;color:var(--ink3);padding:6px 0">لسه ما نشرتش أي موقع — ابدأ من الزرار الأحمر فوق.</p>`}
+    </div>
+    <div class="card">
+      <h3><i data-lucide="history"></i> سجل التصفح</h3>
+      ${browseHist.length ? browseHist.slice(0, 10).map((h, i) => `<div class="hrow" data-h="${i}">
+        <span class="bfav">${tabFavicon({page:h.page, data:h.data || {}})}</span>
+        <span class="t">${esc(h.title)}</span><span class="tm">${fmtTime(h.time)}</span></div>`).join('') +
+        `<button class="btn" id="clearHist" style="margin-top:12px;padding:8px 16px;font-size:12px"><i data-lucide="trash-2"></i> مسح السجل</button>`
+      : `<p style="font-size:13px;color:var(--ink3)">لسه مفيش سجل.</p>`}
+    </div>
+    <div class="card">
+      <h3><i data-lucide="sliders-horizontal"></i> تفضيلات المتصفح</h3>
+      <div class="setrow"><div class="info"><div class="t">إظهار شريط العلامات المرجعية</div><div class="d">الشريط اللي تحت شريط العنوان</div></div>
+        <button class="switch ${prefs.showBar ? 'on' : ''}" id="swBar"></button></div>
+      <div class="setrow"><div class="info"><div class="t">الوضع الليلي</div><div class="d">مريح للعين في الإضاءة الخافتة</div></div>
+        <button class="switch ${theme === 'dark' ? 'on' : ''}" id="swTheme"></button></div>
+      <div class="setrow"><div class="info"><div class="t">مسح بيانات التصفح</div><div class="d">علامات، سجل، أبحاث، وإعجابات — الوسائط مش هتتأثر</div></div>
+        <button class="btn" id="wipeData" style="padding:8px 16px;font-size:12px"><i data-lucide="trash-2"></i> مسح</button></div>
+    </div>
+    <button class="btn" id="logoutBtn" style="width:100%;justify-content:center"><i data-lucide="log-out"></i> تسجيل الخروج</button>
+  </div></div>`;
+
+  $('#goPublish').onclick = goPublishNew;
+  viewport.querySelectorAll('[data-open]').forEach(b => b.onclick = () => navigate('site', {siteId:b.dataset.open}));
+  viewport.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { publishEditIntent = b.dataset.edit; navigate('publish'); });
+  viewport.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy));
+  viewport.querySelectorAll('[data-g]').forEach(b => b.onclick = () => openExternal(b.dataset.g));
+  viewport.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    const s = sites.find(x => x.id === b.dataset.del);
+    confirmBox(`هتحذف موقع "${esc(s.name)}" نهائيًا. متأكد؟`, () => {
+      sites = sites.filter(x => x.id !== s.id); DB.set('arp_sites', sites);
+      bookmarks = bookmarks.filter(bb => !(bb.page === 'site' && (bb.data || {}).siteId === s.id)); DB.set('arp_bookmarks', bookmarks);
+      toast('تم حذف الموقع', 'trash-2'); renderAll();
+    });
+  });
+  viewport.querySelectorAll('[data-h]').forEach(r => r.onclick = () => {
+    const h = browseHist[+r.dataset.h]; navigate(h.page, h.data || {});
+  });
+  const ch = $('#clearHist');
+  if (ch) ch.onclick = () => { browseHist = []; DB.set('arp_history', browseHist); toast('تم مسح السجل', 'history'); renderAll(); };
+  $('#swBar').onclick = () => { prefs.showBar = !prefs.showBar; DB.set('arp_prefs', prefs); renderAll(); };
+  $('#swTheme').onclick = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+  $('#wipeData').onclick = () => confirmBox('هتمسح العلامات والسجل والأبحاث وإعجاباتك. حسابك ومواقعك ووسائطك مش هتتأثر.', () => {
+    bookmarks = []; recentQ = []; browseHist = [];
+    social = {instaLikes:{}, tkLikes:{}, tkFollow:{}};
+    DB.set('arp_bookmarks', bookmarks); DB.set('arp_recent_q', recentQ);
+    DB.set('arp_history', browseHist); DB.set('arp_social', social);
+    toast('تم المسح', 'check'); renderAll();
+  });
+  $('#logoutBtn').onclick = () => {
+    session = null; DB.set('arp_session', null);
+    pendingNav = null; mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', found:null};
+    toast('تم تسجيل الخروج — سلام', 'log-out');
+    renderAll(); navigate('ntp');
+  };
+}
+
+/* ============ النشر ============ */
+function renderPublish(){
+  const u = me();
+  if (!u) { pendingNav = {page:'publish'}; viewport.innerHTML = guestPanel(); bindGuestPanel(); return; }
+  const editing = publishEditIntent ? sites.find(s => s.id === publishEditIntent && s.authorEmail === u.email) : null;
+  publishEditIntent = null;
+
+  viewport.innerHTML = `<div class="publish page"><div class="pub-wrap">
+    <div class="pub-head"><div class="appic"><i data-lucide="upload"></i></div>
+      <div><h1>${editing ? 'تعديل موقعك' : 'انشر موقعك'}</h1></div></div>
+    <p class="pub-sub">اكتب HTML موقعك (أو ابدأ بقالب)، شوف المعاينة لحظة بلحظة، وبعدين انشره — ه يظهر في بحث أرابكوا فورًا. ولو موقعك ليه نسخة حقيقية على جوجل، ضيف رابطها في الخانة الاختيارية.</p>
+    ${editing ? `<div class="editnote"><i data-lucide="pen-line"></i> بتعدل الآن: ${esc(editing.name)} (${esc(editing.slug)}.arpico)
+      <button id="cancelEdit">إلغاء التعديل</button></div>` : ''}
+    <div class="pub-grid">
+      <div class="pub-form">
+        <label>اسم الموقع</label><input id="pName" value="${esc(editing ? editing.name : '')}" placeholder="مثال: محمّص أرابيكا">
+        <label>عنوان موقعك على الشبكة</label>
+        <div class="slugbox"><input id="pSlug" value="${esc(editing ? editing.slug : '')}" placeholder="qahwa-arpica" spellcheck="false"><span class="ext">.arpico</span></div>
+        <label>وصف قصير (ه يظهر في نتائج البحث)</label><input id="pDesc" value="${esc(editing ? editing.desc : '')}" placeholder="متجر قهوة مختصة — حبوب محمّصة طازجة يوميًا">
+        <label>كلمات مفتاحية (افصل بينها بفاصلة)</label><input id="pKey" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
+        <label>رابط موقعك على جوجل (اختياري — لو موجود فعلاً)</label><input id="pGoogle" dir="ltr" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
+        <label>محتوى الموقع — HTML</label>
+        <div class="tplrow">
+          <button class="tplbtn" data-tpl="card"><i data-lucide="user"></i> بطاقة شخصية</button>
+          <button class="tplbtn" data-tpl="store"><i data-lucide="store"></i> متجر صغير</button>
+          <button class="tplbtn" data-tpl="blog"><i data-lucide="newspaper"></i> مدوّنة</button>
+        </div>
+        <textarea id="pHtml" spellcheck="false" placeholder="اكتب أو الصق كود HTML هنا...">${esc(editing ? editing.html : '')}</textarea>
+        <div class="pub-actions">
+          <button class="btn primary" id="pubGo"><i data-lucide="${editing ? 'check' : 'upload'}"></i> ${editing ? 'حفظ التعديلات' : 'نشر الموقع على الشبكة'}</button>
+          <span class="note">ينشر باسم ${esc(u.email)}</span>
+        </div>
+      </div>
+      <div class="pv-box">
+        <div class="pv-head"><i data-lucide="eye"></i> معاينة مباشرة</div>
+        <iframe id="pvFrame" sandbox="allow-scripts"></iframe>
+      </div>
+    </div>
+  </div></div>`;
+
+  const nameEl = $('#pName'), slugEl = $('#pSlug'), descEl = $('#pDesc'), keyEl = $('#pKey'), gEl = $('#pGoogle'), htmlEl = $('#pHtml'), pv = $('#pvFrame');
+  let slugDirty = !!editing, descDirty = !!editing;
+  const emptyPv = '<div style="font-family:sans-serif;color:#999;display:flex;height:100%;align-items:center;justify-content:center">اكتب كودك هتعاينه هنا مباشرة</div>';
+  const updPreview = debounce(() => pv.setAttribute('srcdoc', htmlEl.value || emptyPv), 250);
+  nameEl.addEventListener('input', () => { if (!slugDirty) slugEl.value = siteSlugify(nameEl.value); });
+  slugEl.addEventListener('input', () => slugDirty = true);
+  descEl.addEventListener('input', () => descDirty = true);
+  htmlEl.addEventListener('input', updPreview);
+  pv.setAttribute('srcdoc', htmlEl.value || emptyPv);
+
+  const TPLS = {card:TPL_CARD, store:TPL_STORE, blog:TPL_BLOG};
+  viewport.querySelectorAll('.tplbtn').forEach(b => b.onclick = () => {
+    htmlEl.value = TPLS[b.dataset.tpl];
+    if (!nameEl.value) nameEl.value = {card:'بطاقتي الشخصية', store:'متجري الصغير', blog:'مدوّنتي'}[b.dataset.tpl];
+    if (!slugDirty) slugEl.value = siteSlugify(nameEl.value);
+    if (!descDirty) descEl.value = `موقع ${nameEl.value} على شبكة أرابكوا`;
+    updPreview(); toast('تم تحميل القالب — عدّله زي ما تحب', 'pen-line');
+  });
+  const ce = $('#cancelEdit');
+  if (ce) ce.onclick = () => { renderPublish(); icons(); };
+
+  $('#pubGo').onclick = () => {
+    const name = nameEl.value.trim(), desc = descEl.value.trim(), html = htmlEl.value;
+    let g = gEl.value.trim();
+    const err = m => { toast(m, 'shield'); return false; };
+    if (name.length < 2) return err('اكتب اسم للموقع (حرفين على الأقل).');
+    if (desc.length < 8) return err('الوصف قصير أوي — خليه واضح عشان يظهر في البحث.');
+    if (g && !/^https?:\/\//i.test(g)) g = 'https://' + g;
+    let slug = siteSlugify(slugEl.value) || 'site-' + uid().slice(0, 5);
+    if (html.trim().length < 30) return err('محتوى الموقع قصير أوي — لو محتار ابدأ بقالب جاهز.');
+    if (editing) {
+      let final = slug, i = 2;
+      while (sites.some(s => s.slug === final && s.id !== editing.id)) { final = slug + '-' + i++; }
+      Object.assign(editing, {slug:final, name, desc, keywords:keyEl.value.trim(), html, googleUrl:g, updated:nowISO()});
+      DB.set('arp_sites', sites);
+      toast('تم حفظ التعديلات', 'check');
+      return navigate('site', {siteId:editing.id});
+    }
+    let final = slug, i = 2;
+    while (sites.some(s => s.slug === final)) { final = slug + '-' + i++; }
+    const s = {id:uid(), slug:final, name, desc, keywords:keyEl.value.trim(), googleUrl:g, html, author:u.name, authorEmail:u.email, date:nowISO(), views:0};
+    sites.push(s); DB.set('arp_sites', sites);
+    toast('مبروك! موقعك انشر وظهر في بحث أرابكوا', 'sparkles');
+    navigate('site', {siteId:s.id});
+  };
+}
+
+/* ============ الشبكة ============ */
+function renderNetwork(){
+  viewport.innerHTML = `<div class="network page"><div class="net-wrap">
+    <div class="net-head">
+      <div><h1><i data-lucide="globe"></i> شبكة أرابكوا</h1>
+      <p class="cnt">${sites.length ? `${arNum(sites.length)} موقع منشور` : 'الشبكة فاضية — مفيش ولا موقع منشور لسه'}</p></div>
+      <button class="btn primary" id="netPub"><i data-lucide="upload"></i> انشر موقعك</button>
+    </div>
+    ${sites.length ? `
+    <div class="nettools">
+      <input class="netsearch" id="netQ" placeholder="ابحث في المواقع المنشورة..." value="${esc(netUI.q)}">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="chip ${netUI.sort==='new'?'on':''}" data-sort="new">الأحدث</button>
+        <button class="chip ${netUI.sort==='views'?'on':''}" data-sort="views">الأكثر زيارة</button>
+        <button class="chip ${netUI.sort==='az'?'on':''}" data-sort="az">أبجدي</button>
+      </div>
+    </div>` : ''}
+    <div id="netList"></div>
+  </div></div>`;
+  const renderList = () => {
+    if (!sites.length) {
+      $('#netList').innerHTML = `<div class="net-empty" style="padding:60px 16px">
+        <div style="font-size:38px;margin-bottom:10px">☕</div>
+        <p style="font-size:14.5px;line-height:2;color:var(--ink2)">الشبكة كلها فاضية!<br>أول موقع هينشر هنا هيبقى أول نتيجة في بحث أرابكوا.</p></div>`;
+      return;
+    }
+    const q = norm(netUI.q);
+    let list = sites.filter(s => !q || matchSite(s, q));
+    if (netUI.sort === 'new') list.sort((a,b) => new Date(b.date) - new Date(a.date));
+    else if (netUI.sort === 'views') list.sort((a,b) => b.views - a.views);
+    else list.sort((a,b) => a.name.localeCompare(b.name, 'ar'));
+    $('#netList').innerHTML = list.length ? list.map(s => `<div class="netrow" data-id="${s.id}">
+      ${letterDot(s.slug, 'avatar')}
+      <div><div class="n-name">${esc(s.name)}</div><div class="n-url">${esc(s.slug)}.arpico</div>
+        <div class="n-desc">${esc(s.desc)}</div>
+        <div class="n-meta"><span><i data-lucide="eye"></i> ${arNum(s.views)} زيارة</span>
+        <span class="up" data-prof="${esc(s.authorEmail || '')}" style="cursor:pointer;font-weight:600;color:var(--ink2)"><i data-lucide="user"></i> ${esc(s.author)}</span>
+        <span><i data-lucide="clock"></i> ${fmtDate(s.date)}</span>
+        ${s.googleUrl ? `<span class="gtag" data-g="${esc(s.googleUrl)}"><i data-lucide="external-link"></i> النسخة على جوجل</span>` : ''}</div></div>
+      <span class="go btn" style="padding:8px 16px;font-size:12px">زيارة</span>
+    </div>`).join('') : `<div class="net-empty">ما لقيناش مواقع مطابقة.</div>`;
+    icons();
+    $('#netList').querySelectorAll('.netrow').forEach(r => r.onclick = e => {
+      const up = e.target.closest('[data-prof]');
+      if (up && up.dataset.prof) { e.stopPropagation(); return goProfile(up.dataset.prof); }
+      const g = e.target.closest('.gtag');
+      if (g) { e.stopPropagation(); return openExternal(g.dataset.g); }
+      navigate('site', {siteId:r.dataset.id});
+    });
+  };
+  renderList();
+  const nq = $('#netQ');
+  if (nq) {
+    nq.addEventListener('input', debounce(e => { netUI.q = e.target.value; renderList(); }, 150));
+    viewport.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => {
+      netUI.sort = b.dataset.sort;
+      viewport.querySelectorAll('[data-sort]').forEach(x => x.classList.toggle('on', x.dataset.sort === netUI.sort));
+      renderList();
+    });
+  }
+  $('#netPub').onclick = () => { if (!me()) { authMode = 'signup'; navigate('publish'); } else goPublishNew(); };
+}
+
+/* ============ عارض المواقع ============ */
+function renderSite(d){
+  if (d.siteId) {
+    const s = sites.find(x => x.id === d.siteId);
+    if (!s) { viewport.innerHTML = `<div class="site404">${bean()}<h3>الموقع غير موجود</h3><p style="font-size:13px">ممكن يكون اتمسح من الشبكة.</p></div>`; return; }
+    if (!d.counted) { s.views++; d.counted = true; DB.set('arp_sites', sites); }
+    viewport.innerHTML = `<div class="extwrap">
+      ${s.googleUrl ? `<div class="ext-top"><i data-lucide="search"></i>
+        <span class="msg">الموقع ده ليه نسخة حقيقية على الإنترنت.</span>
+        <button id="gOpen"><i data-lucide="external-link"></i> افتح النسخة الأصلية</button></div>` : ''}
+      <div class="ext-framebox"></div>
+    </div>`;
+    const f = document.createElement('iframe');
+    f.className = 'siteframe'; f.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals allow-popups');
+    f.setAttribute('srcdoc', s.html);
+    viewport.querySelector('.ext-framebox').appendChild(f);
+    const go = $('#gOpen');
+    if (go) go.onclick = () => openExternal(s.googleUrl);
+    icons();
+    return;
+  }
+  viewport.innerHTML = `<div class="extwrap">
+    <div class="ext-top" id="extTop">
+      <i data-lucide="shield-alert"></i>
+      <span class="msg">موقع خارجي — بعض المواقع بتمنع العرض جوه المتصفحات، فلو الصفحة طلعت فاضية افتحها من الزرار.</span>
+      <button id="extOpen"><i data-lucide="external-link"></i> افتح خارجيًا</button>
+      <button class="ghost" id="extDismiss" title="إخفاء"><i data-lucide="x"></i></button>
+    </div>
+    <div class="ext-framebox" id="extBox">
+      <div class="ext-load" id="extLoad"><div class="spinner"></div>جارٍ الاتصال بـ ${esc(d.url || '')}...</div>
+    </div>
+  </div>`;
+  const f = document.createElement('iframe');
+  f.className = 'siteframe';
+  f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
+  f.setAttribute('referrerpolicy', 'no-referrer');
+  f.src = d.url || 'about:blank';
+  f.addEventListener('load', () => { const l = $('#extLoad'); if (l) l.style.display = 'none'; });
+  $('#extBox').appendChild(f);
+  setTimeout(() => { const l = $('#extLoad'); if (l) l.style.display = 'none'; }, 4500);
+  $('#extOpen').onclick = () => { openExternal(d.url); toast('فتحنا الموقع في نافذة خارجية', 'external-link'); };
+  $('#extDismiss').onclick = () => { $('#extTop').style.display = 'none'; };
+  icons();
+}
+
+/* ============ البريد ============ */
+function mailFolders(u){
+  return {
+    inbox:   mail.filter(m => m.to === u.email && !m.trashed && !m.draft).sort((a,b) => new Date(b.date) - new Date(a.date)),
+    sent:    mail.filter(m => m.from === u.email && !m.trashed && !m.draft).sort((a,b) => new Date(b.date) - new Date(a.date)),
+    drafts:  mail.filter(m => m.from === u.email && m.draft && !m.trashed).sort((a,b) => new Date(b.date) - new Date(a.date)),
+    starred: mail.filter(m => m.star && !m.trashed && !m.draft && (m.to === u.email || m.from === u.email)).sort((a,b) => new Date(b.date) - new Date(a.date)),
+    trash:   mail.filter(m => m.trashed && (m.to === u.email || m.from === u.email)).sort((a,b) => new Date(b.date) - new Date(a.date)),
+  };
+}
+function renderMail(){
+  const u = me();
+  if (!u) { pendingNav = {page:'mail'}; viewport.innerHTML = guestPanel(); bindGuestPanel(); return; }
+  const folders = mailFolders(u);
+  if (!folders[mailUI.folder]) mailUI.folder = 'inbox';
+  const list = folders[mailUI.folder];
+  const openMsg = mail.find(m => m.id === mailUI.open && !m.trashed);
+  const fNames = {inbox:'الوارد', sent:'المُرسَل', drafts:'المسودات', starred:'المميّزة', trash:'المهملات'};
+  const fIcons = {inbox:'inbox', sent:'send', drafts:'pencil', starred:'star', trash:'trash-2'};
+
+  viewport.innerHTML = `<div class="mail page">
+    <aside class="mail-side">
+      <button class="composebtn" id="composeBtn"><i data-lucide="pen-line"></i> إنشاء</button>
+      ${['inbox','sent','drafts','starred','trash'].map(f => `<button class="mf ${mailUI.folder === f ? 'on' : ''}" data-f="${f}">
+        <i data-lucide="${fIcons[f]}"></i> ${fNames[f]}
+        ${f === 'inbox' && unread() ? `<span class="bdg">${arNum(unread())}</span>` : ''}
+      </button>`).join('')}
+    </aside>
+    <div class="mail-list">
+      <div class="ml-head"><span>${fNames[mailUI.folder]}</span>
+        ${mailUI.folder === 'trash' && list.length ? `<button id="emptyTrash">تفريغ المهملات</button>` : ''}</div>
+      ${list.length ? list.map(m => {
+        const isMine = m.from === u.email;
+        const who = isMine ? 'أنت' : (m.fromName || displayNameFor(m.from));
+        const isTrash = mailUI.folder === 'trash';
+        return `<div class="mrow ${m.id === mailUI.open ? 'open' : ''} ${m.read || m.draft ? 'readed' : 'unread'}" data-m="${m.id}">
+          ${avatarHTML(isMine ? u.name : who, 34, 'm-avatar')}
+          <div style="flex:1;min-width:0">
+            <div class="m-t">${!m.read && m.to === u.email && !m.draft ? '<span class="mdot"></span>' : ''}${esc(who)}${m.draft ? ' <span style="color:var(--ink3);font-size:10px">(مسودة)</span>' : ''}</div>
+            <div class="m-s">${esc(m.subject || '(بدون عنوان)')}</div>
+            <div class="m-sn">${esc((m.body || '').slice(0, 60))}</div>
+          </div>
+          <div class="m-date">
+            ${isTrash ? `<div class="m-rowacts">
+                <button class="iconbtn" data-restore="${m.id}" title="استرجاع"><i data-lucide="rotate-ccw"></i></button>
+                <button class="iconbtn danger" data-purge="${m.id}" title="حذف نهائي"><i data-lucide="trash-2"></i></button>
+              </div>` : `<button class="m-star ${m.star ? 'on' : ''}" data-star="${m.id}"><i data-lucide="star"></i></button>`}
+            <span>${fmtTime(m.date)}</span>
+          </div>
+        </div>`; }).join('') : `<div class="mail-empty-list">${mailUI.folder === 'trash' ? 'المهملات فاضية' : 'ما فيش رسايل هنا لسه'}</div>`}
+    </div>
+    <div class="mail-read">
+      ${openMsg ? `<div class="mr-head">
+          <div style="flex:1;min-width:0"><h2>${esc(openMsg.subject || '(بدون عنوان)')}</h2>
+          <div class="mr-meta">من <span class="from">${esc(openMsg.from)}</span> إلى <span style="direction:ltr">${esc(openMsg.to)}</span> — ${fmtTime(openMsg.date)}</div></div>
+          <div class="mr-acts">
+            ${mailUI.folder === 'trash'
+              ? `<button class="iconbtn" id="mrRestore" title="استرجاع"><i data-lucide="rotate-ccw"></i></button>
+                 <button class="iconbtn danger" id="mrPurge" title="حذف نهائي"><i data-lucide="trash-2"></i></button>`
+              : `<button class="iconbtn" id="mrReply" title="رد"><i data-lucide="reply"></i></button>
+                 <button class="iconbtn" id="mrStar" title="نجمة"><i data-lucide="star"></i></button>
+                 <button class="iconbtn danger" id="mrTrash" title="نقل للمهملات"><i data-lucide="trash-2"></i></button>`}
+          </div>
+        </div><div class="mr-body">${esc(openMsg.body)}</div>`
+      : `<div class="mr-empty"><i data-lucide="mail"></i>اختر رسالة من القائمة لتقرأها</div>`}
+    </div>
+  </div>`;
+
+  $('#composeBtn').onclick = () => openCompose();
+  viewport.querySelectorAll('.mf').forEach(b => b.onclick = () => { mailUI.folder = b.dataset.f; mailUI.open = null; renderMail(); icons(); });
+  const et = $('#emptyTrash');
+  if (et) et.onclick = () => confirmBox('هتحذف كل رسايل المهملات نهائيًا. متأكد؟', () => {
+    mail = mail.filter(m => !m.trashed); DB.set('arp_mail', mail);
+    mailUI.open = null; toast('تم تفريغ المهملات', 'trash-2'); renderMail(); icons();
+  });
+  viewport.querySelectorAll('.mrow').forEach(r => r.onclick = e => {
+    if (e.target.closest('[data-star],[data-restore],[data-purge]')) return;
+    const m = mail.find(x => x.id === r.dataset.m); if (!m) return;
+    if (m.draft) return openCompose({to:m.to, subject:m.subject, body:m.body}, m.id);
+    if (m.to === u.email && !m.read) { m.read = true; DB.set('arp_mail', mail); }
+    if (isNarrow()) { openMailModal(m); renderMail(); icons(); return; }
+    mailUI.open = m.id; renderMail(); icons();
+  });
+  viewport.querySelectorAll('[data-star]').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const m = mail.find(x => x.id === b.dataset.star);
+    m.star = !m.star; DB.set('arp_mail', mail); renderMail(); icons();
+  });
+  viewport.querySelectorAll('[data-restore]').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const m = mail.find(x => x.id === b.dataset.restore);
+    m.trashed = false; DB.set('arp_mail', mail); toast('رجعت الرسالة للبريد', 'rotate-ccw'); renderMail(); icons();
+  });
+  viewport.querySelectorAll('[data-purge]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    confirmBox('الحذف النهائي مفيش منه رجوع. متأكد؟', () => {
+      mail = mail.filter(x => x.id !== b.dataset.purge); DB.set('arp_mail', mail);
+      if (mailUI.open === b.dataset.purge) mailUI.open = null;
+      toast('اتحذفت نهائيًا', 'trash-2'); renderMail(); icons();
+    });
+  });
+  const bindAct = (id, fn) => { const b = $(id); if (b) b.onclick = fn; };
+  bindAct('#mrReply', () => {
+    const m = mail.find(x => x.id === mailUI.open);
+    const to = m.from === u.email ? m.to : m.from;
+    openCompose({to, subject:'رد: ' + (m.subject || ''),
+      quote:`\n\n----------\nفي ${fmtTime(m.date)}، كتب ${m.fromName || displayNameFor(m.from)}:\n${m.body}`});
+  });
+  bindAct('#mrStar', () => { const m = mail.find(x => x.id === mailUI.open); m.star = !m.star; DB.set('arp_mail', mail); renderMail(); icons(); });
+  bindAct('#mrTrash', () => {
+    const m = mail.find(x => x.id === mailUI.open);
+    m.trashed = true; DB.set('arp_mail', mail); mailUI.open = null;
+    toast('الرسالة اتنقلت للمهملات', 'trash-2'); renderMail(); icons();
+  });
+  bindAct('#mrRestore', () => { const m = mail.find(x => x.id === mailUI.open); m.trashed = false; DB.set('arp_mail', mail); mailUI.open = null; toast('رجعت الرسالة', 'rotate-ccw'); renderMail(); icons(); });
+  bindAct('#mrPurge', () => confirmBox('الحذف النهائي مفيش منه رجوع. متأكد؟', () => {
+    mail = mail.filter(x => x.id !== mailUI.open); DB.set('arp_mail', mail);
+    mailUI.open = null; toast('اتحذفت نهائيًا', 'trash-2'); renderMail(); icons();
+  }));
+}
+function openMailModal(m){
+  const u = me(); if (!m || !u) return;
+  openModal(`<h3><i data-lucide="mail"></i><span style="flex:1;line-height:1.5">${esc(m.subject || '(بدون عنوان)')}</span></h3>
+    <div class="mr-meta" style="margin-bottom:14px">من <span class="from">${esc(m.fromName || displayNameFor(m.from))}</span> — ${fmtTime(m.date)}</div>
+    <div style="font-size:14px;line-height:2;white-space:pre-wrap">${esc(m.body)}</div>
+    <div class="macts">
+      <button class="btn" id="mmTrash"><i data-lucide="trash-2"></i> مهملات</button>
+      <button class="btn primary" id="mmReply"><i data-lucide="reply"></i> رد</button>
+    </div>`);
+  $('#mmTrash').onclick = () => {
+    m.trashed = true; DB.set('arp_mail', mail);
+    if (mailUI.open === m.id) mailUI.open = null;
+    closeModal(); toast('الرسالة اتنقلت للمهملات', 'trash-2'); renderMail(); icons();
+  };
+  $('#mmReply').onclick = () => {
+    const to = m.from === u.email ? m.to : m.from;
+    openCompose({to, subject:'رد: ' + (m.subject || ''),
+      quote:`\n\n----------\nفي ${fmtTime(m.date)}، كتب ${m.fromName || displayNameFor(m.from)}:\n${m.body}`});
+  };
+}
+function openCompose(pre = {}, draftId = null){
+  const u = me(); if (!u) return;
+  openModal(`<h3><i data-lucide="pen-line"></i> ${draftId ? 'تعديل المسودة' : 'رسالة جديدة'}</h3>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;direction:ltr;text-align:right">من: ${esc(u.email)}</div>
+    <div class="field"><label>إلى (لازم تكون صيغة arpico.com ومسجلة فعلاً)</label><input id="cTo" dir="ltr" value="${esc(pre.to || '')}" placeholder="name@arpico.com"></div>
+    <div class="field"><label>الموضوع</label><input id="cSub" value="${esc(pre.subject || '')}" placeholder="موضوع الرسالة"></div>
+    <div class="field"><label>الرسالة</label><textarea id="cBody" rows="6" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13.5px;background:var(--panel2);outline:0;resize:vertical">${esc(pre.body || pre.quote || '')}</textarea></div>
+    <div class="macts">
+      <button class="btn" id="cCancel">إلغاء</button>
+      <button class="btn" id="cSave"><i data-lucide="pencil"></i> حفظ كمسودة</button>
+      <button class="btn primary" id="cSend"><i data-lucide="send"></i> إرسال</button>
+    </div>`);
+  $('#cCancel').onclick = closeModal;
+  const collect = () => ({
+    to: ($('#cTo').value || '').trim().toLowerCase(),
+    subject: $('#cSub').value.trim(),
+    body: ($('#cBody').value || '').trim(),
+  });
+  $('#cSave').onclick = () => {
+    const d = collect();
+    if (!d.to && !d.subject && !d.body) { closeModal(); return; }
+    if (draftId) { const m = mail.find(x => x.id === draftId); if (m) Object.assign(m, d, {date: nowISO()}); }
+    else mail.push({id:uid(), from:u.email, fromName:u.name, to:d.to, subject:d.subject, body:d.body, date:nowISO(), read:true, star:false, trashed:false, draft:true});
+    DB.set('arp_mail', mail); closeModal();
+    toast('تم حفظ المسودة', 'pencil');
+    mailUI.folder = 'drafts'; mailUI.open = null; renderMail(); icons();
+  };
+  $('#cSend').onclick = () => {
+    const d = collect();
+    if (!/@arpico\.com$/.test(d.to)) { toast('الإيميل لازم ينتهي بـ @arpico.com', 'shield'); return; }
+    if (!users.some(x => x.email === d.to)) { toast('ما فيش حد مسجل بالإيميل ده على أرابكوا', 'shield'); return; }
+    if (!d.body) { toast('اكتب الرسالة الأول', 'pen-line'); return; }
+    if (draftId) { const m = mail.find(x => x.id === draftId); if (m) Object.assign(m, d, {date: nowISO(), draft:false, read:false}); }
+    else mail.push({id:uid(), from:u.email, fromName:u.name, to:d.to, subject:d.subject, body:d.body, date:nowISO(), read:false, star:false, trashed:false, draft:false});
+    DB.set('arp_mail', mail);
+    closeModal(); toast('تم إرسال الرسالة بنجاح', 'send');
+    mailUI.folder = 'sent'; mailUI.open = null; renderMail(); icons();
+  };
+}
+
+/* ============ الدردشة + المكالمات ============ */
+function renderChat(){
+  const u = me();
+  if (!u) { pendingNav = {page:'chat'}; viewport.innerHTML = guestPanel(); bindGuestPanel(); return; }
+  const reqs = incomingReqs();
+  const myFriends = (friends[u.email] || []);
+  // المحادثات مجمعة
+  const convMap = {};
+  for (const m of chatMsgs) {
+    if (m.from !== u.email && m.to !== u.email) continue;
+    const peer = m.from === u.email ? m.to : m.from;
+    if (!convMap[peer] || new Date(m.date) > new Date(convMap[peer].date)) convMap[peer] = m;
+  }
+  const convs = Object.entries(convMap).sort((a,b) => new Date(b[1].date) - new Date(a[1].date));
+  const peers = [...new Set([...convs.map(c => c[0]), ...myFriends])];
+
+  viewport.innerHTML = `<div class="chat page">
+    <div class="chat-side">
+      <div class="chat-search">
+        <input id="chatQ" dir="ltr" placeholder="friend@arpico.com" value="${esc(chatUI.q)}">
+        <button class="btn primary fbtn" id="chatFind"><i data-lucide="search"></i> ابحث عن صاحبك</button>
+      </div>
+      ${chatUI.found ? chatFoundCard(chatUI.found, u) : ''}
+      ${reqs.length ? `<div class="chat-sec"><i data-lucide="user-plus"></i> طلبات الصداقة (${arNum(reqs.length)})</div>
+        ${reqs.map(r => `<div class="reqrow">${avatarHTML(displayNameFor(r.from), 38)}
+          <div class="fi"><div class="fn">${esc(displayNameFor(r.from))}</div><div class="fe">${esc(r.from)}</div></div>
+          <div class="reqacts">
+            <button class="iconbtn" data-acc="${r.id}" title="موافقة" style="color:var(--ok)"><i data-lucide="check"></i></button>
+            <button class="iconbtn danger" data-rej="${r.id}" title="رفض"><i data-lucide="x"></i></button>
+          </div></div>`).join('')}` : ''}
+      <div class="chat-sec"><i data-lucide="users"></i> محادثاتك وأصدقاؤك</div>
+      ${peers.length ? peers.map(p => {
+        const last = convMap[p];
+        const un = chatMsgs.filter(m => m.from === p && m.to === u.email && !m.read).length;
+        return `<div class="crow" data-peer="${esc(p)}">${avatarHTML(displayNameFor(p), 38)}
+          <div class="fi"><div class="n">${esc(displayNameFor(p))}</div>
+          <div class="p">${last ? esc((last.from === u.email ? 'أنت: ' : '') + (last.body || '').slice(0, 40)) : esc(p)}</div></div>
+          ${un ? `<span class="bdg">${arNum(un)}</span>` : ''}</div>`;
+      }).join('') : `<p style="padding:8px 16px;font-size:12.5px;color:var(--ink3);line-height:1.8">لسه مفيش محادثات — اكتب إيميل صاحبك فوق واضغط بحث.<br><b>مهم:</b> لازم يكون مسجل حساب على أرابكوا.</p>`}
+    </div>
+    <div class="chat-main" id="chatMain"></div>
+  </div>`;
+
+  const renderThread = () => {
+    const main = $('#chatMain'); if (!main) return;
+    if (!chatUI.peer) {
+      main.innerHTML = `<div class="chat-empty"><i data-lucide="message-circle"></i>
+        <p>اختار محادثة من اليمين، أو دوّر على صاحبك بإيميله.<br>لو عايز تجرب لوحدك: اعمل حساب تاني من قائمة الحساب<br>وسجل دخول بيه وابعت لنفسك.</p></div>`;
+      icons(); return;
+    }
+    const peerU = users.find(x => x.email === chatUI.peer);
+    const msgs = chatMsgs.filter(m => (m.from === u.email && m.to === chatUI.peer) || (m.to === u.email && m.from === chatUI.peer)).sort((a,b) => new Date(a.date) - new Date(b.date));
+    // علّم رسايله كمقروءة
+    let changed = false;
+    for (const m of msgs) if (m.to === u.email && !m.read) { m.read = true; changed = true; }
+    if (changed) DB.set('arp_chat_msgs', chatMsgs);
+    const isF = areFriends(u.email, chatUI.peer);
+    main.innerHTML = `<div class="chat-head">
+        <div class="uh" data-prof="${esc(chatUI.peer)}">${avatarHTML(peerU ? peerU.name : chatUI.peer, 38)}
+        <div><div class="n">${esc(peerU ? peerU.name : chatUI.peer)}</div><div class="e">${esc(chatUI.peer)}</div></div></div>
+        <div class="acts">
+          ${!isF ? `<button class="iconbtn" id="chAddF" title="إضافة صديق"><i data-lucide="user-plus"></i></button>` : `<span class="rtag">أصدقاء</span>`}
+          <button class="iconbtn" id="chCallV" title="مكالمة فيديو"><i data-lucide="video"></i></button>
+          <button class="iconbtn" id="chCallA" title="مكالمة صوتية"><i data-lucide="phone"></i></button>
+        </div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        ${msgs.length ? msgs.map(m => `<div class="msg ${m.from === u.email ? 'me' : 'them'}">${esc(m.body)}</div>`).join('')
+          : `<div style="text-align:center;color:var(--ink3);font-size:12.5px;margin:auto">ابدأ المحادثة بسلام 👋</div>`}
+      </div>
+      <div class="chat-input">
+        <input id="chatIn" placeholder="اكتب رسالتك..." autocomplete="off">
+        <button class="btn primary" id="chatSend" style="padding:10px 18px"><i data-lucide="send"></i></button>
+      </div>`;
+    icons();
+    const box = $('#chatMsgs'); box.scrollTop = box.scrollHeight;
+    $('#chatIn').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+    $('#chatSend').onclick = sendChat;
+    const af = $('#chAddF'); if (af) af.onclick = () => { sendFriendReq(chatUI.peer); renderChat(); icons(); };
+    $('#chCallV').onclick = () => openCall(chatUI.peer, true);
+    $('#chCallA').onclick = () => openCall(chatUI.peer, false);
+    main.querySelector('.uh').onclick = () => goProfile(chatUI.peer);
+  };
+
+  function sendChat(){
+    const inp = $('#chatIn'); const body = (inp.value || '').trim(); if (!body) return;
+    if (!users.some(x => x.email === chatUI.peer)) { toast('الحساب ده مش موجود', 'shield', true); return; }
+    chatMsgs.push({id:uid(), from:u.email, to:chatUI.peer, body, date:nowISO(), read:false});
+    DB.set('arp_chat_msgs', chatMsgs);
+    inp.value = '';
+    // الرسايل للنفس بتتقري فورًا
+    const msgs = chatMsgs.filter(m => (m.from === u.email && m.to === chatUI.peer) || (m.to === u.email && m.from === chatUI.peer));
+    for (const m of msgs) if (m.to === u.email) m.read = true;
+    DB.set('arp_chat_msgs', chatMsgs);
+    renderThread(); icons();
+  }
+
+  renderThread();
+
+  $('#chatFind').onclick = () => {
+    const raw = ($('#chatQ').value || '').trim().toLowerCase();
+    chatUI.q = raw;
+    if (!raw) { chatUI.found = null; return renderChat(); }
+    const target = raw.endsWith('@arpico.com') ? raw : raw + '@arpico.com';
+    const found = users.find(x => x.email === target) || users.find(x => x.email === raw);
+    if (!found) {
+      chatUI.found = null;
+      toast(`ما لقينش حد بالإيميل ده: ${target} — لازم يكون مسجل حساب على أرابكوا`, 'shield', true);
+      return renderChat();
+    }
+    chatUI.found = found.email;
+    renderChat(); icons();
+  };
+  $('#chatQ').addEventListener('keydown', e => { if (e.key === 'Enter') $('#chatFind').click(); });
+
+  viewport.querySelectorAll('[data-acc]').forEach(b => b.onclick = () => { acceptReq(b.dataset.acc); renderChat(); icons(); });
+  viewport.querySelectorAll('[data-rej]').forEach(b => b.onclick = () => { rejectReq(b.dataset.rej); renderChat(); icons(); });
+  viewport.querySelectorAll('.crow').forEach(r => r.onclick = () => {
+    chatUI.peer = r.dataset.peer;
+    if (isNarrow()) openChatModal(chatUI.peer);
+    else { renderChat(); icons(); }
+  });
+  const fc = $('#fChat');
+  if (fc) fc.onclick = () => { chatUI.peer = fc.dataset.peer; renderChat(); icons(); };
+  const fa = $('#fAdd');
+  if (fa) fa.onclick = () => { sendFriendReq(fa.dataset.peer); chatUI.found = null; renderChat(); icons(); };
+}
+
+function chatFoundCard(email, u){
+  const peer = users.find(x => x.email === email); if (!peer) return '';
+  const isF = areFriends(u.email, email);
+  const req = reqBetween(u.email, email);
+  let fHtml;
+  if (isF) fHtml = `<span class="rtag">أصدقاء</span>`;
+  else if (req && req.from === u.email) fHtml = `<button class="iconbtn" disabled style="opacity:.5"><i data-lucide="clock"></i></button>`;
+  else if (req) fHtml = `<button class="iconbtn" id="fAcc" title="موافقة" style="color:var(--ok)"><i data-lucide="check"></i></button>`;
+  else fHtml = `<button class="iconbtn" id="fAdd" data-peer="${esc(email)}" title="إضافة صديق"><i data-lucide="user-plus"></i></button>`;
+  return `<div class="found">${avatarHTML(peer.name, 42)}
+    <div class="fi"><div class="fn">${esc(peer.name)}</div><div class="fe">${esc(peer.email)}</div></div>
+    <div class="fa">${fHtml}
+      <button class="iconbtn" id="fChat" data-peer="${esc(email)}" title="محادثة"><i data-lucide="message-circle"></i></button>
+      <button class="iconbtn" id="fCallV" data-peer="${esc(email)}" title="فيديو"><i data-lucide="video"></i></button>
+    </div></div>`;
+}
+// أزرار كارت البحث (مكالمة/موافقة)
+document.addEventListener('click', e => {
+  const fv = e.target.closest('#fCallV');
+  if (fv) { openCall(fv.dataset.peer, true); return; }
+  const fa2 = e.target.closest('#fAcc');
+  if (fa2) {
+    const req = incomingReqs().find(r => r.from === fa2.dataset.peer || (users.find(x=>x.email===fa2.dataset.peer) && reqBetween(me()?.email||'', fa2.dataset.peer)));
+    const r = friendReqs.find(x => x.status==='pending' && x.to === (me()?.email||'') && x.from === fa2.dataset.peer);
+    if (r) { acceptReq(r.id); renderChat(); icons(); }
+  }
+});
+
+// محادثة في نافذة (للموبايل)
+function openChatModal(peer){
+  const u = me(); if (!u) return;
+  const peerU = users.find(x => x.email === peer);
+  const msgs = chatMsgs.filter(m => (m.from === u.email && m.to === peer) || (m.to === u.email && m.from === peer)).sort((a,b) => new Date(a.date) - new Date(b.date));
+  for (const m of msgs) if (m.to === u.email) m.read = true;
+  DB.set('arp_chat_msgs', chatMsgs);
+  openModal(`<h3><i data-lucide="message-circle"></i><span style="flex:1">${esc(peerU ? peerU.name : peer)}</span>
+      <button class="iconbtn" id="cmCall" title="مكالمة فيديو"><i data-lucide="video"></i></button></h3>
+    <div style="max-height:45vh;overflow-y:auto;display:flex;flex-direction:column;margin-bottom:10px" id="cmBox">
+      ${msgs.length ? msgs.map(m => `<div class="msg ${m.from === u.email ? 'me' : 'them'}">${esc(m.body)}</div>`).join('')
+        : '<p style="text-align:center;color:var(--ink3);font-size:12.5px">ابدأ المحادثة بسلام</p>'}
+    </div>
+    <div class="chat-input" style="border:0;padding:0">
+      <input id="cmIn" placeholder="اكتب رسالتك...">
+      <button class="btn primary" id="cmSend" style="padding:10px 16px"><i data-lucide="send"></i></button>
+    </div>`);
+  const box = $('#cmBox'); box.scrollTop = box.scrollHeight;
+  const send = () => {
+    const body = ($('#cmIn').value || '').trim(); if (!body) return;
+    if (!users.some(x => x.email === peer)) { toast('الحساب ده مش موجود', 'shield', true); return; }
+    chatMsgs.push({id:uid(), from:u.email, to:peer, body, date:nowISO(), read:peer === u.email ? true : false});
+    DB.set('arp_chat_msgs', chatMsgs);
+    closeModal(); openChatModal(peer);
+  };
+  $('#cmSend').onclick = send;
+  $('#cmIn').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+  $('#cmCall').onclick = () => { closeModal(); openCall(peer, true); };
+}
+
+// ---------- المكالمات (كاميرا وميكروفون حقيقيان) ----------
+let callStream = null, callInts = [], callAudioCtx = null, callStart = 0;
+async function openCall(peerEmail, withVideo){
+  const u = me(); if (!u) return;
+  if (!users.some(x => x.email === peerEmail)) { toast('الحساب ده مش موجود', 'shield', true); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('المتصفح مش داعم للمكالمات', 'mic', true); return; }
+  try {
+    callStream = await navigator.mediaDevices.getUserMedia({audio:true, video:withVideo});
+  } catch(e) {
+    toast(`اسمح بالوصول ${withVideo ? 'للكاميرا والميكروفون' : 'للميكروفون'} الأول من إعدادات المتصفح`, 'mic', true);
+    return;
+  }
+  window._activeCall = true; callStart = Date.now();
+  const peerU = users.find(x => x.email === peerEmail);
+  openModal(`<div class="callbox">
+    ${withVideo
+      ? `<video id="callVid" autoplay playsinline muted></video>`
+      : `<div class="callring">${avatarHTML(peerU ? peerU.name : peerEmail, 96)}</div>
+         <canvas id="callMeter" width="220" height="10"></canvas>`}
+    <div class="callname">${esc(peerU ? peerU.name : peerEmail)}</div>
+    <div class="callsub">مكالمة ${withVideo ? 'فيديو' : 'صوتية'} — كاميرتك وميكروفونك شغالين فعلاً.<br>الربط المباشر بين جهازين محتاج سيرفر (النسخة دي محلية).</div>
+    <div class="calltime" id="callTime">00:00</div>
+    <div class="callacts">
+      <button class="callbtn" id="callMute" title="كتم"><i data-lucide="mic"></i></button>
+      <button class="callbtn end" id="callEnd" title="إنهاء"><i data-lucide="phone-off"></i></button>
+    </div></div>`);
+  if (withVideo) { const v = $('#callVid'); if (v) v.srcObject = callStream; }
+  // مؤقت المكالمة
+  callInts.push(setInterval(() => {
+    const s = Math.floor((Date.now() - callStart) / 1000);
+    const el = $('#callTime');
+    if (el) el.textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 500));
+  // مقياس الصوت للمكالمة الصوتية
+  if (!withVideo) {
+    try {
+      callAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = callAudioCtx.createMediaStreamSource(callStream);
+      const an = callAudioCtx.createAnalyser(); an.fftSize = 256;
+      src.connect(an);
+      const data = new Uint8Array(an.frequencyBinCount);
+      const cv = $('#callMeter');
+      if (cv) {
+        const ctx = cv.getContext('2d');
+        callInts.push(setInterval(() => {
+          an.getByteFrequencyData(data);
+          const avg = data.reduce((a,b) => a+b, 0) / data.length;
+          ctx.clearRect(0, 0, 220, 10);
+          ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--brand') || '#B23A2E';
+          const w = Math.max(6, (avg / 255) * 220);
+          ctx.fillRect((220 - w) / 2, 2, w, 6);
+        }, 100));
+      }
+    } catch(e){}
+  }
+  let muted = false;
+  $('#callMute').onclick = () => {
+    muted = !muted;
+    callStream.getAudioTracks().forEach(t => t.enabled = !muted);
+    $('#callMute').innerHTML = `<i data-lucide="${muted ? 'mic-off' : 'mic'}"></i>`; icons();
+  };
+  $('#callEnd').onclick = () => closeModal();
+  icons();
+}
+function cleanupCall(){
+  window._activeCall = false;
+  callInts.forEach(clearInterval); callInts = [];
+  if (callStream) { callStream.getTracks().forEach(t => t.stop()); callStream = null; }
+  if (callAudioCtx) { try { callAudioCtx.close(); } catch(e){} callAudioCtx = null; }
+}
+
+/* ============ انستا (صور + ريلز + بروفايلات) ============ */
+const canDel = p => me() ? p.authorEmail === me().email : !p.authorEmail;
+function renderInsta(){
+  const u = me();
+  if (!requireLogin('انستا')) return;
+  const likesOf = p => p.likes + (social.instaLikes[p.id] ? 1 : 0);
+  const has = instaPosts.length > 0;
+  viewport.innerHTML = `<div class="insta page"><div class="insta-col">
+    <div class="i-head">
+      <div class="i-logo">${igIco()}انستا<span>على أرابكوا</span></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="demo-badge">محتواك محفوظ على جهازك</span>
+        <button class="btn primary" id="iUpload" style="padding:8px 16px;font-size:12px"><i data-lucide="plus"></i> صورة / ريلز</button>
+      </div>
+    </div>
+    ${has ? instaPosts.map(p => {
+      const isVid = p.type === 'video';
+      return `<div class="post" data-p="${p.id}">
+      <div class="post-h">
+        <div class="uh" data-prof="${esc(p.authorEmail || '')}">${avatarHTML(p.user, 36)}
+          <div><div class="u">${esc(p.user)}</div><div class="tm">${fmtTime(p.date)}${isVid ? ' · ريلز' : ''}</div></div></div>
+        ${canDel(p) ? `<button class="del" data-delp="${p.id}" title="حذف"><i data-lucide="trash-2"></i></button>` : ''}
+      </div>
+      <div class="post-img ${isVid ? 'reel' : ''}" data-img="${p.id}">
+        ${isVid ? `<video data-media="${p.mediaId}" loop playsinline preload="metadata"></video>`
+                : `<img data-media="${p.mediaId}" alt="">`}
+        <div class="bigheart" id="bh-${p.id}"><i data-lucide="heart"></i></div>
+      </div>
+      <div class="post-a">
+        <button data-like="${p.id}" class="${social.instaLikes[p.id] ? 'liked' : ''}"><i data-lucide="heart"></i></button>
+        <button data-cmt="${p.id}"><i data-lucide="message-circle"></i></button>
+        <button data-share="${p.id}"><i data-lucide="send"></i></button>
+        <span class="sp"></span>
+      </div>
+      <div class="plikes" id="pl-${p.id}">${arNum(likesOf(p))} إعجاب</div>
+      ${p.caption ? `<div class="pcap"><b>${esc(p.user)}</b> ${esc(p.caption)}</div>` : ''}
+      <div class="pcomments" id="pc-${p.id}">${(p.comments || []).map(c => `<div class="c"><b>${esc(c.u)}</b> ${esc(c.t)}</div>`).join('')}</div>
+      <div class="cform"><input id="ci-${p.id}" placeholder="أضف تعليقًا..."><button data-send="${p.id}">نشر</button></div>
+    </div>`; }).join('')
+    : `<div class="feedempty"><i data-lucide="image"></i>
+       <p>الفيد فاضي — مفيش ولا صورة أو ريلز لسه.<br>ارفع أول منشور ليك (صورة أو فيديو) وه يفضل محفوظ على جهازك.</p>
+       <button class="btn primary" id="iUpload2"><i data-lucide="upload"></i> ارفع أول منشور</button></div>`}
+  </div></div>`;
+
+  const savePosts = () => DB.set('arp_insta_posts', instaPosts);
+  const saveSocial = () => DB.set('arp_social', social);
+  const cName = () => me() ? me().name : 'زائر';
+  const doUpload = () => openUploadModal({accept:'image/*,video/*', title:'صورة جديدة أو ريلز', capLabel:'الكابشن (اختياري)'}, (file, caption) => {
+    const id = uid();
+    const isVid = (file.type || '').startsWith('video');
+    saveMedia('ig-' + id, file).then(() => {
+      instaPosts.unshift({id, mediaId:'ig-' + id, type:isVid ? 'video' : 'image', caption, user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
+      savePosts(); renderInsta(); hydrateMedia(viewport); icons();
+      toast(isVid ? 'ريلزك اتنشر' : 'صورتك اتنشرت', 'sparkles');
+    });
+  });
+  const up1 = $('#iUpload'), up2 = $('#iUpload2');
+  if (up1) up1.onclick = doUpload;
+  if (up2) up2.onclick = doUpload;
+
+  viewport.querySelectorAll('[data-like]').forEach(b => b.onclick = () => {
+    const id = b.dataset.like; social.instaLikes[id] = !social.instaLikes[id]; saveSocial();
+    b.classList.toggle('liked'); const p = instaPosts.find(x => x.id === id);
+    $('#pl-' + id).textContent = `${arNum(likesOf(p))} إعجاب`;
+  });
+  viewport.querySelectorAll('[data-img]').forEach(el => {
+    const id = el.dataset.img;
+    const p = instaPosts.find(x => x.id === id);
+    const v = el.querySelector('video');
+    if (v) {
+      v.addEventListener('click', () => { if (v.paused) v.play(); else v.pause(); });
+    } else {
+      el.addEventListener('dblclick', () => {
+        if (!social.instaLikes[id]) { social.instaLikes[id] = true; saveSocial();
+          viewport.querySelector(`[data-like="${id}"]`)?.classList.add('liked');
+          $('#pl-' + id).textContent = `${arNum(likesOf(p))} إعجاب`; }
+        const bh = $('#bh-' + id); bh.classList.remove('pop'); void bh.offsetWidth; bh.classList.add('pop');
+      });
+    }
+  });
+  viewport.querySelectorAll('[data-share]').forEach(b => b.onclick = () => copyText('arpico://insta/' + b.dataset.share));
+  viewport.querySelectorAll('[data-cmt]').forEach(b => b.onclick = () => $('#ci-' + b.dataset.cmt).focus());
+  viewport.querySelectorAll('[data-delp]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const p = instaPosts.find(x => x.id === b.dataset.delp);
+    confirmBox('هتحذف المنشور نهائيًا. متأكد؟', async () => {
+      await deleteMedia(p.mediaId);
+      instaPosts = instaPosts.filter(x => x.id !== p.id); savePosts();
+      delete social.instaLikes[p.id]; saveSocial();
+      toast('اتحذف المنشور', 'trash-2'); renderInsta(); icons();
+    });
+  });
+  const addCmt = id => {
+    const inp = $('#ci-' + id); const t = inp.value.trim(); if (!t) return;
+    const p = instaPosts.find(x => x.id === id); if (!p) return;
+    if (!p.comments) p.comments = [];
+    p.comments.unshift({u:cName(), t}); savePosts();
+    $('#pc-' + id).insertAdjacentHTML('afterbegin', `<div class="c"><b>${esc(cName())}</b> ${esc(t)}</div>`);
+    inp.value = '';
+  };
+  viewport.querySelectorAll('[data-send]').forEach(b => b.onclick = () => addCmt(b.dataset.send));
+  viewport.querySelectorAll('.cform input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') addCmt(i.id.slice(3)); }));
+  // الدوس على اسم المستخدم يفتح البروفايل
+  viewport.querySelectorAll('[data-prof]').forEach(el => el.onclick = e => {
+    if (el.dataset.prof) goProfile(el.dataset.prof);
+  });
+  hydrateMedia(viewport);
+}
+
+/* ============ تيك توك ============ */
+function renderTikTok(){
+  const u = me();
+  if (!requireLogin('تيك توك')) return;
+  const has = tkPosts.length > 0;
+  viewport.innerHTML = `<div class="tiktok page" id="tkFeed">
+    <div class="tk-brand">تيك توك على أرابكوا — فيديوهاتك محفوظة على جهازك</div>
+    <button class="tk-upload" id="tkUpload"><i data-lucide="upload"></i> ارفع فيديو</button>
+    ${has ? tkPosts.map(p => `<div class="tk-item" data-i="${p.id}">
+      <video data-media="${p.mediaId}" loop playsinline preload="metadata"></video>
+      <div class="tk-state"><span class="pi"><i data-lucide="play"></i></span></div>
+      <div class="tk-side">
+        <span class="t-av" data-prof="${esc(p.authorEmail || '')}" style="cursor:pointer">${avatarHTML(p.user, 46)}</span>
+        <div class="tk-act ${social.tkLikes[p.id] ? 'liked' : ''}" data-tk="${p.id}"><i data-lucide="heart"></i><span id="tcl-${p.id}">${arNum(p.likes + (social.tkLikes[p.id] ? 1 : 0))}</span></div>
+        <div class="tk-act" data-tkc="${p.id}"><i data-lucide="message-circle"></i><span id="tcc-${p.id}">${arNum((p.comments || []).length)}</span></div>
+        <div class="tk-act" data-tks="${p.id}"><i data-lucide="share-2"></i><span>مشاركة</span></div>
+        ${canDel(p) ? `<div class="tk-act" data-tkd="${p.id}"><i data-lucide="trash-2"></i><span>حذف</span></div>` : ''}
+      </div>
+      <div class="tk-info"><div class="tk-user" data-prof="${esc(p.authorEmail || '')}">@${esc(p.user)}</div>
+        ${p.caption ? `<div class="tk-cap">${esc(p.caption)}</div>` : ''}</div>
+    </div>`).join('')
+    : `<div class="tkempty"><i data-lucide="video"></i>
+       <p>الفييد فاضي — مفيش ولا فيديو لسه.<br>ارفع أي فيديو بأي حجم، وه يتخزن على جهازك<br>ويفضل موجود حتى بعد ما تقفل المتصفح.</p>
+       <button class="btn primary" id="tkUpload2"><i data-lucide="upload"></i> ارفع أول فيديو</button></div>`}
+  </div>`;
+
+  const savePosts = () => DB.set('arp_tk_posts', tkPosts);
+  const saveSocial = () => DB.set('arp_social', social);
+  const cName = () => me() ? me().name : 'زائر';
+  const doUpload = () => openUploadModal({accept:'video/*', title:'فيديو جديد — أي حجم', capLabel:'الكابشن (اختياري)'}, (file, caption) => {
+    const id = uid();
+    saveMedia('tk-' + id, file).then(() => {
+      tkPosts.unshift({id, mediaId:'tk-' + id, caption, user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
+      savePosts(); renderTikTok(); hydrateMedia(viewport); icons();
+      toast('اتنشر الفيديو', 'sparkles');
+    });
+  });
+  const u1 = $('#tkUpload'), u2 = $('#tkUpload2');
+  if (u1) u1.onclick = doUpload;
+  if (u2) u2.onclick = doUpload;
+
+  viewport.querySelectorAll('.tk-item').forEach(item => {
+    const v = item.querySelector('video'); if (!v) return;
+    v.addEventListener('click', () => {
+      if (v.paused) { v.play(); item.classList.add('playing'); }
+      else { v.pause(); item.classList.remove('playing'); }
+    });
+  });
+  viewport.querySelectorAll('[data-tk]').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const id = b.dataset.tk;
+    social.tkLikes[id] = !social.tkLikes[id]; saveSocial(); b.classList.toggle('liked');
+    const p = tkPosts.find(x => x.id === id);
+    $('#tcl-' + id).textContent = arNum(p.likes + (social.tkLikes[id] ? 1 : 0));
+  });
+  viewport.querySelectorAll('[data-tks]').forEach(b => b.onclick = e => { e.stopPropagation(); copyText('arpico://tiktok/' + b.dataset.tks); });
+  viewport.querySelectorAll('[data-tkd]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const p = tkPosts.find(x => x.id === b.dataset.tkd);
+    confirmBox('هتحذف الفيديو نهائيًا من جهازك. متأكد؟', async () => {
+      await deleteMedia(p.mediaId);
+      tkPosts = tkPosts.filter(x => x.id !== p.id); savePosts();
+      delete social.tkLikes[p.id]; saveSocial();
+      toast('اتحذف الفيديو', 'trash-2'); renderTikTok(); icons();
+    });
+  });
+  viewport.querySelectorAll('[data-tkc]').forEach(b => b.onclick = e => {
+    e.stopPropagation(); const id = b.dataset.tkc; const p = tkPosts.find(x => x.id === id);
+    const all = p.comments || [];
+    openModal(`<h3><i data-lucide="message-circle"></i> التعليقات (${arNum(all.length)})</h3>
+      <div style="max-height:300px;overflow-y:auto">${all.map(c => `<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.7"><b>${esc(c.u)}</b> ${esc(c.t)}</div>`).join('') || '<p style="color:var(--ink3);font-size:13px">أول تعليق يبقى لك</p>'}</div>
+      <div class="cform" style="margin-top:14px;padding:0"><input id="tci" placeholder="أضف تعليقًا..."><button class="btn primary" id="tcs" style="padding:9px 18px">نشر</button></div>`);
+    $('#tcs').onclick = () => {
+      const t = $('#tci').value.trim(); if (!t) return;
+      if (!p.comments) p.comments = [];
+      p.comments.push({u:cName(), t});
+      savePosts(); closeModal();
+      const cc = $('#tcc-' + id);
+      if (cc) cc.textContent = arNum(p.comments.length);
+      toast('تم نشر تعليقك', 'message-circle');
+    };
+    $('#tci').addEventListener('keydown', e => { if (e.key === 'Enter') $('#tcs').click(); });
+  });
+  viewport.querySelectorAll('[data-prof]').forEach(el => el.addEventListener('click', e => {
+    e.stopPropagation();
+    if (el.dataset.prof) goProfile(el.dataset.prof);
+  }));
+  hydrateMedia(viewport);
+}
+
+/* ============ يوتيوب أرابكوا ============ */
+function renderYT(){
+  const u = me();
+  if (!requireLogin('يوتيوب أرابكوا')) return;
+  const savePosts = () => DB.set('arp_yt_posts', ytPosts);
+  const cName = () => me() ? me().name : 'زائر';
+
+  if (ytUI.open) {
+    const p = ytPosts.find(x => x.id === ytUI.open);
+    if (!p) { ytUI.open = null; return renderYT(); }
+    viewport.innerHTML = `<div class="yt page"><div class="yt-wrap">
+      <button class="btn yback" id="ytBack"><i data-lucide="arrow-right"></i> رجوع للكل</button>
+      <div class="yplayer"><video data-media="${p.mediaId}" controls playsinline></video></div>
+      <div class="yinfo">
+        <h2>${esc(p.title)}</h2>
+        <div class="meta">
+          <span><i data-lucide="eye"></i> ${arNum(p.views)} مشاهدة</span>
+          <span class="up" data-prof="${esc(p.authorEmail || '')}"><i data-lucide="user"></i> ${esc(p.user)}</span>
+          <span><i data-lucide="clock"></i> ${fmtTime(p.date)}</span>
+          ${canDel(p) ? `<button class="iconbtn danger" id="ytDel" title="حذف"><i data-lucide="trash-2"></i></button>` : ''}
+        </div>
+        ${p.desc ? `<div class="desc">${esc(p.desc)}</div>` : ''}
+      </div>
+    </div></div>`;
+    $('#ytBack').onclick = () => { ytUI.open = null; renderYT(); icons(); };
+    const yd = $('#ytDel');
+    if (yd) yd.onclick = () => confirmBox('هتحذف الفيديو نهائيًا. متأكد؟', async () => {
+      await deleteMedia(p.mediaId);
+      ytPosts = ytPosts.filter(x => x.id !== p.id); savePosts();
+      ytUI.open = null; toast('اتحذف الفيديو', 'trash-2'); renderYT(); icons();
+    });
+    viewport.querySelectorAll('[data-prof]').forEach(el => el.onclick = () => { if (el.dataset.prof) goProfile(el.dataset.prof); });
+    hydrateMedia(viewport); icons();
+    return;
+  }
+
+  viewport.innerHTML = `<div class="yt page"><div class="yt-wrap">
+    <div class="yt-head">
+      <h1><i data-lucide="video"></i> يوتيوب أرابكوا</h1>
+      <button class="btn primary" id="ytUpload"><i data-lucide="upload"></i> ارفع فيديو</button>
+    </div>
+    ${ytPosts.length ? `<div class="ygrid">${ytPosts.map(p => `<div class="ycard" data-y="${p.id}">
+      <div class="ythumb"><video data-media="${p.mediaId}" muted preload="metadata"></video>
+        <span class="yplay"><i data-lucide="play"></i></span></div>
+      <div class="ybody"><div class="t">${esc(p.title)}</div>
+        <div class="m"><span><i data-lucide="eye"></i> ${arNum(p.views)}</span>
+        <span class="up" data-prof="${esc(p.authorEmail || '')}"><i data-lucide="user"></i> ${esc(p.user)}</span></div></div>
+    </div>`).join('')}</div>`
+    : `<div class="feedempty"><i data-lucide="video"></i>
+       <p>مفيش فيديوهات لسه.<br>ارفع أي فيديو بأي حجم — ه يتخزن على جهازك ويفضل موجود.</p>
+       <button class="btn primary" id="ytUpload2"><i data-lucide="upload"></i> ارفع أول فيديو</button></div>`}
+  </div></div>`;
+
+  const doUpload = () => openUploadModal({accept:'video/*', title:'فيديو جديد — أي حجم', capLabel:'عنوان الفيديو', desc:true}, (file, title, desc) => {
+    const id = uid();
+    saveMedia('yt-' + id, file).then(() => {
+      ytPosts.unshift({id, mediaId:'yt-' + id, title:title || 'فيديو بدون عنوان', desc, user:cName(), authorEmail:me()?.email || '', date:nowISO(), views:0});
+      savePosts(); renderYT(); hydrateMedia(viewport); icons();
+      toast('اترفع الفيديو', 'sparkles');
+    });
+  });
+  const y1 = $('#ytUpload'), y2 = $('#ytUpload2');
+  if (y1) y1.onclick = doUpload;
+  if (y2) y2.onclick = doUpload;
+  viewport.querySelectorAll('.ycard').forEach(c => c.onclick = e => {
+    if (e.target.closest('[data-prof]')) return;
+    const p = ytPosts.find(x => x.id === c.dataset.y);
+    if (!p) return;
+    p.views++; savePosts();
+    ytUI.open = p.id; renderYT(); icons();
+  });
+  viewport.querySelectorAll('[data-prof]').forEach(el => el.onclick = e => {
+    e.stopPropagation();
+    if (el.dataset.prof) goProfile(el.dataset.prof);
+  });
+  hydrateMedia(viewport);
+}
+
+// مودال رفع الوسائط المشترك
+function openUploadModal(opts, cb){
+  const {accept='image/*', title='رفع', capLabel='كابشن (اختياري)', desc=false} = opts;
+  openModal(`<h3><i data-lucide="upload"></i> ${esc(title)}</h3>
+    <div class="field"><label>اختر الملف من جهازك (أي حجم مسموح)</label>
+      <input type="file" id="upFile" class="fin" accept="${esc(accept)}"></div>
+    <div class="field"><label>${esc(capLabel)}</label>
+      <input id="upTitle" placeholder="اكتب هنا..."></div>
+    ${desc ? `<div class="field"><label>وصف (اختياري)</label><input id="upDesc" placeholder="تفاصيل..."></div>` : ''}
+    <p class="hint">الملف هيتخزن محليًا على جهازك (IndexedDB) ويفضل موجود بعد إغلاق المتصفح.</p>
+    <div class="macts">
+      <button class="btn" id="upCancel">إلغاء</button>
+      <button class="btn primary" id="upGo"><i data-lucide="upload"></i> نشر</button>
+    </div>`);
+  $('#upCancel').onclick = closeModal;
+  $('#upGo').onclick = () => {
+    const f = $('#upFile').files[0];
+    if (!f) { toast('اختار ملف الأول', 'shield'); return; }
+    const caption = $('#upTitle').value.trim();
+    const d = $('#upDesc') ? $('#upDesc').value.trim() : '';
+    closeModal();
+    cb(f, caption, d);
+  };
+}
+
+/* ============ البروفايل ============ */
+function renderProfile(d){
+  const email = (d.email || '').toLowerCase();
+  const u = users.find(x => x.email === email);
+  if (!u) { viewport.innerHTML = `<div class="site404">${bean()}<h3>الحساب غير موجود</h3><p style="font-size:13px">ممكن يكون اتمسح.</p></div>`; return; }
+  const m = me();
+  const isMe = m && m.email === email;
+  const posts = instaPosts.filter(p => p.authorEmail === email);
+  const vids = [
+    ...tkPosts.filter(p => p.authorEmail === email).map(p => ({...p, kind:'tk'})),
+    ...ytPosts.filter(p => p.authorEmail === email).map(p => ({...p, kind:'yt'})),
+  ];
+  const mysites = sites.filter(s => s.authorEmail === email);
+  const fCount = (friends[email] || []).length;
+
+  let fBtn = '';
+  if (m && !isMe) {
+    const req = reqBetween(m.email, email);
+    if (areFriends(m.email, email)) fBtn = `<button class="btn" id="fRemove"><i data-lucide="user-check"></i> صديق — إزالة</button>`;
+    else if (req && req.from === m.email) fBtn = `<button class="btn" disabled style="opacity:.55;cursor:default"><i data-lucide="clock"></i> طلبك مرسل</button>`;
+    else if (req) fBtn = `<button class="btn primary" id="fAccept"><i data-lucide="user-plus"></i> موافقة على طلبه</button>`;
+    else fBtn = `<button class="btn primary" id="fAdd"><i data-lucide="user-plus"></i> إضافة صديق</button>`;
+  }
+
+  viewport.innerHTML = `<div class="prof page"><div class="prof-wrap">
+    <div class="prof-card">
+      ${avatarHTML(u.name, 88)}
+      <div class="prof-info">
+        <div class="n">${esc(u.name)}</div>
+        <div class="e">${esc(u.email)}</div>
+        <div class="j">عضو منذ ${fmtDate(u.joined)}</div>
+        <div class="prof-stats">
+          <span><b>${arNum(posts.length)}</b> منشور</span>
+          <span><b>${arNum(vids.length)}</b> فيديو</span>
+          <span><b>${arNum(fCount)}</b> صديق</span>
+          <span><b>${arNum(mysites.length)}</b> موقع</span>
+        </div>
+      </div>
+      <div class="prof-acts">
+        ${isMe ? `<button class="btn" id="pEdit"><i data-lucide="settings"></i> إعداداتي</button>` : `
+          ${fBtn}
+          <button class="btn" id="pMsg"><i data-lucide="message-circle"></i> رسالة</button>
+          <button class="iconbtn" id="pCallV" title="مكالمة فيديو" style="width:42px;height:42px"><i data-lucide="video"></i></button>
+          <button class="iconbtn" id="pCallA" title="مكالمة صوتية" style="width:42px;height:42px"><i data-lucide="phone"></i></button>`}
+      </div>
+    </div>
+    <div class="ptabs">
+      <button class="chip ${profUI.tab==='posts'?'on':''}" data-pt="posts">منشوراته (${arNum(posts.length)})</button>
+      <button class="chip ${profUI.tab==='vids'?'on':''}" data-pt="vids">فيديوهاته (${arNum(vids.length)})</button>
+      <button class="chip ${profUI.tab==='sites'?'on':''}" data-pt="sites">مواقعه (${arNum(mysites.length)})</button>
+    </div>
+    <div id="profBody"></div>
+  </div></div>`;
+
+  const body = $('#profBody');
+  const t = profUI.tab;
+  if (t === 'posts') {
+    body.innerHTML = posts.length ? `<div class="pgrid">${posts.map(p => `
+      <div class="ptile ${p.type === 'video' ? 'vid' : ''}" data-go="insta">
+        ${p.type === 'video' ? `<video data-media="${p.mediaId}" muted preload="metadata"></video>` : `<img data-media="${p.mediaId}" alt="">`}
+      </div>`).join('')}</div>`
+    : `<div class="prof-empty">مفيش منشورات لسه</div>`;
+  } else if (t === 'vids') {
+    body.innerHTML = vids.length ? `<div class="pgrid">${vids.map(p => `
+      <div class="ptile vid" data-kind="${p.kind}" data-id="${p.id}">
+        <video data-media="${p.mediaId}" muted preload="metadata"></video>
+      </div>`).join('')}</div>`
+    : `<div class="prof-empty">مفيش فيديوهات لسه</div>`;
+  } else {
+    body.innerHTML = mysites.length ? mysites.map(s => `<div class="srowmini" data-site="${s.id}">
+      ${letterDot(s.slug, 'avatar')}
+      <div style="flex:1;min-width:0"><div class="n">${esc(s.name)}</div><div class="u">${esc(s.slug)}.arpico</div></div>
+      <span class="rtag">${arNum(s.views)} زيارة</span>
+    </div>`).join('') : `<div class="prof-empty">مفيش مواقع منشورة</div>`;
+  }
+  icons(); hydrateMedia(body);
+
+  viewport.querySelectorAll('.ptabs .chip').forEach(c => c.onclick = () => { profUI.tab = c.dataset.pt; renderProfile(d); icons(); });
+  body.querySelectorAll('[data-go="insta"]').forEach(x => x.onclick = () => navigate('insta'));
+  body.querySelectorAll('[data-kind="tk"]').forEach(x => x.onclick = () => navigate('tiktok'));
+  body.querySelectorAll('[data-kind="yt"]').forEach(x => x.onclick = () => navigate('yt'));
+  body.querySelectorAll('[data-site]').forEach(x => x.onclick = () => navigate('site', {siteId:x.dataset.site}));
+
+  const pe = $('#pEdit');
+  if (pe) pe.onclick = () => navigate('settings');
+  const pm = $('#pMsg');
+  if (pm) pm.onclick = () => {
+    chatUI.peer = email;
+    if (isNarrow()) openChatModal(email); else navigate('chat');
+  };
+  const pv2 = $('#pCallV'), pa2 = $('#pCallA');
+  if (pv2) pv2.onclick = () => openCall(email, true);
+  if (pa2) pa2.onclick = () => openCall(email, false);
+  const fa3 = $('#fAdd');
+  if (fa3) fa3.onclick = () => { sendFriendReq(email); renderProfile(d); icons(); };
+  const fac = $('#fAccept');
+  if (fac) fac.onclick = () => {
+    const r = friendReqs.find(x => x.status === 'pending' && x.to === m.email && x.from === email);
+    if (r) { acceptReq(r.id); renderProfile(d); icons(); }
+  };
+  const fr = $('#fRemove');
+  if (fr) fr.onclick = () => confirmBox(`هتشيل ${esc(u.name)} من أصدقائك. متأكد؟`, () => {
+    setFriends(m.email, email, false);
+    toast('تمت الإزالة', 'user-x'); renderProfile(d); icons();
+  });
+}
+
+/* ============ قائمة الحساب ============ */
+function toggleProfileMenu(){
+  const menu = $('#profileMenu');
+  if (menu.classList.contains('open')) { menu.classList.remove('open'); return; }
+  const u = me(); const ub = unread(); const uc = unreadChats(); const rq = incomingReqs().length;
+  menu.innerHTML = u ? `
+    <div class="menu-h"><span data-mi="profile" style="cursor:pointer;display:flex;align-items:center;gap:11px;width:100%">${avatarHTML(u.name, 38)}<div><div class="n">${esc(u.name)}</div><div class="e">${esc(u.email)}</div></div></span></div>
+    <button class="mi" data-a="profile"><i data-lucide="user"></i> بروفايلي</button>
+    <button class="mi" data-a="mail"><i data-lucide="mail"></i> أرابكوا ميل ${ub ? `<span class="bdg">${arNum(ub)}</span>` : ''}</button>
+    <button class="mi" data-a="chat"><i data-lucide="message-circle"></i> الدردشة ${uc + rq ? `<span class="bdg">${arNum(uc + rq)}</span>` : ''}</button>
+    <button class="mi" data-a="insta"><i data-lucide="image"></i> انستا</button>
+    <button class="mi" data-a="tiktok"><i data-lucide="music-2"></i> تيك توك</button>
+    <button class="mi" data-a="yt"><i data-lucide="video"></i> يوتيوب أرابكوا</button>
+    <button class="mi" data-a="network"><i data-lucide="globe"></i> شبكة أرابكوا</button>
+    <button class="mi hl" data-a="publish"><i data-lucide="upload"></i> انشر موقعك</button>
+    <div class="msep"></div>
+    <button class="mi" data-a="settings"><i data-lucide="settings"></i> إعدادات الحساب</button>
+    <button class="mi" data-a="logout"><i data-lucide="log-out"></i> تسجيل الخروج</button>` : `
+    <div class="menu-h"><span class="avatar" style="width:38px;height:38px;background:var(--ink3)"><i data-lucide="user" style="width:17px;height:17px"></i></span>
+      <div><div class="n">زائر</div><div class="e">ما تسجلتش دخول</div></div></div>
+    <button class="mi" data-a="login"><i data-lucide="user"></i> تسجيل الدخول</button>
+    <button class="mi hl" data-a="signup"><i data-lucide="sparkles"></i> إنشاء حساب @arpico.com</button>
+    <div class="msep"></div>
+    <button class="mi" data-a="network"><i data-lucide="globe"></i> شبكة أرابكوا</button>`;
+  menu.classList.add('open'); icons();
+  const pH = menu.querySelector('[data-mi="profile"]');
+  if (pH) pH.onclick = () => { menu.classList.remove('open'); goProfile(u.email); };
+  menu.querySelectorAll('.mi').forEach(b => b.onclick = () => {
+    menu.classList.remove('open');
+    const a = b.dataset.a;
+    if (a === 'logout') {
+      session = null; DB.set('arp_session', null);
+      pendingNav = null; mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', found:null};
+      toast('تم تسجيل الخروج', 'log-out'); renderAll(); return navigate('ntp');
+    }
+    if (a === 'publish') return goPublishNew();
+    if (a === 'profile') return goProfile(session);
+    if (a === 'login' || a === 'signup') { authMode = a; return navigate('login'); }
+    navigate(a);
+  });
+}
+function closeMenus(){ $('#profileMenu').classList.remove('open'); $('#obSugg').classList.remove('open'); }
+
+function setTheme(t){
+  theme = t; DB.set('arp_theme', t);
+  document.documentElement.setAttribute('data-theme', t);
+  $('#themeBtn').innerHTML = `<i data-lucide="${t === 'dark' ? 'sun' : 'moon'}"></i>`; icons();
+}
+
+/* ============ ربط الأدوات ============ */
+ $('#tabs').addEventListener('click', e => {
+  const c = e.target.closest('[data-close]');
+  if (c) { e.stopPropagation(); return closeTab(+c.dataset.close); }
+  const t = e.target.closest('.tab');
+  if (t) activateTab(+t.dataset.id);
+});
+ $('#tabs').addEventListener('auxclick', e => {
+  if (e.button !== 1) return;
+  const t = e.target.closest('.tab');
+  if (t) closeTab(+t.dataset.id);
+});
+ $('#newTabBtn').onclick = () => newTab('ntp');
+ $('#backBtn').onclick = () => { const t = cur(); if (t && t.hi > 0) { t.hi--; renderAll(); } };
+ $('#fwdBtn').onclick  = () => { const t = cur(); if (t && t.hi < t.hist.length - 1) { t.hi++; renderAll(); } };
+ $('#homeBtn').onclick = () => navigate('ntp');
+ $('#reloadBtn').onclick = () => {
+  const b = $('#reloadBtn'); b.classList.add('spin'); setTimeout(() => b.classList.remove('spin'), 550);
+  renderContent(); icons();
+};
+ $('#starBtn').onclick = () => {
+  const p = curPage(); if (!p) return;
+  const i = bookmarks.findIndex(b => b.url === p.url);
+  if (i >= 0) { bookmarks.splice(i, 1); toast('أُزيلت من العلامات المرجعية', 'bookmark'); }
+  else {
+    bookmarks.unshift({url:p.url, title:p.title, page:p.page, data:JSON.parse(JSON.stringify(p.data || {}))});
+    toast('أُضيفت للعلامات المرجعية', 'bookmark');
+  }
+  DB.set('arp_bookmarks', bookmarks); renderAll();
+};
+ $('#bookmarksbar').addEventListener('click', e => {
+  const b = e.target.closest('.bm'); if (!b) return;
+  const bm = bookmarks[+b.dataset.i]; navigate(bm.page, bm.data || {});
+});
+ $('#bookmarksbar').addEventListener('contextmenu', e => {
+  const b = e.target.closest('.bm'); if (!b) return;
+  e.preventDefault();
+  const bm = bookmarks[+b.dataset.i];
+  confirmBox(`تحذف "${esc(bm.title)}" من العلامات المرجعية؟`, () => {
+    bookmarks.splice(+b.dataset.i, 1); DB.set('arp_bookmarks', bookmarks);
+    toast('أُزيلت العلامة', 'bookmark'); renderAll();
+  });
+});
+const omni = $('#omnibox');
+omni.addEventListener('keydown', e => { if (e.key === 'Enter') { omniboxSubmit(omni.value); $('#obSugg').classList.remove('open'); omni.blur(); } });
+omni.addEventListener('focus', () => omni.select());
+attachSugg(omni, $('#obSugg'));
+ $('#micBtn').onclick = () => startVoice($('#micBtn'), t => { omni.value = t; omniboxSubmit(t); });
+ $('#themeBtn').onclick = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+ $('#profileBtn').onclick = e => { e.stopPropagation(); toggleProfileMenu(); };
+document.addEventListener('click', e => {
+  if (!e.target.closest('#profileMenu') && !e.target.closest('#profileBtn')) $('#profileMenu').classList.remove('open');
+});
+
+// ريسبونسف: عند تغيّر نوع الشاشة أعد الرسم (بدون مسح ما تكتبه)
+let lastNarrow = isNarrow();
+window.addEventListener('resize', debounce(() => {
+  if (isNarrow() !== lastNarrow) { lastNarrow = isNarrow(); renderContent(); icons(); }
+}, 200));
+
+document.addEventListener('keydown', e => {
+  if (!e.key) return;
+  if (e.key === 'Escape') { closeMenus(); closeModal(); return; }
+  const tag = (e.target.tagName || '').toLowerCase();
+  const typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+  if (e.key === '/' && !typing) { e.preventDefault(); omni.focus(); omni.select(); return; }
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') { e.preventDefault(); setTheme(theme === 'dark' ? 'light' : 'dark'); return; }
+  if (e.ctrlKey && !e.shiftKey && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !typing && tabs.length > 1) {
+    e.preventDefault();
+    const i = tabs.findIndex(x => x.id === activeTab);
+    const n = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    activateTab(tabs[n].id);
+  }
+});
+
+/* ============ انطلاق ============ */
+idbOpen();
+ensureIcons();
+document.documentElement.setAttribute('data-theme', theme);
+ $('#themeBtn').innerHTML = `<i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+newTab('ntp');
+</script>
+</body>
+</html>
