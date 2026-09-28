@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>أرابكوا — المتصفح العربي</title>
-<!-- ===== CSP: سياسة أمان المحتوى ===== -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; connect-src 'self'; frame-src https: data: blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -201,6 +200,8 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .btn:hover{border-color:var(--ink3)}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 .btn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
+.btn.soft{color:var(--brand);border-color:var(--brand-soft);background:var(--brand-soft)}
+.btn.soft:hover{border-color:var(--brand)}
 .btn svg{width:16px;height:16px}
 .btn:disabled{opacity:.55;cursor:wait}
 
@@ -276,6 +277,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .seclist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .seclist .si{display:flex;gap:9px;font-size:12.5px;color:var(--ink2);line-height:1.8;align-items:flex-start}
 .seclist .si svg{width:14px;height:14px;color:var(--ok);flex-shrink:0;margin-top:5px}
+.actrow{display:flex;gap:8px;flex-wrap:wrap}
 
 .publish{height:100%;overflow-y:auto}
 .pub-wrap{max-width:1060px;margin:0 auto;padding:34px 24px 80px}
@@ -458,6 +460,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .ybody .m .up:hover{color:var(--brand)}
 .yplayer{background:var(--panel2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .yplayer video{width:100%;aspect-ratio:16/9;background:#000;display:block}
+.yplayer iframe{width:100%;aspect-ratio:16/9;border:0;background:#000;display:block}
 .yinfo{padding:16px 18px}
 .yinfo h2{font-size:18px;line-height:1.6;word-break:break-word}
 .yinfo .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
@@ -547,6 +550,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .ext-top button svg{width:13px;height:13px}
 .ext-framebox{flex:1;position:relative;min-height:0;background:#fff}
 .ext-framebox .siteframe{position:absolute;inset:0}
+.ytview{flex:1;overflow-y:auto;min-height:0}
 .ext-load{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--ink2);font-size:13.5px;z-index:2;background:var(--panel)}
 .spinner{width:34px;height:34px;border:3.5px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
 .site404{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink2)}
@@ -668,7 +672,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 
 <script>
 /* ============================================================
-   أرابكوا — النشر: الكود HTML اختياري + رابط جوجل يكفي لوحده
+   أرابكوا — النسخة النهائية الكاملة
    ============================================================ */
 
 (function(){
@@ -712,6 +716,10 @@ const isNarrow = () => window.matchMedia('(max-width:860px)').matches;
 
 const safeURL = u => /^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u) : '';
 const openExternal = url => { const u = safeURL(url); if (!u) { toast('الرابط غير صالح أو غير آمن', 'shield', true); return; } window.open(u, '_blank', 'noopener,noreferrer'); };
+const ytVideoId = url => {
+  const m = String(url || '').match(/(?:youtube\.com\/(?:watch\?[^#]*?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : '';
+};
 const CAPS = { chat:2000, mailBody:20000, mailSub:200, caption:300, title:150, desc:500, html:400000, siteName:60, siteDesc:300, keywords:200, gurl:300, name:24 };
 const clamp = (s, n) => String(s ?? '').slice(0, n);
 const EMAIL_RE = /^[a-z0-9._-]+@arpico\.com$/;
@@ -1011,8 +1019,8 @@ const APPS = [
   { ref:'tiktok',  name:'تيك توك',       icon:'music-2',  desc:'ارفع فيديوهاتك بأي حجم وشاهدها بتمرير عمودي.' },
   { ref:'yt',      name:'يوتيوب أرابكوا',icon:'video',    desc:'ارفع فيديوهاتك وشاهدها في مشغّل داخل المتصفح.' },
   { ref:'network', name:'شبكة أرابكوا',  icon:'globe',    desc:'دليل كل المواقع المنشورة داخل شبكة أرابكوا.' },
-  { ref:'publish', name:'انشر موقعك',    icon:'upload',   desc:'اسم ووصف وبس — أو رابط جوجل — أو كود HTML كامل.' },
-  { ref:'settings',name:'إعدادات الحساب',icon:'settings', desc:'بياناتك، مواقعك المنشورة، سجل التصفح، وتفضيلات المتصفح.' },
+  { ref:'publish', name:'انشر موقعك',    icon:'upload',   desc:'اسم ووصف وبس — أو رابط يوتيوب/جوجل — أو كود HTML كامل.' },
+  { ref:'settings',name:'إعدادات الحساب',icon:'settings', desc:'بياناتك، مواقعك، نسخة احتياطية، وتفضيلات المتصفح.' },
 ];
 const WEB = [
   { url:'https://www.wikipedia.org', name:'ويكيبيديا', desc:'الموسوعة الحرة التي يكتبها الجميع بأكثر من 300 لغة.' },
@@ -1155,8 +1163,12 @@ function syncOmnibox(){
   $('#obIcon').innerHTML = (p.page === 'site' && !(p.data || {}).siteId) ? `<i data-lucide="globe"></i>` : bean();
   $('#starBtn').classList.toggle('filled', bookmarks.some(b => b.url === p.url));
 }
+function updateTitleBadge(){
+  const n = unread() + unreadChats() + incomingReqs().length;
+  document.title = n ? `(${arNum(n)}) أرابكوا` : 'أرابكوا — المتصفح العربي';
+}
 function renderAll(){
-  renderTabs(); renderBookmarksBar(); renderProfileBtn(); syncOmnibox();
+  renderTabs(); renderBookmarksBar(); renderProfileBtn(); syncOmnibox(); updateTitleBadge();
   closeMenus(); renderContent(); icons();
 }
 
@@ -1371,7 +1383,7 @@ function renderSearch(d){
       ${show('net') ? (counts.net ? `<div class="serp-sec"><i data-lucide="globe"></i> شبكة أرابكوا</div>
         ${net.map(r => { const s = r.site; const gu = safeURL(s.googleUrl); return `<div class="rrow" data-kind="site" data-ref="${s.id}">
           <div class="rsite">${letterDot(s.slug)}<div><div class="rname">${hl(s.name, q)}</div><div class="rurl">${esc(s.slug)}.arpico</div></div>
-          <span class="rtag" style="margin-inline-start:auto">منشور على أرابكوا</span>${gu ? `<span class="rtag g">على جوجل</span>` : ''}</div>
+          <span class="rtag" style="margin-inline-start:auto">منشور على أرابكوا</span>${gu ? `<span class="rtag g">${ytVideoId(gu) ? 'فيديو يوتيوب' : 'على جوجل'}</span>` : ''}</div>
           <div class="rtitle">${hl(s.name, q)}</div><div class="rdesc">${hl(s.desc, q)}</div></div>`; }).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش مواقع مطابقة</div>` : '')) : ''}
       ${show('web') ? (counts.web ? `<div class="serp-sec"><i data-lucide="external-link"></i> نتائج الويب</div>
         ${web.map(r => { const w = r.web; return `<div class="rrow" data-kind="web" data-ref="${esc(w.url)}" data-name="${esc(w.name)}">
@@ -1490,7 +1502,7 @@ function renderAuth(){
         session = email; DB.set('arp_session', session);
         mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
         mail.push({id:uid(), from:'team@arpico.com', fromName:'فريق أرابكوا', to:email, subject:'أهلاً بك في أرابكوا!',
-          body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nجرّب دلوقتي:\n- انشر موقعك من اسم ووصف بس — من غير أي كود، أو حط رابط موقعك على جوجل وسيب الكود فاضي.\n- افتح الدردشة ودوّر على صاحبك بإيميله (لازم يكون مسجل).\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
+          body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nجرّب دلوقتي:\n- انشر موقعك من اسم ووصف بس — أو حط رابط يوتيوب وه يتشغل جوه المتصفح مباشرة.\n- من الإعدادات اعمل نسخة احتياطية لبياناتك كلها عشان تنقلها لأي جهاز تاني.\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
         DB.set('arp_mail', mail);
         failCount = 0;
         toast(`أهلاً ${rawName}! إيميلك جاهز: ${email}`, 'sparkles');
@@ -1534,6 +1546,160 @@ function renderAuth(){
   };
 }
 
+/* ============ النسخ الاحتياطي والاستيراد ============ */
+async function exportData(){
+  const u = me(); if (!u) return;
+  try {
+    for (const uu of users) {
+      if (uu.pass && !uu.hash) { uu.salt = makeSalt(); uu.hash = await hashPassword(uu.pass, uu.salt); delete uu.pass; }
+    }
+    DB.set('arp_users', users);
+    const data = {
+      app:'arabikwa', version:1, exportedAt:nowISO(),
+      users, sites, mail, bookmarks, social, instaPosts, tkPosts, ytPosts,
+      friendReqs, friends, chatMsgs, recentQ, browseHist, theme, prefs, session
+    };
+    const blob = new Blob([JSON.stringify(data, null, 1)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'arabikwa-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    toast('تم تنزيل النسخة الاحتياطية — احفظها في مكان آمن', 'download');
+  } catch(e){
+    toast('تعذر إنشاء النسخة الاحتياطية', 'shield', true);
+  }
+}
+function importData(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); }
+    catch(e){ toast('الملف مش ملف JSON صالح', 'shield', true); return; }
+    if (!data || data.app !== 'arabikwa' || !Array.isArray(data.users) || !data.users.length) {
+      toast('الملف مش نسخة احتياطية من أرابكوا', 'shield', true); return;
+    }
+    confirmBox('استيراد النسخة هيستبدل كل بياناتك الحالية (حسابات، مواقع، رسايل، محادثات...). <b>الصور والفيديوهات المرفوعة على هذا الجهاز مش هتتأثر</b> — بس منشورات النسخة المستوردة اللي وسائطها من جهاز تاني هتظهر من غير صور. متأكد؟', () => {
+      users = data.users.map(uu => ({
+        name: clamp(uu.name || 'مستخدم', CAPS.name),
+        email: EMAIL_RE.test(String(uu.email||'').toLowerCase()) ? String(uu.email).toLowerCase() : ('user-' + uid() + '@arpico.com'),
+        salt: typeof uu.salt === 'string' ? uu.salt : undefined,
+        hash: typeof uu.hash === 'string' ? uu.hash : undefined,
+        pass: (!uu.hash && typeof uu.pass === 'string') ? uu.pass : undefined,
+        joined: typeof uu.joined === 'string' ? uu.joined : nowISO(),
+      }));
+      sites = Array.isArray(data.sites) ? data.sites : [];
+      mail = Array.isArray(data.mail) ? data.mail : [];
+      bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+      social = (data.social && typeof data.social === 'object') ? data.social : {instaLikes:{}, tkLikes:{}, tkFollow:{}};
+      instaPosts = Array.isArray(data.instaPosts) ? data.instaPosts : [];
+      tkPosts = Array.isArray(data.tkPosts) ? data.tkPosts : [];
+      ytPosts = Array.isArray(data.ytPosts) ? data.ytPosts : [];
+      friendReqs = Array.isArray(data.friendReqs) ? data.friendReqs : [];
+      friends = (data.friends && typeof data.friends === 'object') ? data.friends : {};
+      chatMsgs = Array.isArray(data.chatMsgs) ? data.chatMsgs : [];
+      recentQ = Array.isArray(data.recentQ) ? data.recentQ : [];
+      browseHist = Array.isArray(data.browseHist) ? data.browseHist : [];
+      theme = data.theme === 'dark' ? 'dark' : 'light';
+      prefs = (data.prefs && typeof data.prefs === 'object') ? data.prefs : {showBar:true};
+      session = data.session && users.some(u => u.email === data.session) ? data.session : null;
+      ['arp_users','arp_sites','arp_mail','arp_bookmarks','arp_social','arp_insta_posts','arp_tk_posts','arp_yt_posts','arp_friend_reqs','arp_friends','arp_chat_msgs','arp_recent_q','arp_history','arp_theme','arp_prefs','arp_session']
+        .forEach((k, i) => DB.set(k, [users, sites, mail, bookmarks, social, instaPosts, tkPosts, ytPosts, friendReqs, friends, chatMsgs, recentQ, browseHist, theme, prefs, session][i]));
+      document.documentElement.setAttribute('data-theme', theme);
+      $('#themeBtn').innerHTML = `<i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+      tabs = []; mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
+      toast('تم استيراد النسخة بنجاح', 'check');
+      renderAll(); navigate('ntp');
+    });
+  };
+  reader.onerror = () => toast('تعذر قراءة الملف', 'shield', true);
+  reader.readAsText(file);
+}
+
+/* ============ إدارة الحساب ============ */
+function openEditName(){
+  const u = me(); if (!u) return;
+  openModal(`<h3><i data-lucide="pen-line"></i> تغيير الاسم</h3>
+    <div class="field"><label>الاسم الجديد (الإيميل مش هيتغير)</label>
+      <input id="nnIn" dir="auto" maxlength="24" value="${esc(u.name)}"></div>
+    <div class="macts"><button class="btn" id="nnCancel">إلغاء</button><button class="btn primary" id="nnSave">حفظ</button></div>`);
+  $('#nnCancel').onclick = closeModal;
+  $('#nnSave').onclick = () => {
+    const nn = clamp(($('#nnIn').value || '').trim().replace(/\s+/g, ' '), CAPS.name);
+    if (nn.length < 2) { toast('الاسم قصير أوي (حرفين على الأقل)', 'shield'); return; }
+    u.name = nn;
+    instaPosts.forEach(p => { if (p.authorEmail === u.email) p.user = nn; });
+    tkPosts.forEach(p => { if (p.authorEmail === u.email) p.user = nn; });
+    ytPosts.forEach(p => { if (p.authorEmail === u.email) p.user = nn; });
+    sites.forEach(s => { if (s.authorEmail === u.email) s.author = nn; });
+    mail.forEach(m => { if (m.from === u.email) m.fromName = nn; });
+    DB.set('arp_users', users); DB.set('arp_insta_posts', instaPosts);
+    DB.set('arp_tk_posts', tkPosts); DB.set('arp_yt_posts', ytPosts);
+    DB.set('arp_sites', sites); DB.set('arp_mail', mail);
+    closeModal(); toast('تم تغيير الاسم — وانتشر على كل محتواك', 'check');
+    renderAll();
+  };
+}
+function openChangePass(){
+  const u = me(); if (!u) return;
+  openModal(`<h3><i data-lucide="key-round"></i> تغيير كلمة السر</h3>
+    <div class="field"><label>كلمة السر الحالية</label><div class="pw"><input id="cpCur" type="password" maxlength="64">
+      <button type="button" class="eye" data-eye="cpCur"><i data-lucide="eye"></i></button></div></div>
+    <div class="field"><label>كلمة السر الجديدة (4-64 حرف)</label><div class="pw"><input id="cpNew" type="password" maxlength="64">
+      <button type="button" class="eye" data-eye="cpNew"><i data-lucide="eye"></i></button></div></div>
+    <div class="field"><label>تأكيد الجديدة</label><div class="pw"><input id="cpNew2" type="password" maxlength="64">
+      <button type="button" class="eye" data-eye="cpNew2"><i data-lucide="eye"></i></button></div></div>
+    <div class="macts"><button class="btn" id="cpCancel">إلغاء</button><button class="btn primary" id="cpSave">حفظ</button></div>`);
+  $('#cpCancel').onclick = closeModal;
+  document.querySelectorAll('.eye[data-eye]').forEach(b => b.onclick = () => {
+    const inp = document.getElementById(b.dataset.eye);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    b.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`; icons();
+  });
+  $('#cpSave').onclick = async () => {
+    const cur = $('#cpCur').value, n1 = $('#cpNew').value, n2 = $('#cpNew2').value;
+    if (!(await verifyPassword(u, cur))) { toast('كلمة السر الحالية غلط', 'shield', true); return; }
+    if (n1.length < 4 || n1.length > 64) { toast('الجديدة لازم تكون بين 4 و64 حرف', 'shield'); return; }
+    if (n1 !== n2) { toast('الجديدة وتأكيدها مش متطابقين', 'shield'); return; }
+    u.salt = makeSalt();
+    u.hash = await hashPassword(n1, u.salt);
+    delete u.pass;
+    DB.set('arp_users', users);
+    closeModal(); toast('تم تغيير كلمة السر — ومتخزنة مشفرة', 'shield-check');
+  };
+}
+async function deleteAccount(){
+  const u = me(); if (!u) return;
+  confirmBox(`هتحذف حسابك "<b>${esc(u.name)}</b>" نهائيًا: حسابك، مواقعك، منشوراتك، فيديوهاتك، رسايلك، محادثاتك، وأصدقاءك. <b>مفيش رجوع بعد كده.</b> متأكد؟`, () => {
+    confirmBox('تأكيد أخير: هتمسح كل حاجة مرتبطة بحسابك من الجهاز ده. متأكد تمامًا؟', async () => {
+      const mine = [...instaPosts, ...tkPosts, ...ytPosts].filter(p => p.authorEmail === u.email);
+      for (const p of mine) await deleteMedia(p.mediaId);
+      instaPosts = instaPosts.filter(p => p.authorEmail !== u.email);
+      tkPosts = tkPosts.filter(p => p.authorEmail !== u.email);
+      ytPosts = ytPosts.filter(p => p.authorEmail !== u.email);
+      const removedSites = sites.filter(s => s.authorEmail === u.email).map(s => s.id);
+      sites = sites.filter(s => s.authorEmail !== u.email);
+      mail = mail.filter(m => m.from !== u.email && m.to !== u.email);
+      chatMsgs = chatMsgs.filter(m => m.from !== u.email && m.to !== u.email);
+      friendReqs = friendReqs.filter(r => r.from !== u.email && r.to !== u.email);
+      delete friends[u.email];
+      for (const k of Object.keys(friends)) friends[k] = (friends[k] || []).filter(x => x !== u.email);
+      users = users.filter(x => x.email !== u.email);
+      bookmarks = bookmarks.filter(b => {
+        if (b.page === 'site' && removedSites.includes((b.data||{}).siteId)) return false;
+        if (b.page === 'profile' && (b.data||{}).email === u.email) return false;
+        return true;
+      });
+      session = null;
+      ['arp_users','arp_sites','arp_mail','arp_bookmarks','arp_insta_posts','arp_tk_posts','arp_yt_posts','arp_friend_reqs','arp_friends','arp_chat_msgs','arp_session']
+        .forEach((k, i) => DB.set(k, [users, sites, mail, bookmarks, instaPosts, tkPosts, ytPosts, friendReqs, friends, chatMsgs, session][i]));
+      toast('تم حذف حسابك وكل محتواه — يا نرتقب بيك تاني', 'log-out');
+      renderAll(); navigate('ntp');
+    });
+  });
+}
+
 /* ============ الإعدادات ============ */
 function renderSettings(){
   const u = me();
@@ -1545,9 +1711,20 @@ function renderSettings(){
       ${avatarHTML(u.name, 64)}
       <div><div class="pname">${esc(u.name)}</div><div class="pmail">${esc(u.email)}</div><div class="pjoin">عضو منذ ${fmtDate(u.joined)} — ${arNum((friends[u.email]||[]).length)} صديق</div></div>
     </div>
+    <div class="card">
+      <h3><i data-lucide="user-cog"></i> إدارة الحساب</h3>
+      <div class="actrow">
+        <button class="btn" id="editName"><i data-lucide="pen-line"></i> تغيير الاسم</button>
+        <button class="btn" id="chgPass"><i data-lucide="key-round"></i> تغيير كلمة السر</button>
+        <button class="btn" id="exportBtn"><i data-lucide="download"></i> نسخة احتياطية</button>
+        <button class="btn" id="importBtn"><i data-lucide="upload"></i> استيراد نسخة</button>
+        <button class="btn soft" id="delAcc"><i data-lucide="trash-2"></i> حذف الحساب نهائيًا</button>
+      </div>
+      <input type="file" id="impFile" accept="application/json,.json" style="display:none">
+    </div>
     <div class="card pubcta">
       <h3><i data-lucide="upload"></i> انشر موقعك</h3>
-      <p>اسم ووصف وبس — وه يتولد لك موقع بداية تلقائيًا. أو حط رابط موقعك على جوجل لو موجود. أو اكتب HTML كامل بنفسك. الثلاثة اختيارية وسهلة.</p>
+      <p>اسم ووصف وبس — وه يتولد لك موقع بداية تلقائيًا. أو حط رابط يوتيوب وه يتشغل جوه المتصفح مباشرة، أو رابط موقعك على جوجل. أو اكتب HTML كامل بنفسك.</p>
       <button class="btn" id="goPublish"><i data-lucide="upload"></i> انشر موقعك الآن</button>
     </div>
     <div class="card">
@@ -1559,7 +1736,7 @@ function renderSettings(){
           <button class="iconbtn" data-open="${s.id}" title="فتح"><i data-lucide="external-link"></i></button>
           <button class="iconbtn" data-edit="${s.id}" title="تعديل"><i data-lucide="pen-line"></i></button>
           <button class="iconbtn" data-copy="${esc(s.slug)}.arpico" title="نسخ الرابط"><i data-lucide="copy"></i></button>
-          ${gu ? `<button class="iconbtn" data-g="${esc(gu)}" title="النسخة على جوجل"><i data-lucide="search"></i></button>` : ''}
+          ${gu ? `<button class="iconbtn" data-g="${esc(gu)}" title="النسخة الأصلية"><i data-lucide="search"></i></button>` : ''}
           <button class="iconbtn danger" data-del="${s.id}" title="حذف"><i data-lucide="trash-2"></i></button>
         </div>
       </div>`; }).join('') : `<p style="font-size:13px;color:var(--ink3);padding:6px 0">لسه ما نشرتش أي موقع — ابدأ من الزرار الأحمر فوق.</p>`}
@@ -1587,14 +1764,27 @@ function renderSettings(){
         <div class="si"><i data-lucide="check"></i><span>كلمات السر متخزنة مشفرة SHA-256 مع Salt عشوائي.</span></div>
         <div class="si"><i data-lucide="check"></i><span>كل محتوى المستخدم بيتفلتر ضد هجمات XSS قبل العرض.</span></div>
         <div class="si"><i data-lucide="check"></i><span>المواقع المنشورة شغالة في قفص معزول (Sandbox).</span></div>
-        <div class="si"><i data-lucide="check"></i><span>الروابط الخارجية https الآمن فقط.</span></div>
-        <div class="si"><i data-lucide="check"></i><span>سياسة أمان محتوى (CSP) + حدود طول للمدخلات + حماية من تخمين كلمة السر.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>الروابط الخارجية https الآمن فقط + سياسة أمان محتوى (CSP).</span></div>
+        <div class="si"><i data-lucide="check"></i><span>حدود طول للمدخلات + حماية من تخمين كلمة السر.</span></div>
       </div>
     </div>
     <button class="btn" id="logoutBtn" style="width:100%;justify-content:center"><i data-lucide="log-out"></i> تسجيل الخروج</button>
   </div></div>`;
 
   $('#goPublish').onclick = goPublishNew;
+  $('#editName').onclick = openEditName;
+  $('#chgPass').onclick = openChangePass;
+  $('#exportBtn').onclick = exportData;
+  $('#delAcc').onclick = deleteAccount;
+  const impBtn = $('#importBtn'), impFile = $('#impFile');
+  if (impBtn && impFile) {
+    impBtn.onclick = () => impFile.click();
+    impFile.onchange = () => {
+      const f = impFile.files[0];
+      if (f) importData(f);
+      impFile.value = '';
+    };
+  }
   viewport.querySelectorAll('[data-open]').forEach(b => b.onclick = () => navigate('site', {siteId:b.dataset.open}));
   viewport.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { publishEditIntent = b.dataset.edit; navigate('publish'); });
   viewport.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy));
@@ -1629,8 +1819,7 @@ function renderSettings(){
   };
 }
 
-/* ============ النشر: الكود اختياري + رابط جوجل يكفي لوحده ============ */
-// موقع بداية يولد تلقائيًا من الاسم والوصف
+/* ============ النشر ============ */
 function autoSitePage(name, desc, slug){
   const safe = t => String(t || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const letter = safe((name || '؟').trim()[0] || '؟').toUpperCase();
@@ -1655,10 +1844,11 @@ h1{font-size:30px;margin-bottom:10px;line-height:1.4;word-break:break-word}
 <p class="note">دي صفحة بداية اتولّدت تلقائيًا من اسم الموقع ووصفه.<br>صاحب الموقع يقدر يعدّل كود HTML ويعيد النشر بصفحة كاملة في أي وقت.</p>
 </div></body></html>`;
 }
-// موقع جسر: لما المستخدم يحط رابط جوجل بس من غير كود
-function bridgeSitePage(name, desc, slug, gurl){
+function bridgeSitePage(name, desc, slug, gurl, isYt){
   const safe = t => String(t || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const letter = safe((name || '؟').trim()[0] || '؟').toUpperCase();
+  const badge = isYt ? '☕ فيديو رسمي على شبكة أرابكوا' : '☕ موقع رسمي على شبكة أرابكوا';
+  const cta = isYt ? 'شاهد الفيديو على يوتيوب ↗' : 'افتح الموقع الرسمي ↗';
   return `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${safe(name)}</title><style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Tahoma,Arial,sans-serif;background:#faf7f2;color:#241c16;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -1672,12 +1862,12 @@ h1{font-size:30px;margin-bottom:10px;line-height:1.4;word-break:break-word}
 .go:hover{background:#8E2C22}
 .gu{direction:ltr;color:#9C8F82;font-size:11px;margin-top:14px;word-break:break-all}
 </style></head><body><div class="card">
-<span class="badge">☕ موقع رسمي على شبكة أرابكوا</span>
+<span class="badge">${badge}</span>
 <div class="logo">${letter}</div>
 <h1>${safe(name)}</h1>
 <div class="url">${safe(slug)}.arpico</div>
 <p class="desc">${safe(desc)}</p>
-<a class="go" href="${safe(gurl)}" rel="noopener">افتح الموقع الرسمي ↗</a>
+<a class="go" href="${safe(gurl)}" rel="noopener">${cta}</a>
 <div class="gu">${safe(gurl)}</div>
 </div></body></html>`;
 }
@@ -1691,7 +1881,7 @@ function renderPublish(){
   viewport.innerHTML = `<div class="publish page"><div class="pub-wrap">
     <div class="pub-head"><div class="appic"><i data-lucide="upload"></i></div>
       <div><h1>${editing ? 'تعديل موقعك' : 'انشر موقعك'}</h1></div></div>
-    <p class="pub-sub">أسهل طريقة: اكتب الاسم والوصف وبس واضغط نشر — وه يتولد لك موقع تلقائيًا. وعندك خيارات لو حابب: تحط رابط موقعك على جوجل، أو تصمم HTML بنفسك. كل حاجة اختيارية غير الاسم والوصف.</p>
+    <p class="pub-sub">أسهل طريقة: اكتب الاسم والوصف وبس واضغط نشر. وعندك خيارات لو حابب: رابط يوتيوب (الزوار هيشاهدوا الفيديو جوه المتصفح مباشرة)، أو رابط موقعك على جوجل، أو HTML كامل. كل حاجة اختيارية غير الاسم والوصف.</p>
     ${editing ? `<div class="editnote"><i data-lucide="pen-line"></i> بتعدل الآن: ${esc(editing.name)} (${esc(editing.slug)}.arpico)
       <button id="cancelEdit">إلغاء التعديل</button></div>` : ''}
     <div class="pub-grid">
@@ -1701,10 +1891,10 @@ function renderPublish(){
         <div class="slugbox"><input id="pSlug" maxlength="60" value="${esc(editing ? editing.slug : '')}" placeholder="qahwa-arpica" spellcheck="false"><span class="ext">.arpico</span></div>
         <label>وصف قصير (ه يظهر في نتائج البحث)</label><input id="pDesc" maxlength="300" value="${esc(editing ? editing.desc : '')}" placeholder="متجر قهوة مختصة — حبوب محمّصة طازجة يوميًا">
         <label>كلمات مفتاحية (اختياري — افصل بينها بفاصلة)</label><input id="pKey" maxlength="200" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
-        <label>رابط موقعك على جوجل (اختياري — يكفي لوحده من غير كود)</label>
-        <input id="pGoogle" dir="ltr" maxlength="300" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
+        <label>رابط يوتيوب أو جوجل (اختياري — يكفي لوحده)</label>
+        <input id="pGoogle" dir="ltr" maxlength="300" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://www.youtube.com/watch?v=...">
         <div class="tplrow" style="margin-top:8px">
-          <button class="tplbtn" id="pasteG"><i data-lucide="clipboard"></i> لصق رابط جوجل لصفحة جاهزة</button>
+          <button class="tplbtn" id="pasteG"><i data-lucide="clipboard"></i> لصق الرابط من الحافظة</button>
         </div>
         <label>محتوى الموقع — HTML (اختياري تمامًا)</label>
         <div class="tplrow">
@@ -1713,7 +1903,7 @@ function renderPublish(){
           <button class="tplbtn" data-tpl="store"><i data-lucide="store"></i> متجر صغير</button>
           <button class="tplbtn" data-tpl="blog"><i data-lucide="newspaper"></i> مدوّنة</button>
         </div>
-        <textarea id="pHtml" spellcheck="false" placeholder="سبته فاضي؟ تمام — هنولّد لك موقع تلقائي من الاسم والوصف (أو صفحة جسر للرابط لو حطيته). وعايز تصمم بنفسك؟ اكتب هنا أو دوس ولّد صفحة وعدّل...">${esc(editing ? editing.html : '')}</textarea>
+        <textarea id="pHtml" spellcheck="false" placeholder="سبته فاضي؟ تمام — هيتولد لك موقع تلقائي. ولو حطيت رابط يوتيوب، الفيديو هيتشغل جوه المتصفح مباشرة للزوار...">${esc(editing ? editing.html : '')}</textarea>
         <div id="modeHint"></div>
         <div class="pub-actions">
           <button class="btn primary" id="pubGo"><i data-lucide="${editing ? 'check' : 'upload'}"></i> ${editing ? 'حفظ التعديلات' : 'نشر الموقع على الشبكة'}</button>
@@ -1730,10 +1920,6 @@ function renderPublish(){
   const nameEl = $('#pName'), slugEl = $('#pSlug'), descEl = $('#pDesc'), keyEl = $('#pKey'), gEl = $('#pGoogle'), htmlEl = $('#pHtml'), pv = $('#pvFrame'), hint = $('#modeHint');
   let slugDirty = !!editing, descDirty = !!editing;
 
-  // أي وضع سيتعرض في المعاينة:
-  // 1) كود مكتوب → الكود نفسه
-  // 2) رابط جوجل فقط → صفحة جسر أنيقة لرابطه
-  // 3) ولا واحدة → موقع بداية متولد من الاسم والوصف
   const effectiveHtml = () => {
     const raw = htmlEl.value.trim();
     if (raw.length >= 30) return {html:raw, mode:'code'};
@@ -1741,14 +1927,19 @@ function renderPublish(){
     const nm = nameEl.value.trim() || 'موقعك الجديد';
     const ds = descEl.value.trim() || 'اكتب وصف الموقع هنا — هيظهر في نتائج البحث.';
     const sl = slugEl.value.trim() || 'my-site';
-    if (g) return {html:bridgeSitePage(nm, ds, sl, g), mode:'bridge'};
+    if (g) return {html:bridgeSitePage(nm, ds, sl, g, !!ytVideoId(g)), mode:'bridge'};
     return {html:autoSitePage(nm, ds, sl), mode:'gen'};
   };
   const updHint = () => {
     const {mode} = effectiveHtml();
     if (mode === 'code') hint.innerHTML = `<div class="modehint bridge"><i data-lucide="code"></i> هيتنشر بكودك اللي كتبته.</div>`;
-    else if (mode === 'bridge') hint.innerHTML = `<div class="modehint bridge"><i data-lucide="link"></i> الرابط كفاية! هيتعمل موقع جسر بصفحة أنيقة فيها زرار يفتح موقعك الحقيقي — ومش محتاج تكتب أي كود.</div>`;
-    else hint.innerHTML = `<div class="modehint gen"><i data-lucide="wand-2"></i> مفيش كود ولا رابط؟ تمام — هيتولد لك موقع بداية تلقائي من الاسم والوصف، لسه شكله حلو.</div>`;
+    else if (mode === 'bridge') {
+      const isYt = !!ytVideoId(gEl.value || '');
+      hint.innerHTML = isYt
+        ? `<div class="modehint bridge"><i data-lucide="video"></i> رابط يوتيوب! الزوار هيشاهدوا الفيديو جوه المتصفح مباشرة عند فتح موقعك — ومش محتاج تكتب أي كود.</div>`
+        : `<div class="modehint bridge"><i data-lucide="link"></i> الرابط كفاية! هيتعمل موقع جسر بصفحة أنيقة فيها زرار يفتح موقعك الحقيقي.</div>`;
+    }
+    else hint.innerHTML = `<div class="modehint gen"><i data-lucide="wand-2"></i> مفيش كود ولا رابط؟ تمام — هيتولد لك موقع بداية تلقائي من الاسم والوصف.</div>`;
     icons();
   };
   const updPreview = debounce(() => { pv.setAttribute('srcdoc', effectiveHtml().html); updHint(); }, 250);
@@ -1768,16 +1959,12 @@ function renderPublish(){
     updPreview(); toast('تم تحميل القالب — عدّله زي ما تحب', 'pen-line');
   });
   const gb = $('#genBtn');
-  if (gb) gb.onclick = () => {
-    htmlEl.value = effectiveHtml().html;
-    updPreview();
-    toast('اتولد الموقع في الخانة — عدّله زي ما تحب أو امسحه ورجع للوضع التلقائي', 'wand-2');
-  };
+  if (gb) gb.onclick = () => { htmlEl.value = effectiveHtml().html; updPreview(); toast('اتولد الموقع في الخانة — عدّله زي ما تحب', 'wand-2'); };
   const pg = $('#pasteG');
   if (pg) pg.onclick = async () => {
     let txt = '';
     try { if (navigator.clipboard && navigator.clipboard.readText) txt = await navigator.clipboard.readText(); } catch(e){}
-    if (!txt) { toast('انسخ الرابط الأول من جوجل، وبعدين دوس الزرار ده تاني', 'clipboard'); gEl.focus(); return; }
+    if (!txt) { toast('انسخ الرابط الأول، وبعدين دوس الزرار ده تاني', 'clipboard'); gEl.focus(); return; }
     gEl.value = txt.trim();
     updPreview();
     toast('تم لصق الرابط — مش محتاج تكتب أي كود خالص', 'link');
@@ -1792,26 +1979,23 @@ function renderPublish(){
     const err = m => { toast(m, 'shield'); return false; };
     if (name.length < 2) return err('اكتب اسم للموقع (حرفين على الأقل).');
     if (desc.length < 8) return err('الوصف قصير أوي — خليه واضح عشان يظهر في البحث.');
-    if (g) { if (!/^https?:\/\//i.test(g)) g = 'https://' + g; g = safeURL(g); if (!g) return err('رابط جوجل مش بصيغة صحيحة — لازم يبدأ بـ https://'); }
+    if (g) { if (!/^https?:\/\//i.test(g)) g = 'https://' + g; g = safeURL(g); if (!g) return err('الرابط مش بصيغة صحيحة — لازم يبدأ بـ https://'); }
     let slug = siteSlugify(slugEl.value) || 'site-' + uid().slice(0, 5);
     if (rawHtml.length > CAPS.html) return err('كود الموقع كبير أوي (الحد 400 ألف حرف).');
 
-    // الثلاثة مسارات، والكود اختياري دايمًا
-    const finalHtml = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, slug, g) : autoSitePage(name, desc, slug));
+    const buildHtml = sl => rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, sl, g, !!ytVideoId(g)) : autoSitePage(name, desc, sl));
 
     if (editing) {
       let final = slug, i = 2;
       while (sites.some(s => s.slug === final && s.id !== editing.id)) { final = slug + '-' + i++; }
-      const html = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, final, g) : autoSitePage(name, desc, final));
-      Object.assign(editing, {slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), html, googleUrl:g, updated:nowISO()});
+      Object.assign(editing, {slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), html:buildHtml(final), googleUrl:g, updated:nowISO()});
       DB.set('arp_sites', sites);
       toast('تم حفظ التعديلات', 'check');
       return navigate('site', {siteId:editing.id});
     }
     let final = slug, i = 2;
     while (sites.some(s => s.slug === final)) { final = slug + '-' + i++; }
-    const html = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, final, g) : autoSitePage(name, desc, final));
-    const s = {id:uid(), slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), googleUrl:g, html, author:u.name, authorEmail:u.email, date:nowISO(), views:0};
+    const s = {id:uid(), slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), googleUrl:g, html:buildHtml(final), author:u.name, authorEmail:u.email, date:nowISO(), views:0};
     sites.push(s); DB.set('arp_sites', sites);
     toast('مبروك! موقعك انشر وظهر في بحث أرابكوا', 'sparkles');
     navigate('site', {siteId:s.id});
@@ -1856,7 +2040,7 @@ function renderNetwork(){
         <div class="n-meta"><span><i data-lucide="eye"></i> ${arNum(s.views)} زيارة</span>
         <span data-prof="${esc(s.authorEmail || '')}" style="cursor:pointer;font-weight:600;color:var(--ink2)"><i data-lucide="user"></i> ${esc(s.author)}</span>
         <span><i data-lucide="clock"></i> ${fmtDate(s.date)}</span>
-        ${gu ? `<span class="gtag" data-g="${esc(gu)}"><i data-lucide="external-link"></i> النسخة على جوجل</span>` : ''}</div></div>
+        ${gu ? `<span class="gtag" data-g="${esc(gu)}"><i data-lucide="external-link"></i> ${ytVideoId(gu) ? 'الفيديو على يوتيوب' : 'النسخة على جوجل'}</span>` : ''}</div></div>
       <span class="go btn" style="padding:8px 16px;font-size:12px">زيارة</span>
     </div>`; }).join('') : `<div class="net-empty">ما لقيناش مواقع مطابقة.</div>`;
     icons();
@@ -1881,22 +2065,56 @@ function renderNetwork(){
   $('#netPub').onclick = () => { if (!me()) { authMode = 'signup'; navigate('publish'); } else goPublishNew(); };
 }
 
-/* ============ عارض المواقع ============ */
+/* ============ عارض المواقع (مع مشغل يوتيوب مدمج) ============ */
 function renderSite(d){
   if (d.siteId) {
     const s = sites.find(x => x.id === d.siteId);
     if (!s) { viewport.innerHTML = `<div class="site404">${bean()}<h3>الموقع غير موجود</h3><p style="font-size:13px">ممكن يكون اتمسح من الشبكة.</p></div>`; return; }
     if (!d.counted) { s.views++; d.counted = true; DB.set('arp_sites', sites); }
     const gu = safeURL(s.googleUrl);
+    const ytId = gu ? ytVideoId(gu) : '';
+
+    if (ytId) {
+      viewport.innerHTML = `<div class="extwrap">
+        <div class="ext-top">
+          <i data-lucide="video"></i>
+          <span class="msg">الموقع ده ليه فيديو على يوتيوب — بيتشغل من هنا مباشرة.</span>
+          <button id="ytOpen"><i data-lucide="external-link"></i> افتح على يوتيوب</button>
+        </div>
+        <div class="ytview">
+          <div class="yplayer"><iframe src="https://www.youtube-nocookie.com/embed/${esc(ytId)}?rel=0" allowfullscreen title="${esc(s.name)}"></iframe></div>
+          <div class="yinfo">
+            <h2>${esc(s.name)}</h2>
+            <div class="meta">
+              <span><i data-lucide="eye"></i> ${arNum(s.views)} زيارة</span>
+              <span class="up" data-prof="${esc(s.authorEmail || '')}"><i data-lucide="user"></i> ${esc(s.author)}</span>
+              <span><i data-lucide="clock"></i> ${fmtDate(s.date)}</span>
+            </div>
+            <div class="desc">${esc(s.desc)}</div>
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn primary" id="ytOpen2"><i data-lucide="external-link"></i> افتح على يوتيوب</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+      const openYt = () => openExternal(gu);
+      $('#ytOpen').onclick = openYt;
+      $('#ytOpen2').onclick = openYt;
+      const up = viewport.querySelector('[data-prof]');
+      if (up) up.onclick = () => { if (up.dataset.prof) goProfile(up.dataset.prof); };
+      icons();
+      return;
+    }
+
     viewport.innerHTML = `<div class="extwrap">
       ${gu ? `<div class="ext-top"><i data-lucide="search"></i>
-        <span class="msg">الموقع ده ليه نسخة حقيقية على الإنترنت.</span>
+        <span class="msg">الموقع ده ليه نسخة حقيقية على الإنترنت — الزرار جوه الصفحة هيفتحه كمان.</span>
         <button id="gOpen"><i data-lucide="external-link"></i> افتح النسخة الأصلية</button></div>` : ''}
       <div class="ext-framebox"></div>
     </div>`;
     const f = document.createElement('iframe');
     f.className = 'siteframe';
-    f.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals');
+    f.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox');
     f.setAttribute('referrerpolicy', 'no-referrer');
     f.setAttribute('srcdoc', s.html);
     viewport.querySelector('.ext-framebox').appendChild(f);
@@ -2924,4 +3142,3 @@ newTab('ntp');
 </script>
 </body>
 </html>
-
