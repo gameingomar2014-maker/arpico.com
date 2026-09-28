@@ -298,13 +298,17 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .tplbtn{border:1.5px solid var(--line);border-radius:999px;padding:7px 15px;font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:6px}
 .tplbtn:hover{border-color:var(--brand);color:var(--brand)}
 .tplbtn svg{width:13px;height:13px}
-#pHtml{direction:ltr;text-align:left;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.7;min-height:260px;resize:vertical}
+#pHtml{direction:ltr;text-align:left;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.7;min-height:200px;resize:vertical}
 .pub-actions{margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .pub-actions .note{font-size:11.5px;color:var(--ink3);direction:ltr}
 .pv-box{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel2);position:sticky;top:20px}
 .pv-head{display:flex;align-items:center;gap:8px;padding:11px 16px;font-size:12.5px;font-weight:700;color:var(--ink2);border-bottom:1px solid var(--line)}
 .pv-head svg{width:15px;height:15px;color:var(--brand)}
 #pvFrame{width:100%;height:520px;border:0;background:#fff;display:block}
+.modehint{display:flex;align-items:center;gap:9px;border-radius:11px;padding:10px 14px;font-size:12.5px;font-weight:700;margin-top:10px}
+.modehint.gen{background:var(--brand-soft);color:var(--brand)}
+.modehint.bridge{background:#E7F1EC;color:var(--ok)}
+.modehint svg{width:15px;height:15px;flex-shrink:0}
 
 .network{height:100%;overflow-y:auto}
 .net-wrap{max-width:720px;margin:0 auto;padding:36px 24px 80px}
@@ -664,10 +668,9 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 
 <script>
 /* ============================================================
-   أرابكوا — نسخة مقواة أمنيًا (CSP + تشفير كلمات السر + فلاتر)
+   أرابكوا — النشر: الكود HTML اختياري + رابط جوجل يكفي لوحده
    ============================================================ */
 
-// ---------- حماية من Clickjacking ----------
 (function(){
   try {
     if (window.top !== window.self) {
@@ -677,7 +680,6 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
   } catch(e){}
 })();
 
-// ---------- مرصد الأخطاء ----------
 window.addEventListener('error', e => {
   const t = e.target;
   if (t && t.tagName === 'IMG') {
@@ -692,7 +694,6 @@ window.addEventListener('unhandledrejection', e => {
   try { toast('خطأ تقني: ' + ((e.reason && e.reason.message) || e.reason || 'غير معروف'), 'bug', true); } catch(_){}
 });
 
-// ---------- أدوات ----------
 const $  = s => document.querySelector(s);
 const viewport = document.getElementById('viewport');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -709,14 +710,10 @@ const icons = () => { try { lucide.createIcons(); } catch(e){} };
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const isNarrow = () => window.matchMedia('(max-width:860px)').matches;
 
-/* ============ الأمان: فلاتر الروابط والطول ============ */
-// يسمح بروابط https فقط — يقفل ثغرات javascript: / data: في الروابط
 const safeURL = u => /^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u) : '';
 const openExternal = url => { const u = safeURL(url); if (!u) { toast('الرابط غير صالح أو غير آمن', 'shield', true); return; } window.open(u, '_blank', 'noopener,noreferrer'); };
-// حدود طول صارمة ضد تعطيل التخزين
 const CAPS = { chat:2000, mailBody:20000, mailSub:200, caption:300, title:150, desc:500, html:400000, siteName:60, siteDesc:300, keywords:200, gurl:300, name:24 };
 const clamp = (s, n) => String(s ?? '').slice(0, n);
-
 const EMAIL_RE = /^[a-z0-9._-]+@arpico\.com$/;
 
 const igIco = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
@@ -741,7 +738,7 @@ const letterDot = (text, cls='fd') => { const ch = (text || '؟').trim()[0] || '
 const avatarHTML = (name, size, extra='') => `<span class="avatar ${extra}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*0.42)}px;background:${colorFor(name)}">${esc((name||'؟').trim()[0]||'؟')}</span>`;
 const bean = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="var(--brand)"/><path d="M13.8 3.6C9.2 8.2 15 15.8 10.2 20.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.2 6.4C6.6 8.2 6.6 10.2 7.7 11.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M16.4 13.6c1.4 1.6 1.3 3.3.2 4.7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>`;
 
-/* ============ الأمان: تشفير كلمات السر SHA-256 + Salt ============ */
+/* ============ تشفير كلمات السر ============ */
 function utf8(s){ try { return new TextEncoder().encode(s); } catch(e){ const out=[]; for (const ch of unescape(encodeURIComponent(s))) out.push(ch.charCodeAt(0)); return new Uint8Array(out); } }
 function sha256Bytes(bytes){
   const rr=(v,a)=>(v>>>a)|(v<<(32-a));
@@ -895,7 +892,6 @@ let session    = DB.get('arp_session', null);
 
 users = users.map(u => u.name ? u : {...u, name:u.username || 'مستخدم', email:u.email || ((u.username||'user')+'@arpico.com')});
 
-// ترحيل الإيميلات العربية لاتيني
 const normAr = s => String(s || '').toLowerCase()
   .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
   .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ئ/g, 'ي')
@@ -1015,7 +1011,7 @@ const APPS = [
   { ref:'tiktok',  name:'تيك توك',       icon:'music-2',  desc:'ارفع فيديوهاتك بأي حجم وشاهدها بتمرير عمودي.' },
   { ref:'yt',      name:'يوتيوب أرابكوا',icon:'video',    desc:'ارفع فيديوهاتك وشاهدها في مشغّل داخل المتصفح.' },
   { ref:'network', name:'شبكة أرابكوا',  icon:'globe',    desc:'دليل كل المواقع المنشورة داخل شبكة أرابكوا.' },
-  { ref:'publish', name:'انشر موقعك',    icon:'upload',   desc:'اعمل موقعك بـ HTML وانشره ليظهر في البحث فورًا.' },
+  { ref:'publish', name:'انشر موقعك',    icon:'upload',   desc:'اسم ووصف وبس — أو رابط جوجل — أو كود HTML كامل.' },
   { ref:'settings',name:'إعدادات الحساب',icon:'settings', desc:'بياناتك، مواقعك المنشورة، سجل التصفح، وتفضيلات المتصفح.' },
 ];
 const WEB = [
@@ -1402,14 +1398,13 @@ function renderSearch(d){
   if (ep) ep.onclick = () => { if (!me()) { authMode = 'signup'; navigate('publish'); } else goPublishNew(); };
 }
 
-/* ============ تسجيل الدخول (مقوّى: تشفير + rate limit) ============ */
+/* ============ تسجيل الدخول ============ */
 let failCount = 0, failUntil = 0;
 async function verifyPassword(u, pw){
   try {
     if (u.salt && u.hash) return (await hashPassword(pw, u.salt)) === u.hash;
     if (typeof u.pass === 'string' && u.pass.length) {
       if (u.pass === pw) {
-        // ترقية تلقائية: نشفر كلمة السر ونشيل النص الصريح
         u.salt = makeSalt();
         u.hash = await hashPassword(pw, u.salt);
         delete u.pass;
@@ -1491,12 +1486,11 @@ function renderAuth(){
         const email = generateEmail(rawName);
         const salt = makeSalt();
         const hash = await hashPassword(p1, salt);
-        users.push({name:rawName, email, salt, hash, joined:nowISO()});
-        DB.set('arp_users', users);
+        users.push({name:rawName, email, salt, hash, joined:nowISO()}); DB.set('arp_users', users);
         session = email; DB.set('arp_session', session);
         mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
         mail.push({id:uid(), from:'team@arpico.com', fromName:'فريق أرابكوا', to:email, subject:'أهلاً بك في أرابكوا!',
-          body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nأمانك عندنا:\n- كلمة سرّك متخزنة مشفرة (SHA-256) مش نص صريح.\n- كل محتوى بيتعرضلك متفلتر ضد هجمات XSS.\n- المواقع المنشورة شغالة في قفص معزول عن بياناتك.\n\nجرّب: افتح الدردشة ودوّر على صاحبك بإيميله (لازم يكون مسجل)، أو اعمل حساب تاني وجرب مع نفسك.\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
+          body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nجرّب دلوقتي:\n- انشر موقعك من اسم ووصف بس — من غير أي كود، أو حط رابط موقعك على جوجل وسيب الكود فاضي.\n- افتح الدردشة ودوّر على صاحبك بإيميله (لازم يكون مسجل).\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
         DB.set('arp_mail', mail);
         failCount = 0;
         toast(`أهلاً ${rawName}! إيميلك جاهز: ${email}`, 'sparkles');
@@ -1553,7 +1547,7 @@ function renderSettings(){
     </div>
     <div class="card pubcta">
       <h3><i data-lucide="upload"></i> انشر موقعك</h3>
-      <p>اعمل موقعك بـ HTML — بمعاينة حية وقوالب — وانشره ليظهر في بحث أرابكوا فورًا. ولو موقعك موجود على جوجل، ضيف رابطه وهو هيظهر كزرار جانب موقعك.</p>
+      <p>اسم ووصف وبس — وه يتولد لك موقع بداية تلقائيًا. أو حط رابط موقعك على جوجل لو موجود. أو اكتب HTML كامل بنفسك. الثلاثة اختيارية وسهلة.</p>
       <button class="btn" id="goPublish"><i data-lucide="upload"></i> انشر موقعك الآن</button>
     </div>
     <div class="card">
@@ -1590,12 +1584,11 @@ function renderSettings(){
     <div class="card">
       <h3><i data-lucide="shield-check"></i> الحماية المفعّلة</h3>
       <div class="seclist">
-        <div class="si"><i data-lucide="check"></i><span>كلمات السر متخزنة مشفرة SHA-256 مع Salt عشوائي — مش نص صريح (سجّل دخول مرة للترقية التلقائية).</span></div>
+        <div class="si"><i data-lucide="check"></i><span>كلمات السر متخزنة مشفرة SHA-256 مع Salt عشوائي.</span></div>
         <div class="si"><i data-lucide="check"></i><span>كل محتوى المستخدم بيتفلتر ضد هجمات XSS قبل العرض.</span></div>
-        <div class="si"><i data-lucide="check"></i><span>المواقع المنشورة شغالة في قفص معزول (Sandbox) من غير صلاحيات على بياناتك.</span></div>
-        <div class="si"><i data-lucide="check"></i><span>الروابط الخارجية بتتفلتر — https الآمن فقط.</span></div>
-        <div class="si"><i data-lucide="check"></i><span>سياسة أمان محتوى (CSP) بتمنع تحميل سكربتات من مصادر غير موثوقة.</span></div>
-        <div class="si"><i data-lucide="check"></i><span>حدود طول للمدخلات + حماية من هجمات تخمين كلمة السر.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>المواقع المنشورة شغالة في قفص معزول (Sandbox).</span></div>
+        <div class="si"><i data-lucide="check"></i><span>الروابط الخارجية https الآمن فقط.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>سياسة أمان محتوى (CSP) + حدود طول للمدخلات + حماية من تخمين كلمة السر.</span></div>
       </div>
     </div>
     <button class="btn" id="logoutBtn" style="width:100%;justify-content:center"><i data-lucide="log-out"></i> تسجيل الخروج</button>
@@ -1636,7 +1629,59 @@ function renderSettings(){
   };
 }
 
-/* ============ النشر ============ */
+/* ============ النشر: الكود اختياري + رابط جوجل يكفي لوحده ============ */
+// موقع بداية يولد تلقائيًا من الاسم والوصف
+function autoSitePage(name, desc, slug){
+  const safe = t => String(t || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const letter = safe((name || '؟').trim()[0] || '؟').toUpperCase();
+  return `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${safe(name)}</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,Arial,sans-serif;background:#faf7f2;color:#241c16;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border:1px solid #eee4d8;border-radius:24px;box-shadow:0 20px 60px rgba(40,30,20,.1);max-width:520px;width:100%;padding:56px 40px;text-align:center}
+.badge{display:inline-block;background:#F6E7E3;color:#B23A2E;font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;margin-bottom:20px}
+.logo{width:60px;height:60px;border-radius:50%;background:#B23A2E;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:800}
+h1{font-size:30px;margin-bottom:10px;line-height:1.4;word-break:break-word}
+.url{direction:ltr;color:#2E6E5E;font-size:13px;font-weight:700;margin-bottom:22px}
+.desc{color:#6b5f55;line-height:2;font-size:14.5px;word-break:break-word}
+.hr{height:3px;width:60px;background:#B23A2E;border-radius:99px;margin:26px auto}
+.note{font-size:12px;color:#9C8F82;line-height:1.9}
+</style></head><body><div class="card">
+<span class="badge">☕ على شبكة أرابكوا</span>
+<div class="logo">${letter}</div>
+<h1>${safe(name)}</h1>
+<div class="url">${safe(slug)}.arpico</div>
+<p class="desc">${safe(desc)}</p>
+<div class="hr"></div>
+<p class="note">دي صفحة بداية اتولّدت تلقائيًا من اسم الموقع ووصفه.<br>صاحب الموقع يقدر يعدّل كود HTML ويعيد النشر بصفحة كاملة في أي وقت.</p>
+</div></body></html>`;
+}
+// موقع جسر: لما المستخدم يحط رابط جوجل بس من غير كود
+function bridgeSitePage(name, desc, slug, gurl){
+  const safe = t => String(t || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const letter = safe((name || '؟').trim()[0] || '؟').toUpperCase();
+  return `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${safe(name)}</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,Arial,sans-serif;background:#faf7f2;color:#241c16;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border:1px solid #eee4d8;border-radius:24px;box-shadow:0 20px 60px rgba(40,30,20,.1);max-width:520px;width:100%;padding:56px 40px;text-align:center}
+.badge{display:inline-block;background:#F6E7E3;color:#B23A2E;font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;margin-bottom:20px}
+.logo{width:60px;height:60px;border-radius:50%;background:#B23A2E;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:800}
+h1{font-size:30px;margin-bottom:10px;line-height:1.4;word-break:break-word}
+.url{direction:ltr;color:#2E6E5E;font-size:13px;font-weight:700;margin-bottom:22px}
+.desc{color:#6b5f55;line-height:2;font-size:14.5px;word-break:break-word}
+.go{display:inline-block;background:#B23A2E;color:#fff;text-decoration:none;font-weight:800;font-size:15px;padding:14px 36px;border-radius:999px;margin-top:24px;box-shadow:0 8px 24px rgba(178,58,46,.3)}
+.go:hover{background:#8E2C22}
+.gu{direction:ltr;color:#9C8F82;font-size:11px;margin-top:14px;word-break:break-all}
+</style></head><body><div class="card">
+<span class="badge">☕ موقع رسمي على شبكة أرابكوا</span>
+<div class="logo">${letter}</div>
+<h1>${safe(name)}</h1>
+<div class="url">${safe(slug)}.arpico</div>
+<p class="desc">${safe(desc)}</p>
+<a class="go" href="${safe(gurl)}" rel="noopener">افتح الموقع الرسمي ↗</a>
+<div class="gu">${safe(gurl)}</div>
+</div></body></html>`;
+}
+
 function renderPublish(){
   const u = me();
   if (!u) { pendingNav = {page:'publish'}; viewport.innerHTML = guestPanel(); bindGuestPanel(); return; }
@@ -1646,7 +1691,7 @@ function renderPublish(){
   viewport.innerHTML = `<div class="publish page"><div class="pub-wrap">
     <div class="pub-head"><div class="appic"><i data-lucide="upload"></i></div>
       <div><h1>${editing ? 'تعديل موقعك' : 'انشر موقعك'}</h1></div></div>
-    <p class="pub-sub">اكتب HTML موقعك (أو ابدأ بقالب)، شوف المعاينة لحظة بلحظة، وبعدين انشره — ه يظهر في بحث أرابكوا فورًا. ولو موقعك ليه نسخة حقيقية على جوجل، ضيف رابطها في الخانة الاختيارية.</p>
+    <p class="pub-sub">أسهل طريقة: اكتب الاسم والوصف وبس واضغط نشر — وه يتولد لك موقع تلقائيًا. وعندك خيارات لو حابب: تحط رابط موقعك على جوجل، أو تصمم HTML بنفسك. كل حاجة اختيارية غير الاسم والوصف.</p>
     ${editing ? `<div class="editnote"><i data-lucide="pen-line"></i> بتعدل الآن: ${esc(editing.name)} (${esc(editing.slug)}.arpico)
       <button id="cancelEdit">إلغاء التعديل</button></div>` : ''}
     <div class="pub-grid">
@@ -1655,15 +1700,21 @@ function renderPublish(){
         <label>عنوان موقعك على الشبكة</label>
         <div class="slugbox"><input id="pSlug" maxlength="60" value="${esc(editing ? editing.slug : '')}" placeholder="qahwa-arpica" spellcheck="false"><span class="ext">.arpico</span></div>
         <label>وصف قصير (ه يظهر في نتائج البحث)</label><input id="pDesc" maxlength="300" value="${esc(editing ? editing.desc : '')}" placeholder="متجر قهوة مختصة — حبوب محمّصة طازجة يوميًا">
-        <label>كلمات مفتاحية (افصل بينها بفاصلة)</label><input id="pKey" maxlength="200" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
-        <label>رابط موقعك على جوجل (اختياري — لو موجود فعلاً)</label><input id="pGoogle" dir="ltr" maxlength="300" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
-        <label>محتوى الموقع — HTML</label>
+        <label>كلمات مفتاحية (اختياري — افصل بينها بفاصلة)</label><input id="pKey" maxlength="200" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
+        <label>رابط موقعك على جوجل (اختياري — يكفي لوحده من غير كود)</label>
+        <input id="pGoogle" dir="ltr" maxlength="300" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
+        <div class="tplrow" style="margin-top:8px">
+          <button class="tplbtn" id="pasteG"><i data-lucide="clipboard"></i> لصق رابط جوجل لصفحة جاهزة</button>
+        </div>
+        <label>محتوى الموقع — HTML (اختياري تمامًا)</label>
         <div class="tplrow">
+          <button class="tplbtn" id="genBtn"><i data-lucide="wand-2"></i> ولّد صفحة تلقائي</button>
           <button class="tplbtn" data-tpl="card"><i data-lucide="user"></i> بطاقة شخصية</button>
           <button class="tplbtn" data-tpl="store"><i data-lucide="store"></i> متجر صغير</button>
           <button class="tplbtn" data-tpl="blog"><i data-lucide="newspaper"></i> مدوّنة</button>
         </div>
-        <textarea id="pHtml" spellcheck="false" placeholder="اكتب أو الصق كود HTML هنا...">${esc(editing ? editing.html : '')}</textarea>
+        <textarea id="pHtml" spellcheck="false" placeholder="سبته فاضي؟ تمام — هنولّد لك موقع تلقائي من الاسم والوصف (أو صفحة جسر للرابط لو حطيته). وعايز تصمم بنفسك؟ اكتب هنا أو دوس ولّد صفحة وعدّل...">${esc(editing ? editing.html : '')}</textarea>
+        <div id="modeHint"></div>
         <div class="pub-actions">
           <button class="btn primary" id="pubGo"><i data-lucide="${editing ? 'check' : 'upload'}"></i> ${editing ? 'حفظ التعديلات' : 'نشر الموقع على الشبكة'}</button>
           <span class="note">ينشر باسم ${esc(u.email)}</span>
@@ -1676,15 +1727,37 @@ function renderPublish(){
     </div>
   </div></div>`;
 
-  const nameEl = $('#pName'), slugEl = $('#pSlug'), descEl = $('#pDesc'), keyEl = $('#pKey'), gEl = $('#pGoogle'), htmlEl = $('#pHtml'), pv = $('#pvFrame');
+  const nameEl = $('#pName'), slugEl = $('#pSlug'), descEl = $('#pDesc'), keyEl = $('#pKey'), gEl = $('#pGoogle'), htmlEl = $('#pHtml'), pv = $('#pvFrame'), hint = $('#modeHint');
   let slugDirty = !!editing, descDirty = !!editing;
-  const emptyPv = '<div style="font-family:sans-serif;color:#999;display:flex;height:100%;align-items:center;justify-content:center">اكتب كودك هتعاينه هنا مباشرة</div>';
-  const updPreview = debounce(() => pv.setAttribute('srcdoc', htmlEl.value || emptyPv), 250);
-  nameEl.addEventListener('input', () => { if (!slugDirty) slugEl.value = siteSlugify(nameEl.value); });
-  slugEl.addEventListener('input', () => slugDirty = true);
-  descEl.addEventListener('input', () => descDirty = true);
+
+  // أي وضع سيتعرض في المعاينة:
+  // 1) كود مكتوب → الكود نفسه
+  // 2) رابط جوجل فقط → صفحة جسر أنيقة لرابطه
+  // 3) ولا واحدة → موقع بداية متولد من الاسم والوصف
+  const effectiveHtml = () => {
+    const raw = htmlEl.value.trim();
+    if (raw.length >= 30) return {html:raw, mode:'code'};
+    const g = safeURL(clamp(gEl.value.trim(), CAPS.gurl));
+    const nm = nameEl.value.trim() || 'موقعك الجديد';
+    const ds = descEl.value.trim() || 'اكتب وصف الموقع هنا — هيظهر في نتائج البحث.';
+    const sl = slugEl.value.trim() || 'my-site';
+    if (g) return {html:bridgeSitePage(nm, ds, sl, g), mode:'bridge'};
+    return {html:autoSitePage(nm, ds, sl), mode:'gen'};
+  };
+  const updHint = () => {
+    const {mode} = effectiveHtml();
+    if (mode === 'code') hint.innerHTML = `<div class="modehint bridge"><i data-lucide="code"></i> هيتنشر بكودك اللي كتبته.</div>`;
+    else if (mode === 'bridge') hint.innerHTML = `<div class="modehint bridge"><i data-lucide="link"></i> الرابط كفاية! هيتعمل موقع جسر بصفحة أنيقة فيها زرار يفتح موقعك الحقيقي — ومش محتاج تكتب أي كود.</div>`;
+    else hint.innerHTML = `<div class="modehint gen"><i data-lucide="wand-2"></i> مفيش كود ولا رابط؟ تمام — هيتولد لك موقع بداية تلقائي من الاسم والوصف، لسه شكله حلو.</div>`;
+    icons();
+  };
+  const updPreview = debounce(() => { pv.setAttribute('srcdoc', effectiveHtml().html); updHint(); }, 250);
+  nameEl.addEventListener('input', () => { if (!slugDirty) slugEl.value = siteSlugify(nameEl.value); updPreview(); });
+  slugEl.addEventListener('input', () => { slugDirty = true; updPreview(); });
+  descEl.addEventListener('input', () => { descDirty = true; updPreview(); });
+  gEl.addEventListener('input', updPreview);
   htmlEl.addEventListener('input', updPreview);
-  pv.setAttribute('srcdoc', htmlEl.value || emptyPv);
+  updPreview();
 
   const TPLS = {card:TPL_CARD, store:TPL_STORE, blog:TPL_BLOG};
   viewport.querySelectorAll('.tplbtn').forEach(b => b.onclick = () => {
@@ -1694,23 +1767,42 @@ function renderPublish(){
     if (!descDirty) descEl.value = `موقع ${nameEl.value} على شبكة أرابكوا`;
     updPreview(); toast('تم تحميل القالب — عدّله زي ما تحب', 'pen-line');
   });
+  const gb = $('#genBtn');
+  if (gb) gb.onclick = () => {
+    htmlEl.value = effectiveHtml().html;
+    updPreview();
+    toast('اتولد الموقع في الخانة — عدّله زي ما تحب أو امسحه ورجع للوضع التلقائي', 'wand-2');
+  };
+  const pg = $('#pasteG');
+  if (pg) pg.onclick = async () => {
+    let txt = '';
+    try { if (navigator.clipboard && navigator.clipboard.readText) txt = await navigator.clipboard.readText(); } catch(e){}
+    if (!txt) { toast('انسخ الرابط الأول من جوجل، وبعدين دوس الزرار ده تاني', 'clipboard'); gEl.focus(); return; }
+    gEl.value = txt.trim();
+    updPreview();
+    toast('تم لصق الرابط — مش محتاج تكتب أي كود خالص', 'link');
+  };
   const ce = $('#cancelEdit');
   if (ce) ce.onclick = () => { renderPublish(); icons(); };
 
   $('#pubGo').onclick = () => {
     const name = clamp(nameEl.value.trim(), CAPS.siteName), desc = clamp(descEl.value.trim(), CAPS.siteDesc);
-    const html = htmlEl.value;
+    const rawHtml = htmlEl.value;
     let g = clamp(gEl.value.trim(), CAPS.gurl);
     const err = m => { toast(m, 'shield'); return false; };
     if (name.length < 2) return err('اكتب اسم للموقع (حرفين على الأقل).');
     if (desc.length < 8) return err('الوصف قصير أوي — خليه واضح عشان يظهر في البحث.');
-    if (g) { if (!/^https?:\/\//i.test(g)) g = 'https://' + g; g = safeURL(g); }
+    if (g) { if (!/^https?:\/\//i.test(g)) g = 'https://' + g; g = safeURL(g); if (!g) return err('رابط جوجل مش بصيغة صحيحة — لازم يبدأ بـ https://'); }
     let slug = siteSlugify(slugEl.value) || 'site-' + uid().slice(0, 5);
-    if (html.trim().length < 30) return err('محتوى الموقع قصير أوي — لو محتار ابدأ بقالب جاهز.');
-    if (html.length > CAPS.html) return err('كود الموقع كبير أوي (الحد 400 ألف حرف).');
+    if (rawHtml.length > CAPS.html) return err('كود الموقع كبير أوي (الحد 400 ألف حرف).');
+
+    // الثلاثة مسارات، والكود اختياري دايمًا
+    const finalHtml = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, slug, g) : autoSitePage(name, desc, slug));
+
     if (editing) {
       let final = slug, i = 2;
       while (sites.some(s => s.slug === final && s.id !== editing.id)) { final = slug + '-' + i++; }
+      const html = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, final, g) : autoSitePage(name, desc, final));
       Object.assign(editing, {slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), html, googleUrl:g, updated:nowISO()});
       DB.set('arp_sites', sites);
       toast('تم حفظ التعديلات', 'check');
@@ -1718,6 +1810,7 @@ function renderPublish(){
     }
     let final = slug, i = 2;
     while (sites.some(s => s.slug === final)) { final = slug + '-' + i++; }
+    const html = rawHtml.trim().length >= 30 ? rawHtml : (g ? bridgeSitePage(name, desc, final, g) : autoSitePage(name, desc, final));
     const s = {id:uid(), slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), googleUrl:g, html, author:u.name, authorEmail:u.email, date:nowISO(), views:0};
     sites.push(s); DB.set('arp_sites', sites);
     toast('مبروك! موقعك انشر وظهر في بحث أرابكوا', 'sparkles');
@@ -2831,5 +2924,4 @@ newTab('ntp');
 </script>
 </body>
 </html>
-
 
