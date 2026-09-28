@@ -4,9 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>أرابكوا — المتصفح العربي</title>
+<!-- ===== CSP: سياسة أمان المحتوى ===== -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; connect-src 'self'; frame-src https: data: blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#B23A2E">
+<meta name="description" content="أرابكوا — المتصفح العربي: بحث، بريد @arpico.com، دردشة ومكالمات، وانشر موقعك">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Lalezar&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" crossorigin="anonymous"></script>
 <script>
 window.ensureIcons = function(){
   if (typeof lucide !== 'undefined') return;
@@ -196,6 +202,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 .btn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
 .btn svg{width:16px;height:16px}
+.btn:disabled{opacity:.55;cursor:wait}
 
 .authwrap{height:100%;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:var(--panel2);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.6px);background-size:24px 24px}
 .authcard{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:36px 32px;width:100%;max-width:420px;box-shadow:var(--shadow);text-align:center}
@@ -266,6 +273,9 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .hrow .bfav svg,.hrow .bfav .bean{width:13px;height:13px}
 .hrow .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hrow .tm{margin-inline-start:auto;font-size:11px;color:var(--ink3);flex-shrink:0}
+.seclist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.seclist .si{display:flex;gap:9px;font-size:12.5px;color:var(--ink2);line-height:1.8;align-items:flex-start}
+.seclist .si svg{width:14px;height:14px;color:var(--ok);flex-shrink:0;margin-top:5px}
 
 .publish{height:100%;overflow-y:auto}
 .pub-wrap{max-width:1060px;margin:0 auto;padding:34px 24px 80px}
@@ -355,7 +365,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .mr-meta{font-size:12.5px;color:var(--ink2);margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mr-meta .from{font-weight:700;color:var(--brand);direction:ltr}
 .mr-acts{margin-inline-start:auto;display:flex;gap:4px;flex-shrink:0}
-.mr-body{font-size:14.5px;line-height:2.1;white-space:pre-wrap}
+.mr-body{font-size:14.5px;line-height:2.1;white-space:pre-wrap;word-break:break-word}
 .mail-empty-list{padding:40px 18px;text-align:center;color:var(--ink3);font-size:12.5px}
 
 .insta{height:100%;overflow-y:auto;background:var(--panel)}
@@ -387,10 +397,10 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .post-a button.liked svg{fill:var(--brand);color:var(--brand)}
 .post-a .sp{flex:1}
 .plikes{padding:2px 16px;font-weight:700;font-size:13px}
-.pcap{padding:4px 16px 10px;font-size:13px;line-height:1.8}
+.pcap{padding:4px 16px 10px;font-size:13px;line-height:1.8;word-break:break-word}
 .pcap b{font-weight:700}
 .pcomments{padding:0 16px 12px;font-size:12.5px}
-.pcomments .c{margin-bottom:5px;line-height:1.7}
+.pcomments .c{margin-bottom:5px;line-height:1.7;word-break:break-word}
 .pcomments .c b{font-weight:700}
 .cform{display:flex;gap:8px;padding:0 12px 12px}
 .cform input{flex:1;border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 16px;font-size:12.5px;outline:0}
@@ -415,7 +425,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .tk-act span{font-size:11px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .tk-info{position:absolute;inset-inline-end:18px;bottom:26px;max-width:70%;color:#fff;z-index:3}
 .tk-user{font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.6);cursor:pointer}
-.tk-cap{font-size:13px;line-height:1.8;margin-top:5px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.tk-cap{font-size:13px;line-height:1.8;margin-top:5px;text-shadow:0 1px 6px rgba(0,0,0,.6);word-break:break-word}
 .tk-brand{position:absolute;top:18px;inset-inline-end:18px;z-index:3;background:rgba(20,15,10,.5);color:#fff;font-size:11px;padding:5px 13px;border-radius:999px;backdrop-filter:blur(6px)}
 .tk-upload{position:absolute;top:18px;inset-inline-start:18px;z-index:3;background:var(--brand);color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:999px;display:flex;align-items:center;gap:7px}
 .tk-upload svg{width:15px;height:15px}
@@ -445,13 +455,13 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 .yplayer{background:var(--panel2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .yplayer video{width:100%;aspect-ratio:16/9;background:#000;display:block}
 .yinfo{padding:16px 18px}
-.yinfo h2{font-size:18px;line-height:1.6}
+.yinfo h2{font-size:18px;line-height:1.6;word-break:break-word}
 .yinfo .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 .yinfo .meta span{display:flex;align-items:center;gap:4px}
 .yinfo .meta svg{width:12px;height:12px}
 .yinfo .meta .up{cursor:pointer;font-weight:700;color:var(--ink2)}
 .yinfo .meta .up:hover{color:var(--brand)}
-.yinfo .desc{font-size:13.5px;color:var(--ink2);line-height:1.9;margin-top:12px;white-space:pre-wrap}
+.yinfo .desc{font-size:13.5px;color:var(--ink2);line-height:1.9;margin-top:12px;white-space:pre-wrap;word-break:break-word}
 .yback{margin-bottom:14px}
 
 .chat{height:100%;display:grid;grid-template-columns:320px 1fr}
@@ -634,7 +644,7 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
   </div>
   <div id="omniboxWrap">
     <span id="obIcon"></span>
-    <input id="omnibox" spellcheck="false" autocomplete="off">
+    <input id="omnibox" maxlength="300" spellcheck="false" autocomplete="off">
     <button class="obbtn micbtn" id="micBtn" title="بحث صوتي"><i data-lucide="mic"></i></button>
     <button class="obbtn" id="starBtn" title="إضافة للعلامات المرجعية"><i data-lucide="bookmark"></i></button>
     <div class="sugg" id="obSugg"></div>
@@ -654,9 +664,20 @@ mark{background:var(--brand-soft);color:var(--brand);border-radius:3px;padding:0
 
 <script>
 /* ============================================================
-   أرابكوا — إصلاح طلبات الصداقة وتسجيل الدخول والحسابات
+   أرابكوا — نسخة مقواة أمنيًا (CSP + تشفير كلمات السر + فلاتر)
    ============================================================ */
 
+// ---------- حماية من Clickjacking ----------
+(function(){
+  try {
+    if (window.top !== window.self) {
+      try { window.top.location = window.self.location; }
+      catch(e){ document.title = '⚠️ ' + document.title; }
+    }
+  } catch(e){}
+})();
+
+// ---------- مرصد الأخطاء ----------
 window.addEventListener('error', e => {
   const t = e.target;
   if (t && t.tagName === 'IMG') {
@@ -671,6 +692,7 @@ window.addEventListener('unhandledrejection', e => {
   try { toast('خطأ تقني: ' + ((e.reason && e.reason.message) || e.reason || 'غير معروف'), 'bug', true); } catch(_){}
 });
 
+// ---------- أدوات ----------
 const $  = s => document.querySelector(s);
 const viewport = document.getElementById('viewport');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -686,7 +708,17 @@ const fmtTime = iso => { const d = new Date(iso); const diff = (Date.now() - d) 
 const icons = () => { try { lucide.createIcons(); } catch(e){} };
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const isNarrow = () => window.matchMedia('(max-width:860px)').matches;
-const openExternal = url => { window.open(url, '_blank', 'noopener,noreferrer'); };
+
+/* ============ الأمان: فلاتر الروابط والطول ============ */
+// يسمح بروابط https فقط — يقفل ثغرات javascript: / data: في الروابط
+const safeURL = u => /^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u) : '';
+const openExternal = url => { const u = safeURL(url); if (!u) { toast('الرابط غير صالح أو غير آمن', 'shield', true); return; } window.open(u, '_blank', 'noopener,noreferrer'); };
+// حدود طول صارمة ضد تعطيل التخزين
+const CAPS = { chat:2000, mailBody:20000, mailSub:200, caption:300, title:150, desc:500, html:400000, siteName:60, siteDesc:300, keywords:200, gurl:300, name:24 };
+const clamp = (s, n) => String(s ?? '').slice(0, n);
+
+const EMAIL_RE = /^[a-z0-9._-]+@arpico\.com$/;
+
 const igIco = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
 const appIcon = name => name === 'IG' ? igIco() : `<i data-lucide="${name}"></i>`;
 
@@ -709,32 +741,52 @@ const letterDot = (text, cls='fd') => { const ch = (text || '؟').trim()[0] || '
 const avatarHTML = (name, size, extra='') => `<span class="avatar ${extra}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*0.42)}px;background:${colorFor(name)}">${esc((name||'؟').trim()[0]||'؟')}</span>`;
 const bean = (cls='') => `<svg class="bean ${cls}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="var(--brand)"/><path d="M13.8 3.6C9.2 8.2 15 15.8 10.2 20.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.2 6.4C6.6 8.2 6.6 10.2 7.7 11.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M16.4 13.6c1.4 1.6 1.3 3.3.2 4.7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>`;
 
-/* ============ مطابقة عربية مرنة + إيميلات لاتيني ============ */
-// تطبيع عربي: يوحّد الهمزات والتاء المربوطة ويشيل التشكيل — عشان البحث والدخول يسامحوا الفروق
-const normAr = s => String(s || '').toLowerCase()
-  .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
-  .replace(/[أإآٱ]/g, 'ا')
-  .replace(/ى/g, 'ي').replace(/ئ/g, 'ي')
-  .replace(/ؤ/g, 'و')
-  .replace(/ة/g, 'ه');
-
-// تحويل حروف عربية لاتيني — عشان الإيميل يبقى قابل للكتابة من أي كيبورد
-const AR_TRANS = {'ا':'a','أ':'a','إ':'e','آ':'a','ٱ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'y','ة':'h','ء':'a','ؤ':'w','ئ':'y','َ':'','ً':'','ُ':'','ٌ':'','ِ':'','ٍ':'','ّ':'','ْ':'','ـ':'','٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
-function translitSlug(s){
-  let out = '';
-  for (const ch of String(s || '')) out += (Object.prototype.hasOwnProperty.call(AR_TRANS, ch) ? AR_TRANS[ch] : ch);
-  return out.toLowerCase().replace(/\s+/g, '.')
-    .replace(/[^a-z0-9._-]/g, '')
-    .replace(/\.{2,}/g, '.')
-    .replace(/^[._-]+/, '')
-    .slice(0, 24)
-    .replace(/[._-]+$/g, '');
+/* ============ الأمان: تشفير كلمات السر SHA-256 + Salt ============ */
+function utf8(s){ try { return new TextEncoder().encode(s); } catch(e){ const out=[]; for (const ch of unescape(encodeURIComponent(s))) out.push(ch.charCodeAt(0)); return new Uint8Array(out); } }
+function sha256Bytes(bytes){
+  const rr=(v,a)=>(v>>>a)|(v<<(32-a));
+  const K=new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+  const H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+  const l=bytes.length, bitLen=l*8;
+  const total=Math.ceil((l+9)/64)*64;
+  const buf=new Uint8Array(total); buf.set(bytes); buf[l]=0x80;
+  const dv=new DataView(buf.buffer);
+  dv.setUint32(total-8, Math.floor(bitLen/4294967296));
+  dv.setUint32(total-4, bitLen>>>0);
+  const w=new Uint32Array(64);
+  for (let off=0; off<total; off+=64){
+    for (let i=0;i<16;i++) w[i]=dv.getUint32(off+i*4);
+    for (let i=16;i<64;i++){
+      const s0=rr(w[i-15],7)^rr(w[i-15],18)^(w[i-15]>>>3);
+      const s1=rr(w[i-2],17)^rr(w[i-2],19)^(w[i-2]>>>10);
+      w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+    }
+    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for (let i=0;i<64;i++){
+      const S1=rr(e,6)^rr(e,11)^rr(e,25), ch=(e&f)^(~e&g);
+      const t1=(h+S1+ch+K[i]+w[i])>>>0;
+      const S0=rr(a,2)^rr(a,13)^rr(a,22), mj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+mj)>>>0;
+      h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0;
+  }
+  return Array.from(H).map(x=>x.toString(16).padStart(8,'0')).join('');
 }
-// صيغة الإيميل القديمة (بحروف عربية) — بنستخدمها في المطابقة الرجعية بس
-function nameToSlug(name){
-  return String(name).trim().toLowerCase().replace(/\s+/g, '.')
-    .replace(/[^\p{L}\p{N}._-]/gu, '').slice(0, 20)
-    .replace(/\.{2,}/g, '.').replace(/^[._-]+|[._-]+$/g, '');
+async function hashPassword(pass, salt){
+  const msg = salt + ':' + clamp(pass, 128);
+  try {
+    if (window.crypto && crypto.subtle && crypto.subtle.digest){
+      const buf = await crypto.subtle.digest('SHA-256', utf8(msg));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  } catch(e){}
+  return sha256Bytes(utf8(msg));
+}
+function makeSalt(){
+  try { const a = new Uint8Array(16); crypto.getRandomValues(a); return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  catch(e){ return uid() + uid() + Date.now().toString(36); }
 }
 
 // ---------- التخزين ----------
@@ -841,10 +893,25 @@ let browseHist = DB.get('arp_history', []);
 let theme      = DB.get('arp_theme', 'light');
 let session    = DB.get('arp_session', null);
 
-// ترقية شكل المستخدمين القدام
 users = users.map(u => u.name ? u : {...u, name:u.username || 'مستخدم', email:u.email || ((u.username||'user')+'@arpico.com')});
 
-/* ============ ترحيل الإيميلات العربية لاتيني (يصلّح الحسابات القديمة) ============ */
+// ترحيل الإيميلات العربية لاتيني
+const normAr = s => String(s || '').toLowerCase()
+  .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+  .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ئ/g, 'ي')
+  .replace(/ؤ/g, 'و').replace(/ة/g, 'ه');
+const AR_TRANS = {'ا':'a','أ':'a','إ':'e','آ':'a','ٱ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'y','ة':'h','ء':'a','ؤ':'w','ئ':'y','٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+function translitSlug(s){
+  let out = '';
+  for (const ch of String(s || '')) out += (Object.prototype.hasOwnProperty.call(AR_TRANS, ch) ? AR_TRANS[ch] : ch);
+  return out.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9._-]/g, '')
+    .replace(/\.{2,}/g, '.').replace(/^[._-]+/, '').slice(0, 24).replace(/[._-]+$/g, '');
+}
+function nameToSlug(name){
+  return String(name).trim().toLowerCase().replace(/\s+/g, '.')
+    .replace(/[^\p{L}\p{N}._-]/gu, '').slice(0, 20)
+    .replace(/\.{2,}/g, '.').replace(/^[._-]+|[._-]+$/g, '');
+}
 (function migrateArabicEmails(){
   const needs = users.filter(u => /[^\u0000-\u007F]/.test((u.email || '').split('@')[0]));
   if (!needs.length) return;
@@ -873,7 +940,6 @@ users = users.map(u => u.name ? u : {...u, name:u.username || 'مستخدم', em
   browseHist.forEach(h => { if (h.data && h.data.email) h.data.email = remap(h.data.email); }); DB.set('arp_history', browseHist);
 })();
 
-// إصلاح الجلسة القديمة
 if (session && !users.some(u => u.email === session)) {
   const legacy = users.find(u => u.name === session || u.email === session);
   session = legacy ? legacy.email : null;
@@ -886,7 +952,7 @@ const unreadChats = () => { const u = me(); return u ? chatMsgs.filter(m => m.to
 const incomingReqs = () => { const u = me(); return u ? friendReqs.filter(r => r.status === 'pending' && r.to === u.email) : []; };
 const displayNameFor = email => (users.find(x => x.email === email) || {}).name || email;
 
-/* ============ الصداقات ============ */
+// ---------- الصداقات ----------
 const areFriends = (a,b) => (friends[a]||[]).includes(b);
 function setFriends(a,b,val){
   friends[a] = friends[a] || []; friends[b] = friends[b] || [];
@@ -895,14 +961,15 @@ function setFriends(a,b,val){
   DB.set('arp_friends', friends);
 }
 const reqBetween = (a,b) => friendReqs.find(r => r.status==='pending' && ((r.from===a&&r.to===b)||(r.from===b&&r.to===a)));
-
 function sendFriendReq(to){
   const u = me();
   if (!u) { toast('سجّل الدخول الأول عشان تبعت طلب صداقة', 'lock', true); return; }
+  to = String(to || '').trim().toLowerCase();
   if (!to) { toast('مفيش حساب محدد — افتح بروفايل الشخص أو دوّر عليه في الدردشة', 'shield', true); return; }
+  if (!EMAIL_RE.test(to)) { toast('صيغة الإيميل غير صالحة', 'shield', true); return; }
   if (to === u.email) { toast('مينفعش تضيف نفسك', 'shield', true); return; }
   if (!users.some(x => x.email === to)) { toast(`الحساب "${to}" مش موجود على أرابكوا`, 'shield', true); return; }
-  if (areFriends(u.email, to)) { toast(`إنتوا أصحاب بالفعل`, 'user-check'); return; }
+  if (areFriends(u.email, to)) { toast('إنتوا أصحاب بالفعل', 'user-check'); return; }
   if (reqBetween(u.email, to)) { toast('في طلب صداقة معلق بينكم بالفعل', 'clock'); return; }
   friendReqs.push({id:uid(), from:u.email, to, date:nowISO(), status:'pending'});
   DB.set('arp_friend_reqs', friendReqs);
@@ -919,20 +986,16 @@ function rejectReq(id){
   r.status = 'rejected'; DB.set('arp_friend_reqs', friendReqs);
   toast('تم رفض الطلب', 'user-x');
 }
-
 function uniqueEmailSlug(slug){
   let base = slug || 'user', i = 1, cand = base;
   while (users.some(u => u.email === cand + '@arpico.com')) { i++; cand = base + '-' + i; }
   return cand;
 }
-// الإيميل النهائي: دايمًا لاتيني قابل للكتابة من أي كيبورد
-function generateEmail(rawName){
-  return uniqueEmailSlug(translitSlug(rawName)) + '@arpico.com';
-}
+const generateEmail = rawName => uniqueEmailSlug(translitSlug(rawName)) + '@arpico.com';
 const siteSlugify = v => String(v).trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{N}-]/gu, '').replace(/^-+|-+$/g, '');
 
 function rememberQ(q){
-  q = (q || '').trim(); if (!q) return;
+  q = clamp(q, 300).trim(); if (!q) return;
   recentQ = [q, ...recentQ.filter(x => x !== q)].slice(0, 8);
   DB.set('arp_recent_q', recentQ);
 }
@@ -956,9 +1019,9 @@ const APPS = [
   { ref:'settings',name:'إعدادات الحساب',icon:'settings', desc:'بياناتك، مواقعك المنشورة، سجل التصفح، وتفضيلات المتصفح.' },
 ];
 const WEB = [
-  { url:'https://www.wikipedia.org', name:'ويكيبيديا', alias:'ويكيبيديا موسوعة', desc:'الموسوعة الحرة التي يكتبها الجميع بأكثر من 300 لغة.' },
-  { url:'https://www.reddit.com',    name:'ريديت', alias:'ريديت منتديات', desc:'مجتمعات عن كل شيء — ناقش، صوّت، واكتشف.' },
-  { url:'https://github.com',        name:'جيت هب', alias:'github برمجة كود', desc:'أكبر منصة لاستضافة الأكواد والمشاريع مفتوحة المصدر.' },
+  { url:'https://www.wikipedia.org', name:'ويكيبيديا', desc:'الموسوعة الحرة التي يكتبها الجميع بأكثر من 300 لغة.' },
+  { url:'https://www.reddit.com',    name:'ريديت', desc:'مجتمعات عن كل شيء — ناقش، صوّت، واكتشف.' },
+  { url:'https://github.com',        name:'جيت هب', desc:'أكبر منصة لاستضافة الأكواد والمشاريع مفتوحة المصدر.' },
 ];
 const norm = s => String(s || '').toLowerCase().trim();
 const matchSite = (s, q) => norm(s.name).includes(q) || norm(s.desc).includes(q) || norm(s.keywords).includes(q) || norm(s.slug).includes(q) || norm(s.author).includes(q);
@@ -1139,7 +1202,7 @@ function attachSugg(input, box){
 }
 
 function omniboxSubmit(v){
-  v = (v || '').trim(); if (!v) return;
+  v = clamp(v, 300).trim(); if (!v) return;
   if (/^arpico:\/\//i.test(v)) {
     const rest = v.replace(/^arpico:\/\//i, '').replace(/\/+$/, '');
     const [pg, qs] = rest.split('?');
@@ -1148,17 +1211,16 @@ function omniboxSubmit(v){
     if (pg === 'search') { const q = new URLSearchParams(qs || '').get('q') || ''; rememberQ(q); return navigate('search', {q}); }
     return navigate('ntp');
   }
-  // لو كتب إيميل arpico → افتح البروفايل (مع مطابقة مرنة)
-  if (/@arpico\.com$/i.test(v)) {
-    const hit = users.find(x => (x.email||'').toLowerCase() === v.toLowerCase())
-      || users.find(x => normAr((x.email||'').toLowerCase()) === normAr(v.toLowerCase()));
+  if (EMAIL_RE.test(v.toLowerCase())) {
+    const hit = users.find(x => x.email === v.toLowerCase())
+      || users.find(x => normAr(x.email) === normAr(v.toLowerCase()));
     if (hit) return goProfile(hit.email);
   }
   const cleaned = v.toLowerCase().replace(/\.arpico\/?$/, '').replace(/\/+$/, '');
   let hit = sites.find(s => s.slug.toLowerCase() === cleaned);
   if (!hit) { const sl = siteSlugify(v); if (sl) hit = sites.find(s => s.slug === sl); }
   if (hit) return navigate('site', {siteId:hit.id});
-  if (/^(https?:\/\/|www\.)/i.test(v) || /^[\p{L}\p{N}-]+(\.[\p{L}\p{N}-]+)+(\/\S*)?$/iu.test(v))
+  if (/^https?:\/\//i.test(v) || /^www\./i.test(v) || /^[\p{L}\p{N}-]+(\.[\p{L}\p{N}-]+)+(\/\S*)?$/iu.test(v))
     return navigate('site', {url:v.startsWith('http') ? v : 'https://' + v, title:v});
   rememberQ(v); navigate('search', {q:v});
 }
@@ -1176,7 +1238,6 @@ function startVoice(btn, cb){
   try { r.start(); } catch(e) { toast('الميكروفون مشغول حاليًا', 'mic'); }
 }
 
-// ---------- بوابة الضيف ----------
 function guestPanel(){
   return `<div class="authwrap page"><div class="authcard">
     <i data-lucide="lock" style="width:32px;height:32px;color:var(--brand)"></i>
@@ -1240,7 +1301,7 @@ function renderNTP(){
     <p class="ntp-sub">${u ? `${greet}، يا <b>${esc(u.name)}</b>` : 'شبكتك العربيّة — كل المحتوى هنا من مستخدمين مثلك'}</p>
     <div class="bigsearch">
       <i data-lucide="search"></i>
-      <input id="ntpQ" placeholder="ابحث، أو اكتب إيميل صاحبك، أو عنوان موقع" autocomplete="off">
+      <input id="ntpQ" maxlength="300" placeholder="ابحث، أو اكتب إيميل صاحبك، أو عنوان موقع" autocomplete="off">
       <button class="micbtn" id="ntpMic" title="بحث صوتي"><i data-lucide="mic"></i></button>
       <div class="sugg" id="ntpSugg"></div>
     </div>
@@ -1279,10 +1340,10 @@ function renderNTP(){
 
 /* ============ نتائج البحث ============ */
 function renderSearch(d){
-  const q = (d.q || '').trim();
-  if (/@arpico\.com$/i.test(q)) {
-    const hit = users.find(x => (x.email||'').toLowerCase() === q.toLowerCase())
-      || users.find(x => normAr((x.email||'').toLowerCase()) === normAr(q.toLowerCase()));
+  const q = clamp(d.q || '', 300).trim();
+  if (EMAIL_RE.test(q.toLowerCase())) {
+    const hit = users.find(x => x.email === q.toLowerCase())
+      || users.find(x => normAr(x.email) === normAr(q.toLowerCase()));
     if (hit) return goProfile(hit.email);
   }
   const {apps, net, web} = searchIndex(q);
@@ -1294,7 +1355,7 @@ function renderSearch(d){
   viewport.innerHTML = `<div class="serp page">
     <div class="serp-head"><div class="serp-head-in">${bean()}
       <div class="serp-box"><i data-lucide="search"></i>
-        <input id="serpQ" value="${esc(q)}" autocomplete="off">
+        <input id="serpQ" maxlength="300" value="${esc(q)}" autocomplete="off">
         <button class="micbtn" id="serpMic"><i data-lucide="mic"></i></button>
       </div></div></div>
     <div class="serp-body">
@@ -1312,9 +1373,9 @@ function renderSearch(d){
           <div class="appinfo"><div class="t">${hl(a.name, q)}</div><div class="d">${hl(a.desc, q)}</div></div>
           <span class="rtag">تطبيق داخلي</span></div>`).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش تطبيقات مطابقة</div>` : '')) : ''}
       ${show('net') ? (counts.net ? `<div class="serp-sec"><i data-lucide="globe"></i> شبكة أرابكوا</div>
-        ${net.map(r => { const s = r.site; return `<div class="rrow" data-kind="site" data-ref="${s.id}">
+        ${net.map(r => { const s = r.site; const gu = safeURL(s.googleUrl); return `<div class="rrow" data-kind="site" data-ref="${s.id}">
           <div class="rsite">${letterDot(s.slug)}<div><div class="rname">${hl(s.name, q)}</div><div class="rurl">${esc(s.slug)}.arpico</div></div>
-          <span class="rtag" style="margin-inline-start:auto">منشور على أرابكوا</span>${s.googleUrl ? `<span class="rtag g">على جوجل</span>` : ''}</div>
+          <span class="rtag" style="margin-inline-start:auto">منشور على أرابكوا</span>${gu ? `<span class="rtag g">على جوجل</span>` : ''}</div>
           <div class="rtitle">${hl(s.name, q)}</div><div class="rdesc">${hl(s.desc, q)}</div></div>`; }).join('')}` : (filt!=='all' ? `<div class="filter-empty">ما لقينش مواقع مطابقة</div>` : '')) : ''}
       ${show('web') ? (counts.web ? `<div class="serp-sec"><i data-lucide="external-link"></i> نتائج الويب</div>
         ${web.map(r => { const w = r.web; return `<div class="rrow" data-kind="web" data-ref="${esc(w.url)}" data-name="${esc(w.name)}">
@@ -1341,7 +1402,27 @@ function renderSearch(d){
   if (ep) ep.onclick = () => { if (!me()) { authMode = 'signup'; navigate('publish'); } else goPublishNew(); };
 }
 
-/* ============ تسجيل الدخول / حساب جديد ============ */
+/* ============ تسجيل الدخول (مقوّى: تشفير + rate limit) ============ */
+let failCount = 0, failUntil = 0;
+async function verifyPassword(u, pw){
+  try {
+    if (u.salt && u.hash) return (await hashPassword(pw, u.salt)) === u.hash;
+    if (typeof u.pass === 'string' && u.pass.length) {
+      if (u.pass === pw) {
+        // ترقية تلقائية: نشفر كلمة السر ونشيل النص الصريح
+        u.salt = makeSalt();
+        u.hash = await hashPassword(pw, u.salt);
+        delete u.pass;
+        DB.set('arp_users', users);
+        setTimeout(() => toast('تم ترقية أمان حسابك — كلمة السر بقت مشفرة', 'shield-check'), 600);
+        return true;
+      }
+      return false;
+    }
+  } catch(e){}
+  return false;
+}
+
 function renderAuth(){
   const isSignup = authMode === 'signup';
   viewport.innerHTML = `<div class="authwrap page"><div class="authcard">
@@ -1356,17 +1437,17 @@ function renderAuth(){
     <form id="authForm">
       ${isSignup ? `
         <div class="field"><label>الاسم (أي حاجة — عربي، إنجليزي، مسافات...)</label>
-          <input id="aName" dir="auto" placeholder="مثال: أحمد محمد 99" autocomplete="off"></div>
+          <input id="aName" dir="auto" maxlength="24" placeholder="مثال: أحمد محمد 99" autocomplete="off"></div>
         <div class="email-live"><i data-lucide="at-sign"></i><b id="emailLive">user</b><span class="at">@</span><span>arpico.com</span></div>
         <p class="hint">ده إيميلك النهائي بحروف إنجليزية — سهل تكتبه وتشاركه مع أصحابك. لو محجوز هنضيف رقم تلقائيًا.</p>
-        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" placeholder="4 أحرف على الأقل">
+        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" maxlength="64" placeholder="4 أحرف على الأقل">
           <button type="button" class="eye" data-eye="aPass"><i data-lucide="eye"></i></button></div></div>
-        <div class="field"><label>تأكيد كلمة السر</label><div class="pw"><input id="aPass2" type="password" placeholder="اكتبها مرة تانية">
+        <div class="field"><label>تأكيد كلمة السر</label><div class="pw"><input id="aPass2" type="password" maxlength="64" placeholder="اكتبها مرة تانية">
           <button type="button" class="eye" data-eye="aPass2"><i data-lucide="eye"></i></button></div></div>
       ` : `
         <div class="field"><label>الاسم أو البريد الإلكتروني</label>
-          <input id="aId" dir="auto" placeholder="أحمد محمد أو ahmd.mhmd@arpico.com" autocomplete="off"></div>
-        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" placeholder="كلمة السر">
+          <input id="aId" dir="auto" maxlength="60" placeholder="أحمد محمد أو ahmd.mhmd@arpico.com" autocomplete="off"></div>
+        <div class="field"><label>كلمة السر</label><div class="pw"><input id="aPass" type="password" maxlength="64" placeholder="كلمة السر">
           <button type="button" class="eye" data-eye="aPass"><i data-lucide="eye"></i></button></div></div>
       `}
       <button class="btn primary" style="width:100%;justify-content:center;padding:13px" type="submit">
@@ -1394,56 +1475,67 @@ function renderAuth(){
     navigate('ntp');
   };
 
-  $('#authForm').onsubmit = e => {
+  $('#authForm').onsubmit = async e => {
     e.preventDefault();
-    if (isSignup) {
-      const rawName = ($('#aName').value || '').trim().replace(/\s+/g, ' ');
-      const p1 = $('#aPass').value, p2 = $('#aPass2').value;
-      if (rawName.length < 2 || rawName.length > 24) return err('الاسم لازم يكون بين حرفين و24 حرف.');
-      if (!/[\p{L}\p{N}]/u.test(rawName)) return err('الاسم لازم يحتوي على حرف أو رقم على الأقل.');
-      if (/[@/\\]/.test(rawName)) return err('الاسم ميستخدمش الرموز @ أو /.');
-      if (p1.length < 4) return err('كلمة السر لازم تكون 4 أحرف على الأقل.');
-      if (p1 !== p2) return err('كلمتا السر مش متطابقتين.');
-      const email = generateEmail(rawName);
-      users.push({name:rawName, email, pass:p1, joined:nowISO()}); DB.set('arp_users', users);
-      session = email; DB.set('arp_session', session);
-      mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
-      mail.push({id:uid(), from:'team@arpico.com', fromName:'فريق أرابكوا', to:email, subject:'أهلاً بك في أرابكوا!',
-        body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nملحوظة مهمة: الإيميل متولد بحروف إنجليزية من اسمك — احفظه كويس لأن أصحابك هيستخدموه يلاقوك في الدردشة.\n\nجرّب دلوقتي:\n- افتح الدردشة وابحث بإيميل صاحبك — لازم يكون مسجل حساب على أرابكوا.\n- اعمل حساب تاني وسجل دخول بيه عشان تجرب الدردشة والمكالمات وطلبات الصداقة مع نفسك.\n- طلبات الصداقة الواردة بتظهر في صفحة الدردشة وفي بروفايلك.\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
-      DB.set('arp_mail', mail);
-      toast(`أهلاً ${rawName}! إيميلك جاهز: ${email}`, 'sparkles');
-      afterAuth();
-    } else {
-      const raw = ($('#aId').value || '').trim();
-      const pw = $('#aPass').value;
-      if (!raw || !pw) return err('اكتب الاسم/الإيميل وكلمة السر.');
-      const id = raw.toLowerCase();
-      const idN = normAr(id).replace(/\s+/g, ' ').trim();
-      let u = null;
-      // 1) إيميل مطابق تمامًا
-      u = users.find(x => (x.email||'').toLowerCase() === id);
-      // 2) إيميل من غير @arpico.com
-      if (!u && !id.includes('@')) u = users.find(x => (x.email||'').toLowerCase() === id + '@arpico.com');
-      // 3) إيميل قديم بحروف عربية بعد تطبيع الهمزات
-      if (!u) u = users.find(x => normAr((x.email||'').toLowerCase()).replace(/\s+/g,'') === normAr(id).replace(/\s+/g,''));
-      // 4) بالاسم (لو الاسم مكرر: نفضّل الحساب اللي كلمة سره صح)
-      if (!u) {
-        const cands = users.filter(x =>
-          normAr((x.name||'').toLowerCase()).replace(/\s+/g,' ').trim() === idN ||
-          normAr((x.name||'').toLowerCase()).replace(/\s+/g,'') === idN.replace(/\s+/g,''));
-        u = cands.find(x => x.pass === pw) || cands[0] || null;
+    const sb = e.target.querySelector('button[type=submit]');
+    sb.disabled = true;
+    try {
+      if (isSignup) {
+        const rawName = clamp(($('#aName').value || '').trim().replace(/\s+/g, ' '), CAPS.name);
+        const p1 = $('#aPass').value, p2 = $('#aPass2').value;
+        if (rawName.length < 2 || rawName.length > CAPS.name) return err(`الاسم لازم يكون بين حرفين و${CAPS.name} حرف.`);
+        if (!/[\p{L}\p{N}]/u.test(rawName)) return err('الاسم لازم يحتوي على حرف أو رقم على الأقل.');
+        if (/[@/\\<>]/.test(rawName)) return err('الاسم ميستخدمش الرموز @ أو / أو < أو >.');
+        if (p1.length < 4 || p1.length > 64) return err('كلمة السر لازم تكون بين 4 و64 حرف.');
+        if (p1 !== p2) return err('كلمتا السر مش متطابقتين.');
+        const email = generateEmail(rawName);
+        const salt = makeSalt();
+        const hash = await hashPassword(p1, salt);
+        users.push({name:rawName, email, salt, hash, joined:nowISO()});
+        DB.set('arp_users', users);
+        session = email; DB.set('arp_session', session);
+        mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
+        mail.push({id:uid(), from:'team@arpico.com', fromName:'فريق أرابكوا', to:email, subject:'أهلاً بك في أرابكوا!',
+          body:`أهلاً ${rawName}،\n\nإيميلك الرسمي: ${email}\n\nأمانك عندنا:\n- كلمة سرّك متخزنة مشفرة (SHA-256) مش نص صريح.\n- كل محتوى بيتعرضلك متفلتر ضد هجمات XSS.\n- المواقع المنشورة شغالة في قفص معزول عن بياناتك.\n\nجرّب: افتح الدردشة ودوّر على صاحبك بإيميله (لازم يكون مسجل)، أو اعمل حساب تاني وجرب مع نفسك.\n\nفريق أرابكوا`, date:nowISO(), read:false, star:false, trashed:false, draft:false});
+        DB.set('arp_mail', mail);
+        failCount = 0;
+        toast(`أهلاً ${rawName}! إيميلك جاهز: ${email}`, 'sparkles');
+        afterAuth();
+      } else {
+        if (Date.now() < failUntil) {
+          const wait = Math.ceil((failUntil - Date.now()) / 1000);
+          return err(`محاولات كتير غلط — استنى ${wait} ثانية وجرب تاني.`);
+        }
+        const raw = clamp(($('#aId').value || '').trim(), 60);
+        const pw = $('#aPass').value;
+        if (!raw || !pw) return err('اكتب الاسم/الإيميل وكلمة السر.');
+        const id = raw.toLowerCase();
+        const idN = normAr(id).replace(/\s+/g, ' ').trim();
+        const seen = new Set(); const cands = [];
+        const pushU = u => { if (u && !seen.has(u.email)) { seen.add(u.email); cands.push(u); } };
+        users.filter(u => u.email === id).forEach(pushU);
+        if (!id.includes('@')) users.filter(u => u.email === id + '@arpico.com').forEach(pushU);
+        users.filter(u => normAr(u.email).replace(/\s+/g,'') === normAr(id).replace(/\s+/g,'')).forEach(pushU);
+        users.filter(u => normAr(u.name).replace(/\s+/g,' ').trim() === idN || normAr(u.name).replace(/\s+/g,'') === idN.replace(/\s+/g,'')).forEach(pushU);
+        if (!id.includes('@')) {
+          const gs = [translitSlug(raw), nameToSlug(raw)].filter(Boolean).map(s => s + '@arpico.com');
+          users.filter(u => gs.includes(u.email)).forEach(pushU);
+        }
+        let u = null;
+        for (const c of cands) { if (await verifyPassword(c, pw)) { u = c; break; } }
+        if (!u) {
+          failCount++;
+          if (failCount >= 5) { failUntil = Date.now() + 10000; failCount = 0; return err('محاولات فاشلة كتير — الحماية اشتغلت، استنى 10 ثواني.'); }
+          return err('البيانات غير صحيحة. جرّب: الاسم نفسه، أو الإيميل الكامل اللي ظهر لك وقت التسجيل وينتهي بـ @arpico.com.');
+        }
+        failCount = 0; failUntil = 0;
+        session = u.email; DB.set('arp_session', session);
+        mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
+        toast(`نوّرت أرابكوا يا ${u.name}`, 'user');
+        afterAuth();
       }
-      // 5) بالإيميل المتولد من الاسم (أي صيغة قديمة أو جديدة)
-      if (!u && !id.includes('@')) {
-        const guesses = [translitSlug(raw), nameToSlug(raw), id.replace(/\s+/g, '.')]
-          .filter(Boolean).map(s => s + '@arpico.com');
-        u = users.find(x => guesses.includes((x.email||'').toLowerCase()));
-      }
-      if (!u || u.pass !== pw) return err('البيانات غير صحيحة. جرّب: الاسم نفسه، أو الإيميل الكامل اللي ظهر لك وقت التسجيل وينتهي بـ @arpico.com.');
-      session = u.email; DB.set('arp_session', session);
-      mailUI = {folder:'inbox', open:null}; chatUI = {peer:null, q:'', foundList:[]};
-      toast(`نوّرت أرابكوا يا ${u.name}`, 'user');
-      afterAuth();
+    } finally {
+      sb.disabled = false;
     }
   };
 }
@@ -1466,17 +1558,17 @@ function renderSettings(){
     </div>
     <div class="card">
       <h3><i data-lucide="globe"></i> مواقعي المنشورة (${arNum(mine.length)})</h3>
-      ${mine.length ? mine.map(s => `<div class="mysite">
+      ${mine.length ? mine.map(s => { const gu = safeURL(s.googleUrl); return `<div class="mysite">
         <div><div class="m-n">${esc(s.name)}</div><div class="m-u">${esc(s.slug)}.arpico</div>
         <div class="m-v"><i data-lucide="eye"></i> ${arNum(s.views)} زيارة — نُشر ${fmtDate(s.date)}</div></div>
         <div class="acts">
           <button class="iconbtn" data-open="${s.id}" title="فتح"><i data-lucide="external-link"></i></button>
           <button class="iconbtn" data-edit="${s.id}" title="تعديل"><i data-lucide="pen-line"></i></button>
           <button class="iconbtn" data-copy="${esc(s.slug)}.arpico" title="نسخ الرابط"><i data-lucide="copy"></i></button>
-          ${s.googleUrl ? `<button class="iconbtn" data-g="${esc(s.googleUrl)}" title="النسخة على جوجل"><i data-lucide="search"></i></button>` : ''}
+          ${gu ? `<button class="iconbtn" data-g="${esc(gu)}" title="النسخة على جوجل"><i data-lucide="search"></i></button>` : ''}
           <button class="iconbtn danger" data-del="${s.id}" title="حذف"><i data-lucide="trash-2"></i></button>
         </div>
-      </div>`).join('') : `<p style="font-size:13px;color:var(--ink3);padding:6px 0">لسه ما نشرتش أي موقع — ابدأ من الزرار الأحمر فوق.</p>`}
+      </div>`; }).join('') : `<p style="font-size:13px;color:var(--ink3);padding:6px 0">لسه ما نشرتش أي موقع — ابدأ من الزرار الأحمر فوق.</p>`}
     </div>
     <div class="card">
       <h3><i data-lucide="history"></i> سجل التصفح</h3>
@@ -1494,6 +1586,17 @@ function renderSettings(){
         <button class="switch ${theme === 'dark' ? 'on' : ''}" id="swTheme"></button></div>
       <div class="setrow"><div class="info"><div class="t">مسح بيانات التصفح</div><div class="d">علامات، سجل، أبحاث، وإعجابات — الوسائط مش هتتأثر</div></div>
         <button class="btn" id="wipeData" style="padding:8px 16px;font-size:12px"><i data-lucide="trash-2"></i> مسح</button></div>
+    </div>
+    <div class="card">
+      <h3><i data-lucide="shield-check"></i> الحماية المفعّلة</h3>
+      <div class="seclist">
+        <div class="si"><i data-lucide="check"></i><span>كلمات السر متخزنة مشفرة SHA-256 مع Salt عشوائي — مش نص صريح (سجّل دخول مرة للترقية التلقائية).</span></div>
+        <div class="si"><i data-lucide="check"></i><span>كل محتوى المستخدم بيتفلتر ضد هجمات XSS قبل العرض.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>المواقع المنشورة شغالة في قفص معزول (Sandbox) من غير صلاحيات على بياناتك.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>الروابط الخارجية بتتفلتر — https الآمن فقط.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>سياسة أمان محتوى (CSP) بتمنع تحميل سكربتات من مصادر غير موثوقة.</span></div>
+        <div class="si"><i data-lucide="check"></i><span>حدود طول للمدخلات + حماية من هجمات تخمين كلمة السر.</span></div>
+      </div>
     </div>
     <button class="btn" id="logoutBtn" style="width:100%;justify-content:center"><i data-lucide="log-out"></i> تسجيل الخروج</button>
   </div></div>`;
@@ -1548,12 +1651,12 @@ function renderPublish(){
       <button id="cancelEdit">إلغاء التعديل</button></div>` : ''}
     <div class="pub-grid">
       <div class="pub-form">
-        <label>اسم الموقع</label><input id="pName" value="${esc(editing ? editing.name : '')}" placeholder="مثال: محمّص أرابيكا">
+        <label>اسم الموقع</label><input id="pName" maxlength="60" value="${esc(editing ? editing.name : '')}" placeholder="مثال: محمّص أرابيكا">
         <label>عنوان موقعك على الشبكة</label>
-        <div class="slugbox"><input id="pSlug" value="${esc(editing ? editing.slug : '')}" placeholder="qahwa-arpica" spellcheck="false"><span class="ext">.arpico</span></div>
-        <label>وصف قصير (ه يظهر في نتائج البحث)</label><input id="pDesc" value="${esc(editing ? editing.desc : '')}" placeholder="متجر قهوة مختصة — حبوب محمّصة طازجة يوميًا">
-        <label>كلمات مفتاحية (افصل بينها بفاصلة)</label><input id="pKey" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
-        <label>رابط موقعك على جوجل (اختياري — لو موجود فعلاً)</label><input id="pGoogle" dir="ltr" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
+        <div class="slugbox"><input id="pSlug" maxlength="60" value="${esc(editing ? editing.slug : '')}" placeholder="qahwa-arpica" spellcheck="false"><span class="ext">.arpico</span></div>
+        <label>وصف قصير (ه يظهر في نتائج البحث)</label><input id="pDesc" maxlength="300" value="${esc(editing ? editing.desc : '')}" placeholder="متجر قهوة مختصة — حبوب محمّصة طازجة يوميًا">
+        <label>كلمات مفتاحية (افصل بينها بفاصلة)</label><input id="pKey" maxlength="200" value="${esc(editing ? editing.keywords || '' : '')}" placeholder="قهوة، متجر، تحميص">
+        <label>رابط موقعك على جوجل (اختياري — لو موجود فعلاً)</label><input id="pGoogle" dir="ltr" maxlength="300" value="${esc(editing ? editing.googleUrl || '' : '')}" placeholder="https://example.com/my-site">
         <label>محتوى الموقع — HTML</label>
         <div class="tplrow">
           <button class="tplbtn" data-tpl="card"><i data-lucide="user"></i> بطاقة شخصية</button>
@@ -1568,7 +1671,7 @@ function renderPublish(){
       </div>
       <div class="pv-box">
         <div class="pv-head"><i data-lucide="eye"></i> معاينة مباشرة</div>
-        <iframe id="pvFrame" sandbox="allow-scripts"></iframe>
+        <iframe id="pvFrame" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
       </div>
     </div>
   </div></div>`;
@@ -1595,25 +1698,27 @@ function renderPublish(){
   if (ce) ce.onclick = () => { renderPublish(); icons(); };
 
   $('#pubGo').onclick = () => {
-    const name = nameEl.value.trim(), desc = descEl.value.trim(), html = htmlEl.value;
-    let g = gEl.value.trim();
+    const name = clamp(nameEl.value.trim(), CAPS.siteName), desc = clamp(descEl.value.trim(), CAPS.siteDesc);
+    const html = htmlEl.value;
+    let g = clamp(gEl.value.trim(), CAPS.gurl);
     const err = m => { toast(m, 'shield'); return false; };
     if (name.length < 2) return err('اكتب اسم للموقع (حرفين على الأقل).');
     if (desc.length < 8) return err('الوصف قصير أوي — خليه واضح عشان يظهر في البحث.');
-    if (g && !/^https?:\/\//i.test(g)) g = 'https://' + g;
+    if (g) { if (!/^https?:\/\//i.test(g)) g = 'https://' + g; g = safeURL(g); }
     let slug = siteSlugify(slugEl.value) || 'site-' + uid().slice(0, 5);
     if (html.trim().length < 30) return err('محتوى الموقع قصير أوي — لو محتار ابدأ بقالب جاهز.');
+    if (html.length > CAPS.html) return err('كود الموقع كبير أوي (الحد 400 ألف حرف).');
     if (editing) {
       let final = slug, i = 2;
       while (sites.some(s => s.slug === final && s.id !== editing.id)) { final = slug + '-' + i++; }
-      Object.assign(editing, {slug:final, name, desc, keywords:keyEl.value.trim(), html, googleUrl:g, updated:nowISO()});
+      Object.assign(editing, {slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), html, googleUrl:g, updated:nowISO()});
       DB.set('arp_sites', sites);
       toast('تم حفظ التعديلات', 'check');
       return navigate('site', {siteId:editing.id});
     }
     let final = slug, i = 2;
     while (sites.some(s => s.slug === final)) { final = slug + '-' + i++; }
-    const s = {id:uid(), slug:final, name, desc, keywords:keyEl.value.trim(), googleUrl:g, html, author:u.name, authorEmail:u.email, date:nowISO(), views:0};
+    const s = {id:uid(), slug:final, name, desc, keywords:clamp(keyEl.value.trim(), CAPS.keywords), googleUrl:g, html, author:u.name, authorEmail:u.email, date:nowISO(), views:0};
     sites.push(s); DB.set('arp_sites', sites);
     toast('مبروك! موقعك انشر وظهر في بحث أرابكوا', 'sparkles');
     navigate('site', {siteId:s.id});
@@ -1630,7 +1735,7 @@ function renderNetwork(){
     </div>
     ${sites.length ? `
     <div class="nettools">
-      <input class="netsearch" id="netQ" placeholder="ابحث في المواقع المنشورة..." value="${esc(netUI.q)}">
+      <input class="netsearch" id="netQ" maxlength="100" placeholder="ابحث في المواقع المنشورة..." value="${esc(netUI.q)}">
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="chip ${netUI.sort==='new'?'on':''}" data-sort="new">الأحدث</button>
         <button class="chip ${netUI.sort==='views'?'on':''}" data-sort="views">الأكثر زيارة</button>
@@ -1651,16 +1756,16 @@ function renderNetwork(){
     if (netUI.sort === 'new') list.sort((a,b) => new Date(b.date) - new Date(a.date));
     else if (netUI.sort === 'views') list.sort((a,b) => b.views - a.views);
     else list.sort((a,b) => a.name.localeCompare(b.name, 'ar'));
-    $('#netList').innerHTML = list.length ? list.map(s => `<div class="netrow" data-id="${s.id}">
+    $('#netList').innerHTML = list.length ? list.map(s => { const gu = safeURL(s.googleUrl); return `<div class="netrow" data-id="${s.id}">
       ${letterDot(s.slug, 'avatar')}
       <div><div class="n-name">${esc(s.name)}</div><div class="n-url">${esc(s.slug)}.arpico</div>
         <div class="n-desc">${esc(s.desc)}</div>
         <div class="n-meta"><span><i data-lucide="eye"></i> ${arNum(s.views)} زيارة</span>
         <span data-prof="${esc(s.authorEmail || '')}" style="cursor:pointer;font-weight:600;color:var(--ink2)"><i data-lucide="user"></i> ${esc(s.author)}</span>
         <span><i data-lucide="clock"></i> ${fmtDate(s.date)}</span>
-        ${s.googleUrl ? `<span class="gtag" data-g="${esc(s.googleUrl)}"><i data-lucide="external-link"></i> النسخة على جوجل</span>` : ''}</div></div>
+        ${gu ? `<span class="gtag" data-g="${esc(gu)}"><i data-lucide="external-link"></i> النسخة على جوجل</span>` : ''}</div></div>
       <span class="go btn" style="padding:8px 16px;font-size:12px">زيارة</span>
-    </div>`).join('') : `<div class="net-empty">ما لقيناش مواقع مطابقة.</div>`;
+    </div>`; }).join('') : `<div class="net-empty">ما لقيناش مواقع مطابقة.</div>`;
     icons();
     $('#netList').querySelectorAll('.netrow').forEach(r => r.onclick = e => {
       const up = e.target.closest('[data-prof]');
@@ -1689,21 +1794,26 @@ function renderSite(d){
     const s = sites.find(x => x.id === d.siteId);
     if (!s) { viewport.innerHTML = `<div class="site404">${bean()}<h3>الموقع غير موجود</h3><p style="font-size:13px">ممكن يكون اتمسح من الشبكة.</p></div>`; return; }
     if (!d.counted) { s.views++; d.counted = true; DB.set('arp_sites', sites); }
+    const gu = safeURL(s.googleUrl);
     viewport.innerHTML = `<div class="extwrap">
-      ${s.googleUrl ? `<div class="ext-top"><i data-lucide="search"></i>
+      ${gu ? `<div class="ext-top"><i data-lucide="search"></i>
         <span class="msg">الموقع ده ليه نسخة حقيقية على الإنترنت.</span>
         <button id="gOpen"><i data-lucide="external-link"></i> افتح النسخة الأصلية</button></div>` : ''}
       <div class="ext-framebox"></div>
     </div>`;
     const f = document.createElement('iframe');
-    f.className = 'siteframe'; f.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals allow-popups');
+    f.className = 'siteframe';
+    f.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals');
+    f.setAttribute('referrerpolicy', 'no-referrer');
     f.setAttribute('srcdoc', s.html);
     viewport.querySelector('.ext-framebox').appendChild(f);
     const go = $('#gOpen');
-    if (go) go.onclick = () => openExternal(s.googleUrl);
+    if (go) go.onclick = () => openExternal(gu);
     icons();
     return;
   }
+  const u = safeURL(d.url);
+  if (!u) { viewport.innerHTML = `<div class="site404">${bean()}<h3>الرابط غير صالح</h3><p style="font-size:13px">بنسمح بروابط https الآمنة فقط.</p></div>`; return; }
   viewport.innerHTML = `<div class="extwrap">
     <div class="ext-top" id="extTop">
       <i data-lucide="shield-alert"></i>
@@ -1712,18 +1822,18 @@ function renderSite(d){
       <button class="ghost" id="extDismiss" title="إخفاء"><i data-lucide="x"></i></button>
     </div>
     <div class="ext-framebox" id="extBox">
-      <div class="ext-load" id="extLoad"><div class="spinner"></div>جارٍ الاتصال بـ ${esc(d.url || '')}...</div>
+      <div class="ext-load" id="extLoad"><div class="spinner"></div>جارٍ الاتصال بـ ${esc(u)}...</div>
     </div>
   </div>`;
   const f = document.createElement('iframe');
   f.className = 'siteframe';
   f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
   f.setAttribute('referrerpolicy', 'no-referrer');
-  f.src = d.url || 'about:blank';
+  f.src = u;
   f.addEventListener('load', () => { const l = $('#extLoad'); if (l) l.style.display = 'none'; });
   $('#extBox').appendChild(f);
   setTimeout(() => { const l = $('#extLoad'); if (l) l.style.display = 'none'; }, 4500);
-  $('#extOpen').onclick = () => { openExternal(d.url); toast('فتحنا الموقع في نافذة خارجية', 'external-link'); };
+  $('#extOpen').onclick = () => { openExternal(u); toast('فتحنا الموقع في نافذة خارجية', 'external-link'); };
   $('#extDismiss').onclick = () => { $('#extTop').style.display = 'none'; };
   icons();
 }
@@ -1850,7 +1960,7 @@ function openMailModal(m){
   const u = me(); if (!m || !u) return;
   openModal(`<h3><i data-lucide="mail"></i><span style="flex:1;line-height:1.5">${esc(m.subject || '(بدون عنوان)')}</span></h3>
     <div class="mr-meta" style="margin-bottom:14px">من <span class="from">${esc(m.fromName || displayNameFor(m.from))}</span> — ${fmtTime(m.date)}</div>
-    <div style="font-size:14px;line-height:2;white-space:pre-wrap">${esc(m.body)}</div>
+    <div style="font-size:14px;line-height:2;white-space:pre-wrap;word-break:break-word">${esc(m.body)}</div>
     <div class="macts">
       <button class="btn" id="mmTrash"><i data-lucide="trash-2"></i> مهملات</button>
       <button class="btn primary" id="mmReply"><i data-lucide="reply"></i> رد</button>
@@ -1870,9 +1980,9 @@ function openCompose(pre = {}, draftId = null){
   const u = me(); if (!u) return;
   openModal(`<h3><i data-lucide="pen-line"></i> ${draftId ? 'تعديل المسودة' : 'رسالة جديدة'}</h3>
     <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;direction:ltr;text-align:right">من: ${esc(u.email)}</div>
-    <div class="field"><label>إلى (لازم تكون صيغة arpico.com ومسجلة فعلاً)</label><input id="cTo" dir="ltr" value="${esc(pre.to || '')}" placeholder="name@arpico.com"></div>
-    <div class="field"><label>الموضوع</label><input id="cSub" value="${esc(pre.subject || '')}" placeholder="موضوع الرسالة"></div>
-    <div class="field"><label>الرسالة</label><textarea id="cBody" rows="6" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13.5px;background:var(--panel2);outline:0;resize:vertical">${esc(pre.body || pre.quote || '')}</textarea></div>
+    <div class="field"><label>إلى (لازم تكون صيغة arpico.com ومسجلة فعلاً)</label><input id="cTo" dir="ltr" maxlength="100" value="${esc(pre.to || '')}" placeholder="name@arpico.com"></div>
+    <div class="field"><label>الموضوع</label><input id="cSub" maxlength="200" value="${esc(pre.subject || '')}" placeholder="موضوع الرسالة"></div>
+    <div class="field"><label>الرسالة</label><textarea id="cBody" maxlength="20000" rows="6" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13.5px;background:var(--panel2);outline:0;resize:vertical">${esc(pre.body || pre.quote || '')}</textarea></div>
     <div class="macts">
       <button class="btn" id="cCancel">إلغاء</button>
       <button class="btn" id="cSave"><i data-lucide="pencil"></i> حفظ كمسودة</button>
@@ -1881,8 +1991,8 @@ function openCompose(pre = {}, draftId = null){
   $('#cCancel').onclick = closeModal;
   const collect = () => ({
     to: ($('#cTo').value || '').trim().toLowerCase(),
-    subject: $('#cSub').value.trim(),
-    body: ($('#cBody').value || '').trim(),
+    subject: clamp($('#cSub').value.trim(), CAPS.mailSub),
+    body: clamp(($('#cBody').value || '').trim(), CAPS.mailBody),
   });
   $('#cSave').onclick = () => {
     const d = collect();
@@ -1895,7 +2005,7 @@ function openCompose(pre = {}, draftId = null){
   };
   $('#cSend').onclick = () => {
     const d = collect();
-    if (!/@arpico\.com$/.test(d.to)) { toast('الإيميل لازم ينتهي بـ @arpico.com', 'shield'); return; }
+    if (!EMAIL_RE.test(d.to)) { toast('الإيميل لازم ينتهي بـ @arpico.com بصيغة صحيحة', 'shield'); return; }
     if (!users.some(x => x.email === d.to)) { toast('ما فيش حد مسجل بالإيميل ده على أرابكوا', 'shield'); return; }
     if (!d.body) { toast('اكتب الرسالة الأول', 'pen-line'); return; }
     if (draftId) { const m = mail.find(x => x.id === draftId); if (m) Object.assign(m, d, {date: nowISO(), draft:false, read:false}); }
@@ -1942,7 +2052,7 @@ function renderChat(){
   viewport.innerHTML = `<div class="chat page">
     <div class="chat-side">
       <div class="chat-search">
-        <input id="chatQ" dir="ltr" placeholder="friend@arpico.com أو اسم صاحبك" value="${esc(chatUI.q)}">
+        <input id="chatQ" dir="ltr" maxlength="100" placeholder="friend@arpico.com أو اسم صاحبك" value="${esc(chatUI.q)}">
         <button class="btn primary fbtn" id="chatFind"><i data-lucide="search"></i> ابحث عن صاحبك</button>
       </div>
       ${(chatUI.foundList || []).map(em => chatFoundCard(em, u)).join('')}
@@ -1993,7 +2103,7 @@ function renderChat(){
           : `<div style="text-align:center;color:var(--ink3);font-size:12.5px;margin:auto">ابدأ المحادثة بسلام</div>`}
       </div>
       <div class="chat-input">
-        <input id="chatIn" placeholder="اكتب رسالتك..." autocomplete="off">
+        <input id="chatIn" maxlength="2000" placeholder="اكتب رسالتك..." autocomplete="off">
         <button class="btn primary" id="chatSend" style="padding:10px 18px"><i data-lucide="send"></i></button>
       </div>`;
     icons();
@@ -2004,7 +2114,7 @@ function renderChat(){
   };
 
   function sendChat(){
-    const inp = $('#chatIn'); const body = (inp.value || '').trim(); if (!body) return;
+    const inp = $('#chatIn'); const body = clamp((inp.value || '').trim(), CAPS.chat); if (!body) return;
     if (!users.some(x => x.email === chatUI.peer)) { toast('الحساب ده مش موجود', 'shield', true); return; }
     chatMsgs.push({id:uid(), from:u.email, to:chatUI.peer, body, date:nowISO(), read:false});
     const msgs = chatMsgs.filter(m => (m.from === u.email && m.to === chatUI.peer) || (m.to === u.email && m.from === chatUI.peer));
@@ -2017,26 +2127,24 @@ function renderChat(){
   renderThread();
 
   $('#chatFind').onclick = () => {
-    const raw = ($('#chatQ').value || '').trim();
+    const raw = clamp(($('#chatQ').value || '').trim(), 100);
     chatUI.q = raw;
     chatUI.foundList = [];
     if (!raw) { toast('اكتب إيميل صاحبك (أو اسمه) الأول', 'search'); return renderChat(); }
     const id = raw.toLowerCase();
     let cands = [];
     const withDom = id.endsWith('@arpico.com') ? id : id + '@arpico.com';
-    // 1) إيميل مطابق تمامًا
-    cands = users.filter(x => (x.email||'').toLowerCase() === withDom || (x.email||'').toLowerCase() === id);
-    // 2) إيميل بعد تطبيع عربي (همزات/تاء مربوطة)
-    if (!cands.length) cands = users.filter(x => normAr((x.email||'').toLowerCase()) === normAr(withDom));
-    // 3) بالاسم (بعد تطبيع) — لو اكتر من واحد ه نظهرهم كلهم
+    if (EMAIL_RE.test(withDom)) {
+      cands = users.filter(x => x.email === withDom || x.email === id);
+      if (!cands.length) cands = users.filter(x => normAr(x.email) === normAr(withDom));
+    }
     if (!cands.length) {
       const nn = normAr(id).replace(/\s+/g, ' ').trim();
-      cands = users.filter(x => normAr((x.name||'').toLowerCase()).replace(/\s+/g,' ').trim() === nn);
+      cands = users.filter(x => normAr(x.name).replace(/\s+/g,' ').trim() === nn);
     }
-    // 4) بالإيميل المتولد من الاسم (أي صيغة)
     if (!cands.length && !id.includes('@')) {
       const guesses = [translitSlug(raw), nameToSlug(raw)].filter(Boolean).map(s => s + '@arpico.com');
-      cands = users.filter(x => guesses.includes((x.email||'').toLowerCase()));
+      cands = users.filter(x => guesses.includes(x.email));
     }
     if (!cands.length) {
       toast(`ما لقينش حد بالبحث ده "${raw}" — اتأكد إن الحساب مسجل فعلاً على أرابكوا`, 'shield', true);
@@ -2056,7 +2164,8 @@ function renderChat(){
 
 function openChatModal(peer){
   const u = me(); if (!u) return;
-  peer = (peer || '').toLowerCase();
+  peer = (peer || '').trim().toLowerCase();
+  if (!EMAIL_RE.test(peer) || !users.some(x => x.email === peer)) { toast('الحساب ده مش موجود', 'shield', true); return; }
   const peerU = users.find(x => x.email === peer);
   const msgs = chatMsgs.filter(m => (m.from === u.email && m.to === peer) || (m.to === u.email && m.from === peer)).sort((a,b) => new Date(a.date) - new Date(b.date));
   for (const m of msgs) if (m.to === u.email) m.read = true;
@@ -2068,13 +2177,12 @@ function openChatModal(peer){
         : '<p style="text-align:center;color:var(--ink3);font-size:12.5px">ابدأ المحادثة بسلام</p>'}
     </div>
     <div class="chat-input" style="border:0;padding:0">
-      <input id="cmIn" placeholder="اكتب رسالتك...">
+      <input id="cmIn" maxlength="2000" placeholder="اكتب رسالتك...">
       <button class="btn primary" id="cmSend" style="padding:10px 16px"><i data-lucide="send"></i></button>
     </div>`);
   const box = $('#cmBox'); box.scrollTop = box.scrollHeight;
   const send = () => {
-    const body = ($('#cmIn').value || '').trim(); if (!body) return;
-    if (!users.some(x => x.email === peer)) { toast('الحساب ده مش موجود', 'shield', true); return; }
+    const body = clamp(($('#cmIn').value || '').trim(), CAPS.chat); if (!body) return;
     chatMsgs.push({id:uid(), from:u.email, to:peer, body, date:nowISO(), read:peer === u.email ? true : false});
     DB.set('arp_chat_msgs', chatMsgs);
     closeModal(); openChatModal(peer);
@@ -2083,12 +2191,12 @@ function openChatModal(peer){
   $('#cmIn').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
 }
 
-// ---------- المكالمات (كاميرا وميكروفون حقيقيان) ----------
+// ---------- المكالمات ----------
 let callStream = null, callInts = [], callAudioCtx = null, callStart = 0;
 async function openCall(peerEmail, withVideo){
   const u = me(); if (!u) return;
-  peerEmail = (peerEmail || '').toLowerCase();
-  if (!users.some(x => x.email === peerEmail)) { toast('الحساب ده مش موجود', 'shield', true); return; }
+  peerEmail = (peerEmail || '').trim().toLowerCase();
+  if (!EMAIL_RE.test(peerEmail) || !users.some(x => x.email === peerEmail)) { toast('الحساب ده مش موجود', 'shield', true); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('المتصفح مش داعم للمكالمات', 'mic', true); return; }
   try {
     callStream = await navigator.mediaDevices.getUserMedia({audio:true, video:withVideo});
@@ -2190,7 +2298,7 @@ function renderInsta(){
       <div class="plikes" id="pl-${p.id}">${arNum(likesOf(p))} إعجاب</div>
       ${p.caption ? `<div class="pcap"><b>${esc(p.user)}</b> ${esc(p.caption)}</div>` : ''}
       <div class="pcomments" id="pc-${p.id}">${(p.comments || []).map(c => `<div class="c"><b>${esc(c.u)}</b> ${esc(c.t)}</div>`).join('')}</div>
-      <div class="cform"><input id="ci-${p.id}" placeholder="أضف تعليقًا..."><button data-send="${p.id}">نشر</button></div>
+      <div class="cform"><input id="ci-${p.id}" maxlength="500" placeholder="أضف تعليقًا..."><button data-send="${p.id}">نشر</button></div>
     </div>`; }).join('')
     : `<div class="feedempty"><i data-lucide="image"></i>
        <p>الفيد فاضي — مفيش ولا صورة أو ريلز لسه.<br>ارفع أول منشور ليك (صورة أو فيديو) وه يفضل محفوظ على جهازك.</p>
@@ -2204,7 +2312,7 @@ function renderInsta(){
     const id = uid();
     const isVid = (file.type || '').startsWith('video');
     saveMedia('ig-' + id, file).then(() => {
-      instaPosts.unshift({id, mediaId:'ig-' + id, type:isVid ? 'video' : 'image', caption, user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
+      instaPosts.unshift({id, mediaId:'ig-' + id, type:isVid ? 'video' : 'image', caption:clamp(caption, CAPS.caption), user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
       savePosts(); renderInsta(); hydrateMedia(viewport); icons();
       toast(isVid ? 'ريلزك اتنشر' : 'صورتك اتنشرت', 'sparkles');
     });
@@ -2246,7 +2354,7 @@ function renderInsta(){
     });
   });
   const addCmt = id => {
-    const inp = $('#ci-' + id); const t = inp.value.trim(); if (!t) return;
+    const inp = $('#ci-' + id); const t = clamp(inp.value.trim(), 500); if (!t) return;
     const p = instaPosts.find(x => x.id === id); if (!p) return;
     if (!p.comments) p.comments = [];
     p.comments.unshift({u:cName(), t}); savePosts();
@@ -2293,7 +2401,7 @@ function renderTikTok(){
   const doUpload = () => openUploadModal({accept:'video/*', title:'فيديو جديد — أي حجم', capLabel:'الكابشن (اختياري)'}, (file, caption) => {
     const id = uid();
     saveMedia('tk-' + id, file).then(() => {
-      tkPosts.unshift({id, mediaId:'tk-' + id, caption, user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
+      tkPosts.unshift({id, mediaId:'tk-' + id, caption:clamp(caption, CAPS.caption), user:cName(), authorEmail:me()?.email || '', date:nowISO(), likes:0, comments:[]});
       savePosts(); renderTikTok(); hydrateMedia(viewport); icons();
       toast('اتنشر الفيديو', 'sparkles');
     });
@@ -2330,10 +2438,10 @@ function renderTikTok(){
     e.stopPropagation(); const id = b.dataset.tkc; const p = tkPosts.find(x => x.id === id);
     const all = p.comments || [];
     openModal(`<h3><i data-lucide="message-circle"></i> التعليقات (${arNum(all.length)})</h3>
-      <div style="max-height:300px;overflow-y:auto">${all.map(c => `<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.7"><b>${esc(c.u)}</b> ${esc(c.t)}</div>`).join('') || '<p style="color:var(--ink3);font-size:13px">أول تعليق يبقى لك</p>'}</div>
-      <div class="cform" style="margin-top:14px;padding:0"><input id="tci" placeholder="أضف تعليقًا..."><button class="btn primary" id="tcs" style="padding:9px 18px">نشر</button></div>`);
+      <div style="max-height:300px;overflow-y:auto">${all.map(c => `<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.7;word-break:break-word"><b>${esc(c.u)}</b> ${esc(c.t)}</div>`).join('') || '<p style="color:var(--ink3);font-size:13px">أول تعليق يبقى لك</p>'}</div>
+      <div class="cform" style="margin-top:14px;padding:0"><input id="tci" maxlength="500" placeholder="أضف تعليقًا..."><button class="btn primary" id="tcs" style="padding:9px 18px">نشر</button></div>`);
     $('#tcs').onclick = () => {
-      const t = $('#tci').value.trim(); if (!t) return;
+      const t = clamp($('#tci').value.trim(), 500); if (!t) return;
       if (!p.comments) p.comments = [];
       p.comments.push({u:cName(), t});
       savePosts(); closeModal();
@@ -2406,7 +2514,7 @@ function renderYT(){
   const doUpload = () => openUploadModal({accept:'video/*', title:'فيديو جديد — أي حجم', capLabel:'عنوان الفيديو', desc:true}, (file, title, desc) => {
     const id = uid();
     saveMedia('yt-' + id, file).then(() => {
-      ytPosts.unshift({id, mediaId:'yt-' + id, title:title || 'فيديو بدون عنوان', desc, user:cName(), authorEmail:me()?.email || '', date:nowISO(), views:0});
+      ytPosts.unshift({id, mediaId:'yt-' + id, title:clamp(title || 'فيديو بدون عنوان', CAPS.title), desc:clamp(desc, CAPS.desc), user:cName(), authorEmail:me()?.email || '', date:nowISO(), views:0});
       savePosts(); renderYT(); hydrateMedia(viewport); icons();
       toast('اترفع الفيديو', 'sparkles');
     });
@@ -2434,8 +2542,8 @@ function openUploadModal(opts, cb){
     <div class="field"><label>اختر الملف من جهازك (أي حجم مسموح)</label>
       <input type="file" id="upFile" class="fin" accept="${esc(accept)}"></div>
     <div class="field"><label>${esc(capLabel)}</label>
-      <input id="upTitle" placeholder="اكتب هنا..."></div>
-    ${desc ? `<div class="field"><label>وصف (اختياري)</label><input id="upDesc" placeholder="تفاصيل..."></div>` : ''}
+      <input id="upTitle" maxlength="300" placeholder="اكتب هنا..."></div>
+    ${desc ? `<div class="field"><label>وصف (اختياري)</label><input id="upDesc" maxlength="500" placeholder="تفاصيل..."></div>` : ''}
     <p class="hint">الملف هيتخزن محليًا على جهازك (IndexedDB) ويفضل موجود بعد إغلاق المتصفح.</p>
     <div class="macts">
       <button class="btn" id="upCancel">إلغاء</button>
@@ -2539,8 +2647,7 @@ function renderProfile(d){
   if (pe) pe.onclick = () => navigate('settings');
 }
 
-/* ============ نظام الأحداث الموحد لكل أزرار الصداقة والدردشة والمكالمات ============ */
-// زر واحد يتحكم في كل حاجة — مستحيل زرار يضيع من الربط تاني
+/* ============ نظام الأحداث الموحد ============ */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
   if (!el) return;
@@ -2577,7 +2684,7 @@ document.addEventListener('click', e => {
       });
       break;
     case 'chatWith': {
-      if (!users.some(x => x.email === peer)) { toast('الحساب ده مش موجود', 'shield', true); break; }
+      if (!EMAIL_RE.test(peer) || !users.some(x => x.email === peer)) { toast('الحساب ده مش موجود', 'shield', true); break; }
       chatUI.peer = peer; chatUI.foundList = [];
       if (isNarrow()) { openChatModal(peer); }
       else if (curPage() && curPage().page === 'chat') { rerender(); }
@@ -2718,7 +2825,7 @@ ensureIcons();
 document.documentElement.setAttribute('data-theme', theme);
  $('#themeBtn').innerHTML = `<i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>`;
 if (!storageOk) {
-  setTimeout(() => toast('تنبيه: التخزين الدائم غير متاح في وضع التصفح الحالي — الحسابات والبيانات هتتمسح عند إغلاق النافذة. افتح الملف في نافذة عادية مش تصفح خاص.', 'shield', true), 800);
+  setTimeout(() => toast('تنبيه: التخزين الدائم غير متاح — الحسابات والبيانات هتتمسح عند الإغلاق. افتح الملف في نافذة عادية.', 'shield', true), 800);
 }
 newTab('ntp');
 </script>
